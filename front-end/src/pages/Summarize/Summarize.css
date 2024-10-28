@@ -1,0 +1,33 @@
+.summarize-container {
+    display: flex;
+    height: 100%;
+}
+
+.summarize {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: white;
+    align-items: center;
+    justify-content: center;
+}
+
+.summarize h1 {
+    font-size: 52px;
+    font-weight: 700;
+}
+
+.summarize p {
+    margin-top: 10px;
+    font-size: 20px;
+}
+
+.hello {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    text-align: center;
+}

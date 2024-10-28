@@ -1,0 +1,143 @@
+.formating-text-container {
+    width: 100%;
+    max-width: 1000px;
+    height: 300px;
+    margin-top: 20px;
+    border-radius: 10px;
+    background-color: aliceblue;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    transition: all 0.3s ease-in-out;
+}
+
+.formating-text-container:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.text-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-toggle {
+    background-color: #ffffff;
+    border: 1px solid #d1d1d1;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-toggle:hover {
+    background-color: #e9f5ff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.formating-text-container .submit-button {
+    background-color: #4a90e2;
+    border: none;
+    padding: 10px 15px; /* Увеличен padding для соответствия по высоте */
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center; /* Центрирование иконки */
+    margin-left: 10px;
+}
+
+.submit-button:hover {
+    background-color: #357ab7;
+}
+
+.dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 240px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    margin-top: 5px;
+    padding: 15px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-section {
+    margin-bottom: 12px;
+}
+
+.dropdown-section:last-child {
+    margin-bottom: 0;
+}
+
+.dropdown-section strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 15px;
+    color: #444;
+}
+
+.dropdown-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown-section li {
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+    border-radius: 6px;
+    font-size: 15px;
+    color: #333;
+}
+
+.dropdown-section li:hover {
+    background-color: #f0f8ff;
+    color: #1a73e8;
+}
+
+.text-input {
+    width: 100%;
+    height: 300px;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #d1d1d1;
+    font-size: 16px;
+    color: #333;
+    background-color: #ffffff;
+    resize: none;
+    transition: border-color 0.3s ease;
+}
+
+.text-input:focus {
+    outline: none;
+    border-color: #4a90e2;
+}

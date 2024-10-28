@@ -1,0 +1,79 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.link-home {
+    text-decoration: none;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1000px;
+    padding: 15px 20px;
+}
+
+.header h1 {
+    margin: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.icon {
+    margin-left: auto;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.header button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 15px;
+    border: 2px solid white;
+    font-size: 16px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.header button:hover {
+    background-color: white;
+    transition: 0.3s ease-in-out;
+    box-shadow: #cccccc 0 0 5px 0;
+}
+
+.profile-dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    margin-top: 5px;
+}
+
+.dropdown-menu button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: transparent;
+    text-align: left;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}

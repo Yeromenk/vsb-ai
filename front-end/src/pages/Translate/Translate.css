@@ -1,0 +1,33 @@
+.translate {
+    display: flex;
+    height: 100%;
+}
+
+.translate-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: white;
+    align-items: center;
+    justify-content: center;
+}
+
+.translate-container h1 {
+    font-size: 52px;
+    font-weight: 700;
+}
+
+.translate-container p {
+    margin-top: 10px;
+    font-size: 20px;
+}
+
+.words {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    text-align: center;
+}
