@@ -13,7 +13,7 @@ const Welcome = () => {
                 </Link>
             </div>
             <div className='logo'>
-                <img src='../../../public/vsb-logo.jpg' alt='vsb-logo'/>
+                <img src='/vsb-logo.jpg' alt='vsb-logo'/>
             </div>
         </div>
     );

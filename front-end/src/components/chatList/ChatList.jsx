@@ -1,5 +1,5 @@
 import {Link} from "react-router-dom";
-import './ChatList.css';
+import './chatList.css';
 import {Languages, FileText, Text} from 'lucide-react';
 
 const ChatList = () => {

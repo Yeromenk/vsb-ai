@@ -1,9 +1,11 @@
 import 'dotenv/config';
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const express = require('express');
-const authRoutes = require('./routes/auth.js');
-const {connectToDatabase} = require('./prisma/db.js');
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import express from 'express';
+import authRoutes from './routes/auth.js';
+import connectToDatabase from "./prisma/db.js";
+import formatAI from './routes/openAI.js';
+
 
 const app = express();
 const port = 3000;
@@ -12,6 +14,8 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use('/auth', authRoutes);
+app.use('/ai', formatAI)
+
 
 connectToDatabase();
 

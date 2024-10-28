@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import {useState} from 'react';
 import './formatingText.css';
-import { SendHorizontal } from 'lucide-react';
-import {getCompletion} from "../../../../back-end/openAI";
+import {SendHorizontal} from 'lucide-react';
+import axios from "axios";
 
 const FormatingText = () => {
-    const [style, setStyle] = useState('Neutral');
+    const [style, setStyle] = useState('Simple');
     const [tone, setTone] = useState('Formal');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [input, setInput] = useState('');
 
     const handleStyleChange = (newStyle) => {
         setStyle(newStyle);
@@ -18,11 +19,17 @@ const FormatingText = () => {
         setIsDropdownOpen(false);
     };
 
-    const [input, setInput] = useState('');
-
     const handleSend = async () => {
-        const response = await getCompletion(input);
-        console.log(response);
+        try {
+            const response = await axios.post('http://localhost:3000/ai/format', {
+                message: input,
+                style,
+                tone
+            });
+            console.log("AI Response:", response.data.response);
+        } catch (e) {
+            console.error("Error in handleSend:", e);
+        }
     }
 
     return (
@@ -51,13 +58,17 @@ const FormatingText = () => {
                                     <li onClick={() => handleToneChange('Formal')}>Formal</li>
                                     <li onClick={() => handleToneChange('Informal')}>Informal</li>
                                     <li onClick={() => handleToneChange('Friendly')}>Friendly</li>
+                                    <li onClick={() => handleToneChange('Diplomatic')}>Diplomatic</li>
                                 </ul>
                             </div>
                         </div>
                     )}
                 </div>
             </div>
-            <textarea className='text-input' placeholder='Enter your text here...' value={input} onChange={(e) => setInput(e.target.value)}></textarea>
+            <input type='text' className='text-input' placeholder='Enter your text here...' value={input}
+                   onChange={(e) => {
+                       setInput(e.target.value)
+                   }}></input>
         </div>
     );
 };

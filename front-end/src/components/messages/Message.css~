@@ -15,7 +15,7 @@
 .chat {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Add space between messages */
+    gap: 10px; /* Add space between messages */
 }
 
 .ai-message, .user-message {

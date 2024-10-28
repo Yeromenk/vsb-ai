@@ -1,15 +1,16 @@
 import './Translate.css'
 import TranslateText from "../../components/textInput/TranslateText";
+import Message from "../../components/messages/Message";
+import React, {useState} from "react";
 
 const Translate = () => {
+    const [messages, setMessages] = useState([]);
+
     return (
         <div className='translate'>
             <div className="translate-container">
-                <div className="words">
-                    <h1>Translate a text</h1>
-                    <p>Here you can translate a text and get an overview</p>
-                </div>
-                <TranslateText/>
+                <Message messages={messages}/>
+                <TranslateText setMessages={setMessages}/>
             </div>
         </div>
     );

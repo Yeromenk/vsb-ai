@@ -1,10 +1,10 @@
-const {PrismaClient} = require('@prisma/client')
-const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
+import { PrismaClient } from '@prisma/client'
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
 const prisma = new PrismaClient()
 
-const register = async (req, res) => {
+export const register = async (req, res) => {
     try {
         const user = await prisma.user.findFirst({
             where: {
@@ -44,7 +44,7 @@ const register = async (req, res) => {
     }
 }
 
-const login = async (req, res) => {
+export const login = async (req, res) => {
     try {
         const user = await prisma.user.findFirst({
             where: {
@@ -80,7 +80,7 @@ const login = async (req, res) => {
     }
 }
 
-const logout = (req, res) => {
+export const logout = (req, res) => {
     try {
         res.clearCookie('access_token', {
             sameSite: 'None',
@@ -93,4 +93,3 @@ const logout = (req, res) => {
     }
 }
 
-module.exports = { register, login, logout }

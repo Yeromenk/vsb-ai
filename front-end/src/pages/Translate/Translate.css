@@ -1,6 +1,7 @@
 .translate {
     display: flex;
-    height: 100%;
+    flex-direction: column;
+    height: 80vh; /* Ensure it takes the full viewport height */
 }
 
 .translate-container {
@@ -10,7 +11,8 @@
     padding: 20px;
     background-color: white;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start; /* Align items at the start */
+    overflow-y: auto; /* Allow scrolling */
 }
 
 .translate-container h1 {
