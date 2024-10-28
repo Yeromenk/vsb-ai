@@ -3,7 +3,7 @@ import OpenAI from 'openai';
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
-
+//
 export async function getCompletion(message, style, tone) {
     try {
         const prompt = `Please rewrite the following text in a ${style} style and a ${tone} tone:\n\n"${message}"`;
