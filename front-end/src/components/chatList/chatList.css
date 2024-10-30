@@ -8,8 +8,12 @@
     margin: 0;
     gap: 20px;
     background-color: aliceblue;
+    transition: transform 0.3s ease;
 }
 
+.menu-button {
+    display: none;
+}
 
 .chatList h1 {
     margin: 0;
@@ -23,12 +27,11 @@
     align-items: center;
     text-decoration: none;
     color: #423f3f;
-    font-size: 18px;
+    font-size: 16px;
     padding: 10px;
     background-color: aliceblue;
     gap: 10px;
 }
-
 
 .chatList a:hover {
     border-radius: 16px;
@@ -70,4 +73,42 @@
     padding: 10px;
     margin-top: auto;
     border-top: 1px solid #cccccc;
+}
+
+@media (max-width: 768px) {
+    .menu-button {
+        display: block;
+        background: none;
+        border: none;
+        cursor: pointer;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 1001;
+    }
+
+    .chatList {
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translateX(-100%);
+        z-index: 1000;
+    }
+
+    .chatList.sidebar-open {
+        transform: translateX(0);
+    }
+}
+
+@media (min-width: 769px) {
+    .chatList {
+        width: 20%;
+        position: static;
+        transform: translateX(0);
+    }
+
+    .menu-button {
+        display: none;
+    }
 }

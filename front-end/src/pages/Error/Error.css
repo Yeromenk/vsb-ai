@@ -1,0 +1,41 @@
+.error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 90vh;
+    text-align: center;
+    background-color: white;
+}
+
+.error h1 {
+    font-size: 5rem;
+    margin: 0 0 15px;
+}
+
+.error h2 {
+    font-size: 1.5rem;
+    margin: 0 0 15px;
+}
+
+.error button {
+    font-size: 1.5rem;
+    background-color: aliceblue;
+    border: 2px solid aliceblue;
+    border-radius: 15px;
+    padding: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    gap: 10px;
+    min-width: 180px;
+    transition: 0.3s ease-in-out;
+}
+
+.error button:hover {
+    box-shadow: #cccccc 0 0 5px 0;
+}
+
+.error a {
+    font-size: 1.5rem;
+    text-decoration: none;
+}

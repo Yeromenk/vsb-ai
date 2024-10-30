@@ -1,22 +1,23 @@
-import {useState} from 'react';
+import { useState } from 'react';
 import './formatingText.css';
-import {SendHorizontal} from 'lucide-react';
-import axios from "axios";
+import { SendHorizontal } from 'lucide-react';
+import axios from 'axios';
 
 const FormatingText = () => {
     const [style, setStyle] = useState('Simple');
     const [tone, setTone] = useState('Formal');
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isStyleDropdownOpen, setIsStyleDropdownOpen] = useState(false);
+    const [isToneDropdownOpen, setIsToneDropdownOpen] = useState(false);
     const [input, setInput] = useState('');
 
     const handleStyleChange = (newStyle) => {
         setStyle(newStyle);
-        setIsDropdownOpen(false);
+        setIsStyleDropdownOpen(false);
     };
 
     const handleToneChange = (newTone) => {
         setTone(newTone);
-        setIsDropdownOpen(false);
+        setIsToneDropdownOpen(false);
     };
 
     const handleSend = async () => {
@@ -30,19 +31,16 @@ const FormatingText = () => {
         } catch (e) {
             console.error("Error in handleSend:", e);
         }
-    }
+    };
 
     return (
         <div className='formating-text-container'>
             <div className='text-options'>
                 <div className='dropdown'>
-                    <button className='dropdown-toggle' onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-                        <b>Style:</b> {style} | <b>Tone:</b> {tone}
+                    <button className='dropdown-toggle' onClick={() => setIsStyleDropdownOpen(!isStyleDropdownOpen)}>
+                        <b>Style:</b> {style}
                     </button>
-                    <button className='submit-button' onClick={handleSend}>
-                        <SendHorizontal className='button-icon'/>
-                    </button>
-                    {isDropdownOpen && (
+                    {isStyleDropdownOpen && (
                         <div className='dropdown-content'>
                             <div className='dropdown-section'>
                                 <strong>Style</strong>
@@ -52,23 +50,36 @@ const FormatingText = () => {
                                     <li onClick={() => handleStyleChange('Technical')}>Technical</li>
                                 </ul>
                             </div>
+                        </div>
+                    )}
+                </div>
+                <div className='dropdown'>
+                    <button className='dropdown-toggle' onClick={() => setIsToneDropdownOpen(!isToneDropdownOpen)}>
+                        <b>Tone:</b> {tone}
+                    </button>
+                    {isToneDropdownOpen && (
+                        <div className='dropdown-content'>
                             <div className='dropdown-section'>
                                 <strong>Tone</strong>
                                 <ul>
                                     <li onClick={() => handleToneChange('Formal')}>Formal</li>
                                     <li onClick={() => handleToneChange('Informal')}>Informal</li>
-                                    <li onClick={() => handleToneChange('Friendly')}>Friendly</li>
                                     <li onClick={() => handleToneChange('Diplomatic')}>Diplomatic</li>
                                 </ul>
                             </div>
                         </div>
                     )}
                 </div>
+                <button className='submit-button' onClick={handleSend}>
+                    <SendHorizontal className='button-icon' />
+                </button>
             </div>
-            <input type='text' className='text-input' placeholder='Enter your text here...' value={input}
-                   onChange={(e) => {
-                       setInput(e.target.value)
-                   }}></input>
+            <textarea
+                className='text-input'
+                placeholder='Enter your text here...'
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+            />
         </div>
     );
 };

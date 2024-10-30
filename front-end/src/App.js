@@ -8,6 +8,8 @@ import Summarize from "./pages/Summarize/Summarize.jsx";
 import Format from "./pages/Formate/Format.jsx";
 import Dashboard from "./layout/Dashboard/Dashboard.jsx";
 import Translate from "./pages/Translate/Translate.jsx";
+import Error from "./pages/Error/Error.jsx";
+import {Toaster} from "react-hot-toast";
 
 
 const App = () => {
@@ -22,6 +24,7 @@ const Layout = () => {
     return (
         <>
             <Root/>
+            <Toaster/>
             <Outlet/>
         </>
     )
@@ -31,6 +34,7 @@ const router = createBrowserRouter([
     {
         path: '/',
         element: <Layout/>,
+        errorElement: <Error/>,
 
         children: [
             {
@@ -62,7 +66,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: '/translate',
-                        element: <Translate />
+                        element: <Translate/>
                     }
                 ]
             }

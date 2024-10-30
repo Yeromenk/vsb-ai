@@ -1,7 +1,7 @@
 .translate {
     display: flex;
-    flex-direction: column;
-    height: 80vh; /* Ensure it takes the full viewport height */
+    height: 100%;
+    justify-content: center;
 }
 
 .translate-container {

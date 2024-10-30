@@ -1,9 +1,9 @@
 .chat-layout {
     display: flex;
+    height: 90lvh;
 }
 
 .chat-content {
     flex: 1;
-    padding: 20px;
     overflow-y: auto;
 }

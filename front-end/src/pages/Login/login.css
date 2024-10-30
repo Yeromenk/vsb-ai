@@ -72,3 +72,29 @@
     max-width: 400px;
     margin-left: 10px;
 }
+
+@media (max-width: 768px) {
+    .login {
+        flex-direction: column;
+        height: auto;
+        gap: 40px;
+        padding: 20px;
+    }
+
+    .form-login h1 {
+        font-size: 36px;
+    }
+
+    .form-login form input {
+        padding: 10px;
+    }
+
+    .form-login form button {
+        padding: 12px 24px;
+        font-size: 16px;
+    }
+
+    .logo img {
+        display: none;
+    }
+}

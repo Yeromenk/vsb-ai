@@ -1,6 +1,7 @@
 .format-container {
     display: flex;
     height: 100%;
+    justify-content: center;
 }
 
 .format {
@@ -16,7 +17,6 @@
 .format h1 {
     font-size: 52px;
     font-weight: 700;
-    margin-bottom: 10px;
 }
 
 .format p {

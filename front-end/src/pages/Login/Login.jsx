@@ -1,9 +1,9 @@
 import './login.css';
-import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
-import { AuthContext } from "../../context/AuthContext.jsx";
-import { toast } from "react-hot-toast";
-import { Link } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
+import {useContext, useState} from "react";
+import {AuthContext} from "../../context/AuthContext.js";
+import {toast} from "react-hot-toast";
+import {Link} from "react-router-dom";
 
 const Login = () => {
     const [inputs, setInputs] = useState({
@@ -12,23 +12,27 @@ const Login = () => {
     });
 
     const navigate = useNavigate();
-    const [setErrors] = useState(null);
-    const { login } = useContext(AuthContext);
+    const {login} = useContext(AuthContext);
 
     const handleChange = (e) => {
-        setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+        setInputs((prev) => ({...prev, [e.target.name]: e.target.value}));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!inputs.email || !inputs.password) {
+            toast.error('Please fill in all fields');
+            return;
+        }
+
         try {
             await login(inputs);
-            navigate('/home');
             toast.success('Login successful');
+            navigate('/home');
         } catch (e) {
             if (e.response) {
                 toast.error(e.response.data.message);
-                setErrors(e.response.data);
             } else {
                 console.error('Network error or other error occurred', e);
             }
@@ -54,13 +58,14 @@ const Login = () => {
                         name='password'
                         onChange={handleChange}
                     />
+
                     <button type='submit' onClick={handleSubmit}>Login</button>
                     <p>Don&#39;t have an account? <Link to='/register'>Register</Link></p>
                 </form>
             </div>
 
             <div className='logo'>
-                <img src='/vsb-logo.jpg' alt='vsb-logo' />
+                <img src='/vsb-logo.jpg' alt='vsb-logo'/>
             </div>
         </div>
     );

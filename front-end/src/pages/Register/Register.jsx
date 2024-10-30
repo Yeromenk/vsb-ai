@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useContext } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { AuthContext } from "../../context/AuthContext.jsx";
+import { AuthContext } from "../../context/AuthContext.js";
 
 const Register = () => {
     const [inputs, setInputs] = useState({
@@ -11,7 +11,6 @@ const Register = () => {
         password: ''
     });
 
-    const [setErrors] = useState(null);
     const navigate = useNavigate();
     const { login } = useContext(AuthContext);
 
@@ -21,6 +20,12 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!inputs.username || !inputs.email || !inputs.password) {
+            toast.error('Please fill in all fields');
+            return;
+        }
+
         try {
             const response = await axios.post('http://localhost:3000/auth/register', inputs);
             localStorage.setItem('token', response.data.token);
@@ -30,7 +35,6 @@ const Register = () => {
         } catch (e) {
             if (e.response) {
                 toast.error(e.response.data.message);
-                setErrors(e.response.data);
             } else {
                 toast.error(e.message);
                 console.error('Network error or other error occurred', e);

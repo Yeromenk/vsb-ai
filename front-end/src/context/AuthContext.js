@@ -1,10 +1,9 @@
 import axios from 'axios';
-import { createContext, useEffect, useState } from 'react';
+import {createContext, useEffect, useState} from 'react';
 
 export const AuthContext = createContext(undefined);
 
-// eslint-disable-next-line react/prop-types
-export const AuthContextProvider = ({ children }) => {
+export const AuthContextProvider = ({children}) => {
     const [currentUser, setCurrentUser] = useState(
         JSON.parse(localStorage.getItem('user')) || null
     );
@@ -13,11 +12,15 @@ export const AuthContextProvider = ({ children }) => {
         try {
             const res = await axios.post(
                 'http://localhost:3000/auth/login',
-                inputs
+                inputs,
+                {
+                    withCredentials: true, // !!!
+                }
             );
             setCurrentUser(res.data);
         } catch (e) {
             console.log(e);
+            throw e;
         }
     };
 
@@ -36,7 +39,7 @@ export const AuthContextProvider = ({ children }) => {
     }, [currentUser]);
 
     return (
-        <AuthContext.Provider value={{ currentUser, login, logout }}>
+        <AuthContext.Provider value={{currentUser, login, logout}}>
             {children}
         </AuthContext.Provider>
     );
