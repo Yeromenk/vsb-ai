@@ -1,13 +1,13 @@
 import './Root.css';
-import { User, LogOut } from 'lucide-react';
-import { Link, useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
-import { AuthContext } from "../../context/AuthContext.js";
+import {User, LogOut} from 'lucide-react';
+import {Link, useNavigate} from "react-router-dom";
+import {useContext, useState} from "react";
+import {AuthContext} from "../../context/AuthContext.js";
 import toast from "react-hot-toast";
 
 const Root = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const { currentUser, logout } = useContext(AuthContext);
+    const {currentUser, logout} = useContext(AuthContext);
     const navigate = useNavigate();
 
     const toggleDropdown = () => {
@@ -28,11 +28,11 @@ const Root = () => {
                         <Link to='/home' className='link-home'><h1>VSB AI</h1></Link>
                         <div className='profile-dropdown'>
                             <button onClick={toggleDropdown}>
-                                <User className='icon' />Profile
+                                <User className='icon'/>Profile
                             </button>
                             {isDropdownOpen && (
                                 <div className='dropdown-menu'>
-                                    <button onClick={handleLogout}><LogOut className='icon' /> Logout</button>
+                                    <button onClick={handleLogout}><LogOut className='icon'/> Logout</button>
                                 </div>
                             )}
                         </div>

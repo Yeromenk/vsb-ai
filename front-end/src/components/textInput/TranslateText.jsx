@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import './translateText.css';
 import { ChevronDown, ArrowRight } from 'lucide-react';
 import axios from "axios";
+import {AuthContext} from "../../context/AuthContext";
+import {useContext} from "react";
+
 
 const TranslateText = ({ setMessages }) => {
     const [sourceLanguage, setSourceLanguage] = useState('English');
@@ -9,6 +12,9 @@ const TranslateText = ({ setMessages }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [input, setInput] = useState('');
+
+    const {currentUser} = useContext(AuthContext);
+    const userId = currentUser.id;
 
     const handleLanguageChange = (newLanguage, type) => {
         if (type === 'source') {
@@ -36,7 +42,8 @@ const TranslateText = ({ setMessages }) => {
             const response = await axios.post('http://localhost:3000/ai/translate', {
                 message: input,
                 sourceLanguage,
-                targetLanguage
+                targetLanguage,
+                userId
             });
             const aiMessage = { type: 'ai', text: response.data.response };
             setMessages((prevMessages) => [...prevMessages, aiMessage]);

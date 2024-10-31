@@ -1,9 +1,9 @@
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
-    apiKey: "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"
+    apiKey: process.env.OPENAI_API_KEY,
 });
-//
+
 export async function getCompletion(message, style, tone) {
     try {
         const prompt = `Please rewrite the following text in a ${style} style and a ${tone} tone:\n\n"${message}"`;
