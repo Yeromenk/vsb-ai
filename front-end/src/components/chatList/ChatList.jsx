@@ -23,8 +23,7 @@ const ChatList = () => {
             params: {
                 userId: currentUser.id
             }
-        }).then(res => res.data
-        ),
+        }).then(res => res.data),
     })
 
     const chats = data?.response || [];
@@ -40,9 +39,18 @@ const ChatList = () => {
 
             <h1>Chat List</h1>
             <div className='list'>
-                {isPending ? "Loading..." : error ? "An error occurred" : chats?.map((chat) => (
-                    <Link to={`/chat/${chat.id}`} key={chat.id}>{chat.title}</Link>
-                ))}
+                {isPending
+                    ? "Loading..."
+                    : error
+                        ? "An error occurred"
+                        : chats.length === 0 ?
+                            <p>No chats yet</p>
+                            : chats?.map((chat) => (
+                                <Link to={`/chat/${chat.id}`}
+                                      key={chat.id}>
+                                    {chat.title}
+                                </Link>
+                            ))}
             </div>
 
             <div className='footer'>

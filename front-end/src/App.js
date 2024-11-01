@@ -11,7 +11,6 @@ import Translate from "./pages/Translate/Translate.jsx";
 import Error from "./pages/Error/Error.jsx";
 import {Toaster} from "react-hot-toast";
 
-
 const App = () => {
     return (
         <div>
@@ -67,6 +66,10 @@ const router = createBrowserRouter([
                     {
                         path: '/translate',
                         element: <Translate/>
+                    },
+                    {
+                        path: '/chat/:id',
+                        element: <Translate />
                     }
                 ]
             }

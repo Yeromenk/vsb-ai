@@ -171,4 +171,28 @@ router.get('/userChats', verifyToken, async (req, res) => {
     }
 })
 
+router.get('/chat/:id', verifyToken, async (req, res) => {
+    const {userId} = req.query;
+
+    try {
+        const chat = await prisma.userChats.findFirst({
+            where: {
+                id: userId,
+            },
+            include: {
+                chats: true,
+            },
+        });
+
+        if (!chat) {
+            return res.status(404).json({error: 'User chats not found'});
+        }
+
+        res.status(200).json({response: chat});
+    } catch (error) {
+        console.error("Error in chats:", error);
+        res.status(500).json({error: "Error in fetching chats"});
+    }
+})
+
 export default router;
