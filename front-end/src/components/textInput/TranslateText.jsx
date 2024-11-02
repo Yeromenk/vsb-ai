@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './translateText.css';
-import { ChevronDown, ArrowRight } from 'lucide-react';
+import {ChevronDown, ArrowRight} from 'lucide-react';
 import axios from "axios";
 import {AuthContext} from "../../context/AuthContext";
 import {useContext} from "react";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {useNavigate} from "react-router-dom";
 
 
-const TranslateText = ({ setMessages }) => {
+const TranslateText = ({setMessages}) => {
     const [sourceLanguage, setSourceLanguage] = useState('English');
     const [targetLanguage, setTargetLanguage] = useState('Spanish');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -15,6 +17,7 @@ const TranslateText = ({ setMessages }) => {
 
     const {currentUser} = useContext(AuthContext);
     const userId = currentUser.id;
+    const navigate = useNavigate();
 
     const handleLanguageChange = (newLanguage, type) => {
         if (type === 'source') {
@@ -26,32 +29,44 @@ const TranslateText = ({ setMessages }) => {
         setActiveDropdown(null);
     };
 
+    // NEW
+    const queryClient = useQueryClient();
+    const mutation = useMutation({
+        mutationFn: async (text) => {
+            const response = await axios.post('http://localhost:3000/ai/translate', {
+                message: text,
+                sourceLanguage,
+                targetLanguage,
+                userId
+            });
+            return response.data.response;
+        },
+        onSuccess: (id) => {
+            queryClient.invalidateQueries({queryKey: ['ChatList']});
+            navigate(`/chat/${id}`);
+        },
+        onError: (error) => {
+            console.error("Error in handleSend:", error);
+            const errorMessage = {type: 'ai', text: "Error in translation"};
+            setMessages((prevMessages) => [...prevMessages, errorMessage]);
+        }
+
+    })
+
     const toggleDropdown = (type) => {
         setIsDropdownOpen((prev) => !prev);
         setActiveDropdown((prev) => (prev === type ? null : type));
     };
 
-    const handleSend = async () => {
+    const handleSend = async (event) => {
+        event.preventDefault();
         if (input.trim() === '') return;
 
         // Добавляем сообщение пользователя в messages
-        const userMessage = { type: 'user', text: input };
+        const userMessage = {type: 'user', text: input};
         setMessages((prevMessages) => [...prevMessages, userMessage]);
 
-        try {
-            const response = await axios.post('http://localhost:3000/ai/translate', {
-                message: input,
-                sourceLanguage,
-                targetLanguage,
-                userId
-            });
-            const aiMessage = { type: 'ai', text: response.data.response };
-            setMessages((prevMessages) => [...prevMessages, aiMessage]);
-        } catch (e) {
-            console.error("Error in handleSend:", e);
-            const errorMessage = { type: 'ai', text: "Error in translation" };
-            setMessages((prevMessages) => [...prevMessages, errorMessage]);
-        }
+        mutation.mutate(input)
 
         setInput('');
     };

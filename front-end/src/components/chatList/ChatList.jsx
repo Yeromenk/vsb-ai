@@ -5,6 +5,8 @@ import {useContext, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import axios from "axios";
 import {AuthContext} from "../../context/AuthContext";
+import Skeleton from "react-loading-skeleton";
+import 'react-loading-skeleton/dist/skeleton.css'
 
 
 const ChatList = () => {
@@ -17,7 +19,7 @@ const ChatList = () => {
     const {currentUser} = useContext(AuthContext);
 
     const {isPending, data, error} = useQuery({
-        queryKey: ['repoData'],
+        queryKey: ['ChatList'],
         queryFn: () => axios.get('http://localhost:3000/ai/userChats', {
             withCredentials: true,
             params: {
@@ -40,7 +42,7 @@ const ChatList = () => {
             <h1>Chat List</h1>
             <div className='list'>
                 {isPending
-                    ? "Loading..."
+                    ? <Skeleton count={5} style={{marginBottom: '20px', padding: '10px'}}/>
                     : error
                         ? "An error occurred"
                         : chats.length === 0 ?

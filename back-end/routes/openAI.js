@@ -39,7 +39,7 @@ router.post('/format', async (req, res) => {
 
         if (!userChats) {
             // Если userChats не существует, создаем новую запись
-            userChats = await prisma.userChats.create({
+            await prisma.userChats.create({
                 data: {
                     userId: userId,
                     chats: {
@@ -83,7 +83,7 @@ router.post('/format', async (req, res) => {
 });
 
 router.post('/translate', async (req, res) => {
-    const { message, sourceLanguage, targetLanguage, userId } = req.body;
+    const {message, sourceLanguage, targetLanguage, userId} = req.body;
     try {
         const newChat = await prisma.chat.create({
             data: {
@@ -111,7 +111,7 @@ router.post('/translate', async (req, res) => {
         });
 
         if (!userChats) {
-            // If doesn't exist, create a new one and add the chat in the chats array
+            // If it doesn't exist, create a new one and add the chat in the chats array
             await prisma.userChats.create({
                 data: {
                     userId: userId,
@@ -143,7 +143,7 @@ router.post('/translate', async (req, res) => {
         // res.status(201).json({ response: "Translation saved successfully" });
     } catch (error) {
         console.error("Error in /translate:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        res.status(500).json({error: "Internal Server Error"});
     }
 });
 
@@ -192,6 +192,42 @@ router.get('/chat/:id', verifyToken, async (req, res) => {
     } catch (error) {
         console.error("Error in chats:", error);
         res.status(500).json({error: "Error in fetching chats"});
+    }
+})
+
+
+router.put('/chat/:id', verifyToken, async (req, res) => {
+    const {userId} = req.query;
+    const {question, answer} = req.body;
+
+    try {
+        const updatedChat = await prisma.chat.update({
+            where: {
+                id: userId,
+            },
+            data: {
+                history: {
+                    create: [
+                        {
+                            role: 'user',
+                            text: question,
+                        },
+                        {
+                            role: 'ai',
+                            text: answer,
+                        },
+                    ],
+                },
+            },
+            include: {
+                history: true,
+            },
+        });
+
+        res.status(200).json({response: updatedChat});
+    } catch (error) {
+        console.error("Error in chats:", error);
+        res.status(500).json({error: "Error adding chat"});
     }
 })
 
