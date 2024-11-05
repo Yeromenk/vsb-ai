@@ -10,6 +10,7 @@ import Dashboard from "./layout/Dashboard/Dashboard.jsx";
 import Translate from "./pages/Translate/Translate.jsx";
 import Error from "./pages/Error/Error.jsx";
 import {Toaster} from "react-hot-toast";
+import Message from "./components/messages/Message";
 
 const App = () => {
     return (
@@ -69,7 +70,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: '/chat/:id',
-                        element: <Translate />
+                        element: <Message />
                     }
                 ]
             }

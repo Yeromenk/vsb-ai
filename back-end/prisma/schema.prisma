@@ -24,7 +24,7 @@ model UserChats {
 }
 
 model Chat {
-  id          Int        @id @default(autoincrement()) // Primary key
+  id          String     @id @default(cuid()) // Primary key
   userId      String // User ID (для связки с конкретным пользователем)
   title       String // Название чата
   createdAt   DateTime   @default(now()) // Время создания чата
@@ -35,10 +35,9 @@ model Chat {
 
 model Message {
   id        Int      @id @default(autoincrement()) // Primary key
-  chatId    Int // Foreign key для связи с моделью Chat
+  chatId    String // Foreign key для связи с моделью Chat
   role      Role // Роль (user или model)
   text      String // Текст сообщения
-  img       String? // Опциональное изображение
   createdAt DateTime @default(now()) // Время создания сообщения
 
   chat Chat @relation(fields: [chatId], references: [id]) // Связь с моделью Chat

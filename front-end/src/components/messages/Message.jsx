@@ -1,31 +1,29 @@
-import React, {useEffect, useRef} from 'react';
+import React, { useContext, useRef } from 'react';
 import './Message.css';
-import {useLocation} from "react-router-dom";
-import {useQuery} from "@tanstack/react-query";
+import { useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import TranslateText from "../textInput/TranslateText";
+import { AuthContext } from "../../context/AuthContext";
 
-const Message = ({messages}) => {
+const Message = () => {
+    const { currentUser } = useContext(AuthContext);
+    const firstLetter = currentUser?.username.charAt(0).toUpperCase();
+
     const endRef = useRef(null);
-
-    useEffect(() => {
-        if (messages.length > 0) {
-            endRef.current.scrollIntoView({behavior: "smooth"});
-        }
-    }, [messages]);
-
     const path = useLocation().pathname;
-    const chatId = path.split('/').pop();
+    const chatId = path.split("/").pop();
 
-    const {isPending, data, error} = useQuery({
-        queryKey: ['chatData', chatId],
+    const { isPending, data, error } = useQuery({
+        queryKey: ['chat', chatId],
         queryFn: () =>
             axios.get(`http://localhost:3000/ai/chat/${chatId}`, {
                 withCredentials: true,
                 params: {
                     chatId
                 }
-            }).then(res => res.data),
-    })
+            }).then(res => res.data.response),
+    });
 
     return (
         <div className='message'>
@@ -35,29 +33,27 @@ const Message = ({messages}) => {
                         ? "Loading..."
                         : error
                             ? "An error occurred"
-                            : data?.response?.messages?.map((message, index) => (
-                                <div key={index} className={`message ${message.type}-message`}>
-                                    {message.text}
+                            : data?.history?.map((message, index) => (
+                                <div key={index} className="message-container">
+                                    {message.role === 'model' && (
+                                        <div className="avatar model-avatar">
+                                            <img src='/vsb-logo.jpg' alt='vsb-logo' />
+                                        </div>
+                                    )}
+                                    <div className={`message ${message.role}-message`}>
+                                        {message.text}
+                                    </div>
+                                    {message.role === 'user' && (
+                                        <div className="avatar user-avatar">
+                                            {firstLetter}
+                                        </div>
+                                    )}
                                 </div>
                             ))}
 
-                    {/*{messages.length === 0 ? (*/}
-                    {/*        <>*/}
-                    {/*            <div className="words">*/}
-                    {/*                <h1>Translate a text</h1>*/}
-                    {/*                <p>Here you can translate a text and get an overview</p>*/}
-                    {/*            </div>*/}
-                    {/*        </>*/}
-                    {/*    ) : (*/}
-                    {/*        messages.map((message, index) => (*/}
-                    {/*                <div key={index} className={`message ${message.type}-message`}>*/}
-                    {/*                    {message.text}*/}
-                    {/*                </div>*/}
-                    {/*            ))*/}
-                    {/*    )}*/}
-
-                    <div ref={endRef}/>
+                    <div ref={endRef} />
                 </div>
+                <TranslateText />
             </div>
         </div>
     );

@@ -5,6 +5,7 @@ import {PrismaClient} from '@prisma/client';
 import verifyToken from "../controllers/auth.js";
 import {getCompletion} from "../lib/openAI.js";
 import {getTranslation} from "../lib/translateAI.js";
+import {parse} from "dotenv";
 
 const prisma = new PrismaClient();
 
@@ -104,7 +105,13 @@ router.post('/translate', async (req, res) => {
         });
 
         // Check if the userChats exists
-        let userChats = await prisma.userChats.findFirst({
+        // let userChats = await prisma.userChats.findFirst({
+        //     where: {
+        //         userId: userId,
+        //     },
+        // });
+
+        let userChats = await prisma.userChats.findUnique({
             where: {
                 userId: userId,
             },
@@ -139,7 +146,7 @@ router.post('/translate', async (req, res) => {
         }
 
         // Отправляем успешный ответ
-        res.status(201).send({response: newChat.id});
+        res.status(201).send({response: newChat});
         // res.status(201).json({ response: "Translation saved successfully" });
     } catch (error) {
         console.error("Error in /translate:", error);
@@ -149,7 +156,8 @@ router.post('/translate', async (req, res) => {
 
 
 router.get('/userChats', verifyToken, async (req, res) => {
-    const {userId} = req.query;
+    const userId = req.user.id;
+
     try {
         const userChats = await prisma.userChats.findFirst({
             where: {
@@ -172,15 +180,22 @@ router.get('/userChats', verifyToken, async (req, res) => {
 })
 
 router.get('/chat/:id', verifyToken, async (req, res) => {
-    const {userId} = req.query;
+    const userId = req.user.id;
+    const chatId = req.params.id
+
+    if(!chatId) {
+        console.error("Invalid chat ID", chatId);
+        return res.status(400).json({error: "Invalid chat ID"});
+    }
 
     try {
-        const chat = await prisma.userChats.findFirst({
+        const chat = await prisma.chat.findFirst({
             where: {
-                id: userId,
+                id: chatId, // problem here!!!
+                userId: userId,
             },
             include: {
-                chats: true,
+                history: true,
             },
         });
 
@@ -197,13 +212,14 @@ router.get('/chat/:id', verifyToken, async (req, res) => {
 
 
 router.put('/chat/:id', verifyToken, async (req, res) => {
-    const {userId} = req.query;
+    const userId = req.user.userId;
+    const chatId = req.params.id;
     const {question, answer} = req.body;
 
     try {
         const updatedChat = await prisma.chat.update({
             where: {
-                id: userId,
+                id: chatId, userId
             },
             data: {
                 history: {
@@ -213,7 +229,7 @@ router.put('/chat/:id', verifyToken, async (req, res) => {
                             text: question,
                         },
                         {
-                            role: 'ai',
+                            role: 'model',
                             text: answer,
                         },
                     ],
