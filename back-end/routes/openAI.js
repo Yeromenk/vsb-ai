@@ -3,93 +3,18 @@ import express from 'express';
 const router = express.Router();
 import {PrismaClient} from '@prisma/client';
 import verifyToken from "../controllers/auth.js";
-import {getCompletion} from "../lib/openAI.js";
 import {getTranslation} from "../lib/translateAI.js";
-import {parse} from "dotenv";
 
 const prisma = new PrismaClient();
 
-router.post('/format', async (req, res) => {
-    const {message, style, tone, userId} = req.body;
-    try {
-        // Создаем новый чат
-        const newChat = await prisma.chat.create({
-            data: {
-                userId: userId,
-                title: message.substring(0, 20),
-                history: {
-                    create: [
-                        {
-                            role: 'user',
-                            text: message,
-                        },
-                    ]
-                }
-            },
-            include: {
-                history: true,
-            }
-        });
+router.post('/chats', async (req, res) => {
+    const {message, userId} = req.body;
 
-        // Находим или создаем userChats
-        let userChats = await prisma.userChats.findUnique({
-            where: {
-                userId: userId,
-            }
-        });
-
-        if (!userChats) {
-            // Если userChats не существует, создаем новую запись
-            await prisma.userChats.create({
-                data: {
-                    userId: userId,
-                    chats: {
-                        connect: {id: newChat.id}
-                    }
-                }
-            });
-        } else {
-            // Обновляем userChats, добавляя новый чат
-            await prisma.userChats.update({
-                where: {
-                    userId: userId,
-                },
-                data: {
-                    chats: {
-                        connect: {id: newChat.id}
-                    }
-                }
-            });
-        }
-
-        // Отправляем JSON-ответ с ID нового чата
-        res.status(201).json({response: newChat.id});
-
-    } catch (error) {
-        console.error("Error in handleSend:", error);
-        res.status(500).json({error: "Internal Server Error"});
-    }
-
-    /*
-    const {message, style, tone} = req.body;
-    try {
-        const response = await getCompletion(message, style, tone);
-        res.json({response});
-    } catch (error) {
-        console.error("Error in handleSend:", error);
-        res.status(500).json({error: "Internal Server Error"});
-    }
-
-     */
-});
-
-router.post('/translate', async (req, res) => {
-    const {message, sourceLanguage, targetLanguage, userId} = req.body;
     try {
         const newChat = await prisma.chat.create({
             data: {
                 userId: userId,
-                title: message.substring(0, 40), // Set the title to the first 40 characters of the message
+                title: message.substring(0, 40),
                 history: {
                     create: [
                         {
@@ -104,13 +29,6 @@ router.post('/translate', async (req, res) => {
             },
         });
 
-        // Check if the userChats exists
-        // let userChats = await prisma.userChats.findFirst({
-        //     where: {
-        //         userId: userId,
-        //     },
-        // });
-
         let userChats = await prisma.userChats.findUnique({
             where: {
                 userId: userId,
@@ -118,7 +36,6 @@ router.post('/translate', async (req, res) => {
         });
 
         if (!userChats) {
-            // If it doesn't exist, create a new one and add the chat in the chats array
             await prisma.userChats.create({
                 data: {
                     userId: userId,
@@ -130,7 +47,6 @@ router.post('/translate', async (req, res) => {
                 },
             });
         } else {
-            // If exists, push the chat to the existing array
             await prisma.userChats.update({
                 where: {
                     id: userChats.id,
@@ -145,9 +61,7 @@ router.post('/translate', async (req, res) => {
             });
         }
 
-        // Отправляем успешный ответ
         res.status(201).send({response: newChat});
-        // res.status(201).json({ response: "Translation saved successfully" });
     } catch (error) {
         console.error("Error in /translate:", error);
         res.status(500).json({error: "Internal Server Error"});
@@ -183,15 +97,10 @@ router.get('/chat/:id', verifyToken, async (req, res) => {
     const userId = req.user.id;
     const chatId = req.params.id
 
-    if(!chatId) {
-        console.error("Invalid chat ID", chatId);
-        return res.status(400).json({error: "Invalid chat ID"});
-    }
-
     try {
         const chat = await prisma.chat.findFirst({
             where: {
-                id: chatId, // problem here!!!
+                id: chatId,
                 userId: userId,
             },
             include: {
@@ -212,25 +121,27 @@ router.get('/chat/:id', verifyToken, async (req, res) => {
 
 
 router.put('/chat/:id', verifyToken, async (req, res) => {
-    const userId = req.user.userId;
-    const chatId = req.params.id;
-    const {question, answer} = req.body;
+    const userId = req.user.id;
+    const chatId = req.params.id
+    const {message, sourceLanguage, targetLanguage} = req.body;
+    const translatedText = await getTranslation(message, sourceLanguage, targetLanguage);
 
     try {
         const updatedChat = await prisma.chat.update({
             where: {
-                id: chatId, userId
+                id: chatId,
+                userId: userId,
             },
             data: {
                 history: {
                     create: [
                         {
                             role: 'user',
-                            text: question,
+                            text: message,
                         },
                         {
                             role: 'model',
-                            text: answer,
+                            text: translatedText,
                         },
                     ],
                 },
@@ -244,6 +155,17 @@ router.put('/chat/:id', verifyToken, async (req, res) => {
     } catch (error) {
         console.error("Error in chats:", error);
         res.status(500).json({error: "Error adding chat"});
+    }
+})
+
+router.post('/translate', async (req, res) => {
+    const {message, sourceLanguage, targetLanguage} = req.body;
+    try {
+        const translatedText = await getTranslation(message, sourceLanguage, targetLanguage);
+        res.status(200).json({translatedText});
+    } catch (error) {
+        console.error("Error in /translate:", error);
+        res.status(500).json({error: "Internal Server Error"});
     }
 })
 

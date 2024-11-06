@@ -1,20 +1,149 @@
-import './Translate.css'
-import TranslateText from "../../components/textInput/TranslateText";
-import Message from "../../components/messages/Message";
-import React, {useState} from "react";
+import React, {useEffect, useState} from 'react';
+import './Translate.css';
+import {ChevronDown, ArrowRight} from 'lucide-react';
+import axios from "axios";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 
-const Translate = () => {
-    const [messages, setMessages] = useState([]);
+const Translate = ({data}) => {
+    const [sourceLanguage, setSourceLanguage] = useState('English');
+    const [targetLanguage, setTargetLanguage] = useState('Spanish');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [activeDropdown, setActiveDropdown] = useState(null);
+    const [input, setInput] = useState('');
+    const [messages, setMessages] = useState("");
+    const [response, setResponse] = useState("");
+
+    const handleLanguageChange = (newLanguage, type) => {
+        if (type === 'source') {
+            setSourceLanguage(newLanguage);
+        } else {
+            setTargetLanguage(newLanguage);
+        }
+        setIsDropdownOpen(false);
+        setActiveDropdown(null);
+    };
+
+    const queryClient = useQueryClient();
+    const mutation = useMutation({
+        mutationFn: () => {
+            return axios.put(`http://localhost:3000/ai/chat/${data.id}`, {
+                message: messages.length ? messages : undefined,
+                sourceLanguage,
+                targetLanguage,
+            }, {
+                withCredentials: true,
+            }).then((res) => res.data.response);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['chat', data.id]}).then(() => {
+                setMessages("");
+                setResponse("");
+                setInput('');
+            });
+        },
+        onError: (error) => {
+            console.error("Error in handleSend:", error);
+        }
+    });
+
+    const toggleDropdown = (type) => {
+        setIsDropdownOpen((prev) => !prev);
+        setActiveDropdown((prev) => (prev === type ? null : type));
+    };
+
+    const add = async (text, isInitial) => {
+        if (text.trim() === '') return;
+
+        if (!isInitial) setMessages(text)
+
+        try {
+            const translationResponse = await axios.post('http://localhost:3000/ai/translate', {
+                message: text,
+                sourceLanguage,
+                targetLanguage,
+            });
+
+            const translatedText = translationResponse.data.translatedText;
+
+            setResponse(translatedText);
+
+            mutation.mutate();
+        } catch (error) {
+            console.error("Error in handleSend:", error);
+        }
+    };
+
+    const handleSend = async (event) => {
+        event.preventDefault();
+        await add(input, false);
+    };
+
+    // useEffect(() => {
+    //     if (data?.history?.length === 1 && data.history[0].text) {
+    //         add(data.history[0].text, true);
+    //     }
+    // }, [data]); // Добавляем data в зависимости, чтобы useEffect реагировал на изменения
+
 
     return (
-        <div className='translate'>
-            <div className="translate-container">
-                <div className='about-translate'>
-                    <h1>Translate</h1>
-                    <p>Translate text from one language to another</p>
+        <div className='translate-text'>
+            <div className="container">
+                {messages && <div>{messages}</div>}
+                {response && <div className="message model-message">{response}</div>}
+                <div className="language-selection">
+                    <div className="dropdown">
+                        <button
+                            className="dropbtn"
+                            onClick={() => toggleDropdown('source')}
+                        >
+                            {sourceLanguage} <ChevronDown/>
+                        </button>
+                        {isDropdownOpen && activeDropdown === 'source' && (
+                            <div className="dropdown-content">
+                                <ul>
+                                    <li onClick={() => handleLanguageChange('English', 'source')}>English</li>
+                                    <li onClick={() => handleLanguageChange('Spanish', 'source')}>Spanish</li>
+                                    <li onClick={() => handleLanguageChange('French', 'source')}>French</li>
+                                    <li onClick={() => handleLanguageChange('German', 'source')}>German</li>
+                                    <li onClick={() => handleLanguageChange('Italian', 'source')}>Italian</li>
+                                    <li onClick={() => handleLanguageChange('Russian', 'source')}>Russian</li>
+                                    <li onClick={() => handleLanguageChange('Chinese', 'source')}>Chinese</li>
+                                </ul>
+                            </div>
+                        )}
+                    </div>
+                    <ArrowRight className="arrow-icon"/>
+                    <div className="dropdown">
+                        <button
+                            className="dropbtn"
+                            onClick={() => toggleDropdown('target')}
+                        >
+                            {targetLanguage} <ChevronDown/>
+                        </button>
+                        {isDropdownOpen && activeDropdown === 'target' && (
+                            <div className="dropdown-content">
+                                <ul>
+                                    <li onClick={() => handleLanguageChange('English', 'target')}>English</li>
+                                    <li onClick={() => handleLanguageChange('Spanish', 'target')}>Spanish</li>
+                                    <li onClick={() => handleLanguageChange('French', 'target')}>French</li>
+                                    <li onClick={() => handleLanguageChange('German', 'target')}>German</li>
+                                    <li onClick={() => handleLanguageChange('Italian', 'target')}>Italian</li>
+                                    <li onClick={() => handleLanguageChange('Russian', 'target')}>Russian</li>
+                                    <li onClick={() => handleLanguageChange('Chinese', 'target')}>Chinese</li>
+                                </ul>
+                            </div>
+                        )}
+                    </div>
                 </div>
-                {/*<Message messages={messages}/>*/}
-                <TranslateText setMessages={setMessages}/>
+                <textarea
+                    className='text-input'
+                    placeholder='Enter text to translate'
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                ></textarea>
+                <button className="submit-btn" onClick={handleSend}>
+                    Translate <ArrowRight/>
+                </button>
             </div>
         </div>
     );

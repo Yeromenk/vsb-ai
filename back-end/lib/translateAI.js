@@ -6,7 +6,7 @@ const openai = new OpenAI({
 
 export async function getTranslation(message, sourceLanguage, targetLanguage) {
     try {
-        const prompt = `Please translate the following text from ${sourceLanguage} to ${targetLanguage}:\n\n"${message}. Write only the translation, without the quotation marks"`;
+        const prompt = `Please translate the following text from ${sourceLanguage} to ${targetLanguage}:\n\n"${message}". Write only the translation, without the quotation marks`;
 
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini",

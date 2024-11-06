@@ -1,21 +1,20 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import './translateText.css';
-import {ChevronDown, ArrowRight} from 'lucide-react';
+import { ChevronDown, ArrowRight } from 'lucide-react';
 import axios from "axios";
-import {AuthContext} from "../../context/AuthContext";
-import {useContext} from "react";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {useNavigate} from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
+import { useContext } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
-
-const TranslateText = ({setMessages}) => {
+const TranslateText = () => {
     const [sourceLanguage, setSourceLanguage] = useState('English');
     const [targetLanguage, setTargetLanguage] = useState('Spanish');
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [input, setInput] = useState('');
 
-    const {currentUser} = useContext(AuthContext);
+    const { currentUser } = useContext(AuthContext);
     const userId = currentUser.id;
     const navigate = useNavigate();
 
@@ -29,11 +28,10 @@ const TranslateText = ({setMessages}) => {
         setActiveDropdown(null);
     };
 
-    // NEW
     const queryClient = useQueryClient();
     const mutation = useMutation({
         mutationFn: async (text) => {
-            const response = await axios.post('http://localhost:3000/ai/translate', {
+            const response = await axios.post('http://localhost:3000/ai/chats', {
                 message: text,
                 sourceLanguage,
                 targetLanguage,
@@ -41,17 +39,14 @@ const TranslateText = ({setMessages}) => {
             });
             return response.data.response;
         },
-        onSuccess: (id) => {
-            queryClient.invalidateQueries({queryKey: ['ChatList']});
-            navigate(`/chat/${id}`);
+        onSuccess: (newChat) => {
+            queryClient.invalidateQueries({ queryKey: ['ChatList'] });
+            navigate(`/chat/${newChat.id}`);
         },
         onError: (error) => {
             console.error("Error in handleSend:", error);
-            const errorMessage = {type: 'ai', text: "Error in translation"};
-            setMessages((prevMessages) => [...prevMessages, errorMessage]);
         }
-
-    })
+    });
 
     const toggleDropdown = (type) => {
         setIsDropdownOpen((prev) => !prev);
@@ -62,11 +57,7 @@ const TranslateText = ({setMessages}) => {
         event.preventDefault();
         if (input.trim() === '') return;
 
-        // Добавляем сообщение пользователя в messages
-        const userMessage = {type: 'user', text: input};
-        setMessages((prevMessages) => [...prevMessages, userMessage]);
-
-        mutation.mutate(input)
+        mutation.mutate(input);
 
         setInput('');
     };
@@ -80,7 +71,7 @@ const TranslateText = ({setMessages}) => {
                             className="dropbtn"
                             onClick={() => toggleDropdown('source')}
                         >
-                            {sourceLanguage} <ChevronDown/>
+                            {sourceLanguage} <ChevronDown />
                         </button>
                         {isDropdownOpen && activeDropdown === 'source' && (
                             <div className="dropdown-content">
@@ -96,13 +87,13 @@ const TranslateText = ({setMessages}) => {
                             </div>
                         )}
                     </div>
-                    <ArrowRight className="arrow-icon"/>
+                    <ArrowRight className="arrow-icon" />
                     <div className="dropdown">
                         <button
                             className="dropbtn"
                             onClick={() => toggleDropdown('target')}
                         >
-                            {targetLanguage} <ChevronDown/>
+                            {targetLanguage} <ChevronDown />
                         </button>
                         {isDropdownOpen && activeDropdown === 'target' && (
                             <div className="dropdown-content">
@@ -126,7 +117,7 @@ const TranslateText = ({setMessages}) => {
                     onChange={(e) => setInput(e.target.value)}
                 ></textarea>
                 <button className="submit-btn" onClick={handleSend}>
-                    Translate <ArrowRight/>
+                    Translate <ArrowRight />
                 </button>
             </div>
         </div>
