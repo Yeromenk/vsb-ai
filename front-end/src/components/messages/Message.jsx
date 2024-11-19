@@ -1,19 +1,19 @@
-import React, {useContext} from 'react';
+import React, { useContext } from 'react';
 import './Message.css';
-import {useLocation} from "react-router-dom";
-import {useQuery} from "@tanstack/react-query";
+import { useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import {AuthContext} from "../../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 import Translate from "../../pages/Translate/Translate";
 
 const Message = () => {
-    const {currentUser} = useContext(AuthContext);
+    const { currentUser } = useContext(AuthContext);
     const firstLetter = currentUser?.username.charAt(0).toUpperCase();
 
     const path = useLocation().pathname;
     const chatId = path.split("/").pop();
 
-    const {isPending, data, error} = useQuery({
+    const { isPending, data, error } = useQuery({
         queryKey: ['chat', chatId],
         queryFn: () =>
             axios.get(`http://localhost:3000/ai/chat/${chatId}`, {
@@ -33,7 +33,7 @@ const Message = () => {
                                 <div key={index} className="message-container">
                                     {message.role === 'model' && (
                                         <div className="avatar model-avatar">
-                                            <img src='/vsb-logo.jpg' alt='vsb-logo'/>
+                                            <img src='/vsb-logo.jpg' alt='vsb-logo' />
                                         </div>
                                     )}
                                     <div className={`message ${message.role}-message`}>
@@ -47,7 +47,7 @@ const Message = () => {
                                 </div>
                             ))}
                 </div>
-                {data && <Translate data={data}/>}
+                {data && <Translate data={data} />}
             </div>
         </div>
     );

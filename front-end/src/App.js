@@ -5,12 +5,13 @@ import Login from "./pages/Login/Login.jsx";
 import Register from "./pages/Register/Register.jsx";
 import Home from "./layout/Home/Home.jsx";
 import Summarize from "./pages/Summarize/Summarize.jsx";
-import Format from "./pages/Formate/Format.jsx";
 import Dashboard from "./layout/Dashboard/Dashboard.jsx";
 import Error from "./pages/Error/Error.jsx";
 import {Toaster} from "react-hot-toast";
 import Message from "./components/messages/Message";
 import TranslateText from "./components/textInput/TranslateText";
+import NewPrompt from "./pages/UserNewPrompt/NewPrompt";
+import FormatingText from "./components/textInput/FormatingText";
 
 const App = () => {
     return (
@@ -62,7 +63,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: '/format',
-                        element: <Format/>
+                        element: <FormatingText/>
                     },
                     {
                         path: '/translate',
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
                     {
                         path: '/chat/:id',
                         element: <Message/>
+                    },
+                    {
+                      path: 'new-prompt',
+                      element: <NewPrompt />
                     }
                 ]
             }

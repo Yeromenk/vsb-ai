@@ -1,0 +1,85 @@
+/* NewPrompt.css */
+
+.new-prompt {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    background-color: white;
+    font-family: 'Arial', sans-serif;
+}
+
+.container-new-prompt {
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+}
+
+.container-new-prompt h1 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.container-new-prompt p {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.form-prompt {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.form-prompt h3 {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.form-prompt .text,
+.form-prompt .instructions {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.form-prompt .text:focus,
+.form-prompt .instructions:focus {
+    border-color: #66b2ff;
+    box-shadow: 0 0 4px rgba(102, 178, 255, 0.5);
+}
+
+.form-prompt .instructions {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-prompt button {
+    background-color: #66b2ff;
+    color: #fff;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-prompt button:hover {
+    background-color: #559ee6;
+}
+
+.form-prompt button:active {
+    background-color: #447dcc;
+}

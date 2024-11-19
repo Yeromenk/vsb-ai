@@ -1,8 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import './Translate.css';
 import {ChevronDown, ArrowRight} from 'lucide-react';
 import axios from "axios";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {AuthContext} from "../../context/AuthContext";
+import Skeleton from "react-loading-skeleton";
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const Translate = ({data}) => {
     const [sourceLanguage, setSourceLanguage] = useState('English');
@@ -12,6 +15,16 @@ const Translate = ({data}) => {
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState("");
     const [response, setResponse] = useState("");
+    const endRef = useRef(null);
+    const [loading, setLoading] = useState(false);
+    const {currentUser} = useContext(AuthContext);
+    const firstLetter = currentUser?.username.charAt(0).toUpperCase();
+
+    useEffect(() => {
+        if (endRef.current) {
+            endRef.current.scrollIntoView({behavior: "smooth"});
+        }
+    }, [data, messages, response]);
 
     const handleLanguageChange = (newLanguage, type) => {
         if (type === 'source') {
@@ -54,6 +67,7 @@ const Translate = ({data}) => {
     const add = async (text, isInitial) => {
         if (text.trim() === '') return;
 
+        setLoading(true)
         if (!isInitial) setMessages(text)
 
         try {
@@ -66,30 +80,53 @@ const Translate = ({data}) => {
             const translatedText = translationResponse.data.translatedText;
 
             setResponse(translatedText);
-
+            setLoading(false)
             mutation.mutate();
         } catch (error) {
             console.error("Error in handleSend:", error);
+            setLoading(false)
+        } finally {
+            setLoading(false)
         }
     };
 
     const handleSend = async (event) => {
         event.preventDefault();
-        await add(input, false);
+        if (!loading) {
+            await add(input, false);
+        }
     };
 
-    // useEffect(() => {
-    //     if (data?.history?.length === 1 && data.history[0].text) {
-    //         add(data.history[0].text, true);
-    //     }
-    // }, [data]); // Добавляем data в зависимости, чтобы useEffect реагировал на изменения
-
-
     return (
-        <div className='translate-text'>
+        <>
+            <div className="chat">
+                {messages && (<div className="message-container">
+                    <div className="message user-message">{messages}</div>
+                    <div className='avatar user-avatar'>
+                        {firstLetter}
+                    </div>
+                </div>)}
+                {loading ? (
+                    <div className="message-container">
+                        <div className='avatar model-avatar'>
+                            <img src='/vsb-logo.jpg' alt='vsb-logo'/>
+                        </div>
+                        <div className="message model-message"><Skeleton width="10rem"/></div>
+                    </div>
+                ) : (
+                    response && (
+                        <div className="message-container">
+                            <div className='avatar model-avatar'>
+                                <img src='/vsb-logo.jpg' alt='vsb-logo'/>
+                            </div>
+                            <div className="message model-message">{response}</div>
+                        </div>
+                    ))}
+                <div ref={endRef}/>
+            </div>
+
+
             <div className="container">
-                {messages && <div>{messages}</div>}
-                {response && <div className="message model-message">{response}</div>}
                 <div className="language-selection">
                     <div className="dropdown">
                         <button
@@ -103,11 +140,8 @@ const Translate = ({data}) => {
                                 <ul>
                                     <li onClick={() => handleLanguageChange('English', 'source')}>English</li>
                                     <li onClick={() => handleLanguageChange('Spanish', 'source')}>Spanish</li>
-                                    <li onClick={() => handleLanguageChange('French', 'source')}>French</li>
-                                    <li onClick={() => handleLanguageChange('German', 'source')}>German</li>
                                     <li onClick={() => handleLanguageChange('Italian', 'source')}>Italian</li>
                                     <li onClick={() => handleLanguageChange('Russian', 'source')}>Russian</li>
-                                    <li onClick={() => handleLanguageChange('Chinese', 'source')}>Chinese</li>
                                 </ul>
                             </div>
                         )}
@@ -125,15 +159,15 @@ const Translate = ({data}) => {
                                 <ul>
                                     <li onClick={() => handleLanguageChange('English', 'target')}>English</li>
                                     <li onClick={() => handleLanguageChange('Spanish', 'target')}>Spanish</li>
-                                    <li onClick={() => handleLanguageChange('French', 'target')}>French</li>
-                                    <li onClick={() => handleLanguageChange('German', 'target')}>German</li>
                                     <li onClick={() => handleLanguageChange('Italian', 'target')}>Italian</li>
                                     <li onClick={() => handleLanguageChange('Russian', 'target')}>Russian</li>
-                                    <li onClick={() => handleLanguageChange('Chinese', 'target')}>Chinese</li>
                                 </ul>
                             </div>
                         )}
                     </div>
+                    <button className="submit-btn" onClick={handleSend}>
+                        Translate <ArrowRight/>
+                    </button>
                 </div>
                 <textarea
                     className='text-input'
@@ -141,11 +175,9 @@ const Translate = ({data}) => {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                 ></textarea>
-                <button className="submit-btn" onClick={handleSend}>
-                    Translate <ArrowRight/>
-                </button>
+
             </div>
-        </div>
+        </>
     );
 };
 

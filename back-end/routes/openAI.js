@@ -4,11 +4,15 @@ const router = express.Router();
 import {PrismaClient} from '@prisma/client';
 import verifyToken from "../controllers/auth.js";
 import {getTranslation} from "../lib/translateAI.js";
+import {getCompletion} from "../lib/openAI.js";
 
 const prisma = new PrismaClient();
 
+// Create a new chat
 router.post('/chats', async (req, res) => {
-    const {message, userId} = req.body;
+    const {message, userId, sourceLanguage, targetLanguage} = req.body;
+
+    const translatedText = await getTranslation(message, sourceLanguage, targetLanguage);
 
     try {
         const newChat = await prisma.chat.create({
@@ -21,6 +25,10 @@ router.post('/chats', async (req, res) => {
                             role: 'user',
                             text: message,
                         },
+                        {
+                            role: 'model',
+                            text: translatedText,
+                        }
                     ],
                 },
             },
@@ -68,7 +76,7 @@ router.post('/chats', async (req, res) => {
     }
 });
 
-
+// Get all user chats
 router.get('/userChats', verifyToken, async (req, res) => {
     const userId = req.user.id;
 
@@ -93,6 +101,7 @@ router.get('/userChats', verifyToken, async (req, res) => {
     }
 })
 
+// Get a specific chat
 router.get('/chat/:id', verifyToken, async (req, res) => {
     const userId = req.user.id;
     const chatId = req.params.id
@@ -119,7 +128,46 @@ router.get('/chat/:id', verifyToken, async (req, res) => {
     }
 })
 
+// update a chat format
+router.put('/format/chat/:id', verifyToken, async (req, res) => {
+    const userId = req.user.id;
+    const chatId = req.params.id
+    const {message, style, tone} = req.body;
+    const formattedText = await getCompletion(message, style, tone);
 
+    try {
+        const updatedChat = await prisma.chat.update({
+            where: {
+                id: chatId,
+                userId: userId,
+            },
+            data: {
+                history: {
+                    create: [
+                        {
+                            role: 'user',
+                            text: message,
+                        },
+                        {
+                            role: 'model',
+                            text: formattedText,
+                        },
+                    ],
+                },
+            },
+            include: {
+                history: true,
+            },
+        });
+
+        res.status(200).json({response: updatedChat});
+    } catch (error) {
+        console.error("Error in chats:", error);
+        res.status(500).json({error: "Error adding chat"});
+    }
+})
+
+// Update a chat translate
 router.put('/chat/:id', verifyToken, async (req, res) => {
     const userId = req.user.id;
     const chatId = req.params.id
@@ -165,6 +213,17 @@ router.post('/translate', async (req, res) => {
         res.status(200).json({translatedText});
     } catch (error) {
         console.error("Error in /translate:", error);
+        res.status(500).json({error: "Internal Server Error"});
+    }
+})
+
+router.post('/format', async (req, res) => {
+    const {message, style, tone} = req.body;
+    try {
+        const completion = await getCompletion(message, style, tone);
+        res.status(200).json({response: completion});
+    } catch (error) {
+        console.error("Error in /format:", error);
         res.status(500).json({error: "Internal Server Error"});
     }
 })

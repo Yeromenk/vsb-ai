@@ -1,16 +1,18 @@
 import {Link} from "react-router-dom";
 import './chatList.css';
-import {Languages, FileText, Text, Menu} from 'lucide-react';
+import {Languages, FileText, Text, Menu, CirclePlus} from 'lucide-react';
 import {useContext, useState} from "react";
 import {useQuery} from "@tanstack/react-query";
 import axios from "axios";
 import {AuthContext} from "../../context/AuthContext";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
+import {useLocation} from "react-router-dom";
 
 
 const ChatList = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const location = useLocation();
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -38,6 +40,7 @@ const ChatList = () => {
             <Link to='/translate'><Languages/> Translate a text</Link>
             <Link to='/format'><Text/> Create an alternative text</Link>
             <Link to='/summarize'><FileText/> Summarize a file</Link>
+            <Link to='/new-prompt'><CirclePlus />New Prompt</Link>
 
             <h1>Chat List</h1>
             <div className='list'>
@@ -49,7 +52,9 @@ const ChatList = () => {
                             <p>No chats yet</p>
                             : chats?.map((chat) => (
                                 <Link to={`/chat/${chat.id}`}
-                                      key={chat.id}>
+                                      key={chat.id}
+                                      className={location.pathname === `/chat/${chat.id}` ? 'active-chat' : ''}
+                                >
                                     {chat.title}
                                 </Link>
                             ))}

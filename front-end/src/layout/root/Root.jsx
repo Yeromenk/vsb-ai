@@ -1,7 +1,7 @@
 import './Root.css';
 import {User, LogOut} from 'lucide-react';
 import {Link, useNavigate} from "react-router-dom";
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {AuthContext} from "../../context/AuthContext.js";
 import toast from "react-hot-toast";
 

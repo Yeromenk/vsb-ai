@@ -1,36 +1,39 @@
 /* Main container for the entire message area */
 .message {
-    flex: 1;
     display: flex;
+    padding: 20px;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     background-color: white;
     height: 100%;
+    overflow-y: hidden;
 }
 
 /* Container for all messages */
 .container-message {
-    width: 70%;
+    width: 80%;
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
+    align-items: center;
+
 }
 
 /* Chat area for individual messages */
 .chat {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    overflow-y: auto;
     gap: 20px;
     padding: 10px;
+    width: 70%;max-height: calc(100vh - 400px);
 }
 
 /* Container for each message and its avatar */
 .message-container {
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* Align items to the start (top) */
     margin: 10px 0;
 }
 
@@ -47,15 +50,13 @@
 .user-message {
     background-color: #daf7dc;
     align-self: flex-end;
-    order: 1; /* Position message before avatar */
-    margin-left: 10px;
+    margin-left: auto; /* Align user messages to the right */
 }
 
 .model-message {
     background-color: #f1e3ff;
     align-self: flex-start;
-    order: 2; /* Position message after avatar */
-    margin-right: 10px;
+    margin-right: auto; /* Align model messages to the left */
 }
 
 /* Common style for the avatar */
@@ -74,15 +75,14 @@
 /* User avatar styling */
 .user-avatar {
     background-color: #4caf50;
-    order: 2; /* Position avatar after the message */
     margin-left: 10px;
 }
 
 /* Model avatar styling */
 .model-avatar {
     background-color: #673ab7;
-    order: 1; /* Position avatar before the message */
     margin-right: 10px;
+    order: -1; /* Position avatar before the message */
 }
 
 .model-avatar img {
