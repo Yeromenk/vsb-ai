@@ -1,44 +1,77 @@
 import './Summarize.css';
 import {FilePlus2, Send} from "lucide-react";
-import React, {useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import axios from "axios";
-
+import Skeleton from "react-loading-skeleton";
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const Summarize = ({data}) => {
     const [file, setFile] = useState(null);
     const [action, setAction] = useState('');
+    const [response, setResponse] = useState("");
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(null);
+    const endRef = useRef()
+
+    useEffect(() => {
+        if (endRef.current) {
+            endRef.current.scrollIntoView({behavior: "smooth"});
+        }
+    }, [data, response]);
 
     const queryClient = useQueryClient();
     const mutation = useMutation({
-        mutationFn:  () => {
+        mutationFn: async () => {
             const formData = new FormData();
             formData.append('file', file);
             formData.append('action', action);
-            return axios.put(`http://localhost:3000/ai/format/file/${data.id}`, formData, {
+            const {data: result} = await axios.put(`http://localhost:3000/ai/format/file/${data.id}`, formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+                    'Content-Type': 'multipart/form-data',
+                },
+                withCredentials: true,
             }, {
                 withCredentials: true,
-            }).then((res) => res.data.response);
+            })
+            return result.response;
         },
-        onSuccess: () => {
+        onSuccess: (result) => {
             queryClient.invalidateQueries({queryKey: ['chat', data.id]}).then(() => {
+                setResponse(result)
                 setFile(null);
                 setAction('');
+                setError(null)
+
             });
         },
         onError: (error) => {
+            setError(error)
             console.error("Error in handleSend:", error);
         }
     });
 
     const add = async () => {
         try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('action', action);
+            const fileAction = await axios.post('http://localhost:3000/ai/file', {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                }
+            })
+
+            const fileResponse = fileAction.data
+
+            setResponse(fileResponse)
+            setLoading(false)
             mutation.mutate();
         } catch (e) {
             console.error("Error in handleSend:", e);
+            setLoading(false)
+        } finally {
+            setLoading(false)
         }
     }
 

@@ -11,44 +11,50 @@ import {extractTextFromDocx, getFile} from "../lib/fileAI.js";
 
 const prisma = new PrismaClient();
 
+// TODO: Add a new chat (new prompt from user)
+// create a new custom chat (new prompt from user)
+router.post('/chats/prompt', async (req, res) => {
+    const {name, description, instructions} = req.body;
+    try {
+
+    } catch (error) {
+        console.error("Error in /chats/prompt:", error);
+        res.status(500).json({error: "Internal Server Error"});
+    }
+})
+
 // Create a new chat
 router.post('/chats', upload.single('file'), async (req, res) => {
-    const { message, userId, sourceLanguage, targetLanguage, style, tone, action } = req.body;
-    const file = req.file; // Получаем файл из запроса
+    const {message, userId, sourceLanguage, targetLanguage, style, tone, action} = req.body;
+    const file = req.file;
 
     let responseText;
     let chatType;
 
-    // Логика для перевода текста
     if (sourceLanguage && targetLanguage) {
         responseText = await getTranslation(message, sourceLanguage, targetLanguage);
         chatType = 'translate';
-    }
-    // Логика для форматирования текста
-    else if (style && tone) {
+    } else if (style && tone) {
         responseText = await getCompletion(message, style, tone);
         chatType = 'format';
-    }
-    // Логика для обработки файлов
-    else if (file && action) {
+    } else if (file && action) {
         try {
             const extractedText = await extractTextFromDocx(file.path);
 
             if (!extractedText || extractedText.length === 0) {
-                return res.status(400).json({ error: "File is empty or contains unreadable text" });
+                return res.status(400).json({error: "File is empty or contains unreadable text"});
             }
 
             responseText = await getFile(extractedText, action);
             chatType = 'file';
         } catch (error) {
-            return res.status(500).json({ error: "Error processing the file" });
+            return res.status(500).json({error: "Error processing the file"});
         }
     } else {
-        return res.status(400).json({ error: "Invalid request" });
+        return res.status(400).json({error: "Invalid request"});
     }
 
     try {
-        // Создание нового чата в базе данных
         const newChat = await prisma.chat.create({
             data: {
                 userId: userId,
@@ -62,7 +68,7 @@ router.post('/chats', upload.single('file'), async (req, res) => {
                         },
                         {
                             role: 'model',
-                            text: responseText.join(' '),
+                            text: Array.isArray(responseText) ? responseText.join(' ') : responseText,
                         }
                     ],
                 },
@@ -80,7 +86,6 @@ router.post('/chats', upload.single('file'), async (req, res) => {
             },
         });
 
-        // Привязка чата к пользователю
         let userChats = await prisma.userChats.findUnique({
             where: {
                 userId: userId,
@@ -113,13 +118,12 @@ router.post('/chats', upload.single('file'), async (req, res) => {
             });
         }
 
-        res.status(201).send({ response: newChat });
+        res.status(201).send({response: newChat});
     } catch (error) {
         console.error("Error in /chats:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        res.status(500).json({error: "Internal Server Error"});
     }
 });
-
 
 
 // Get all user chats
@@ -253,15 +257,31 @@ router.put('/translate/chat/:id', verifyToken, async (req, res) => {
 })
 
 // Update a chat file
-router.put('/file/chat/:id', verifyToken, upload.single('file') ,async (req, res) => {
+router.put('/file/chat/:id', verifyToken, upload.single('file'), async (req, res) => {
     const userId = req.user.id;
     const chatId = req.params.id
     const {action} = req.body;
     const file = req.file;
 
-    const fileAction = await getFile(file, action);
+    // const fileAction = await getFile(file, action);
+
+    if (!file || !action) {
+        return res.status(400).json({error: "File and action are required"});
+    }
 
     try {
+        const extractedText = await extractTextFromDocx(file.path);
+
+        if (!extractedText || extractedText.length === 0) {
+            return res.status(400).json({error: "File is empty or contains unreadable text"});
+        }
+
+        const modelResponse = await getFile(extractedText, action);
+
+        if (!modelResponse || modelResponse.length === 0) {
+            return res.status(400).json({error: "Model response is empty"});
+        }
+
         const updatedChat = await prisma.chat.update({
             where: {
                 id: chatId,
@@ -272,11 +292,11 @@ router.put('/file/chat/:id', verifyToken, upload.single('file') ,async (req, res
                     create: [
                         {
                             role: 'user',
-                            text: action,
+                            text: `File: ${file.originalname}, Action: ${action}`,
                         },
                         {
                             role: 'model',
-                            text: fileAction,
+                            text: modelResponse.join('\n'),
                         },
                     ],
                 },

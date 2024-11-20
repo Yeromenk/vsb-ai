@@ -21,11 +21,6 @@ const DocumentInput = () => {
             formData.append('action', action);
             formData.append('userId', userId);
 
-            // Log form data for debugging
-            for (let [key, value] of formData.entries()) {
-                console.log(`${key}: ${value}`);
-            }
-
             const response = await axios.post('http://localhost:3000/ai/chats', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'

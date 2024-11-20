@@ -34,6 +34,5 @@ export async function extractTextFromDocx(filePath) {
         return result.value;
     } catch (e) {
         console.error("Error in extractTextFromDocx:", e);
-
     }
 }

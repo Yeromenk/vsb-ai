@@ -26,7 +26,7 @@ const Format = ({data}) => {
     const queryClient = useQueryClient();
     const mutation = useMutation({
         mutationFn: () => {
-            return axios.put(`http://localhost:3000/ai/chat/format/${data.id}`, {
+            return axios.put(`http://localhost:3000/ai/format/chat/${data.id}`, {
                 message: messages.length ? messages : undefined,
                 style,
                 tone,

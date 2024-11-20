@@ -39,7 +39,7 @@ const Translate = ({data}) => {
     const queryClient = useQueryClient();
     const mutation = useMutation({
         mutationFn: () => {
-            return axios.put(`http://localhost:3000/ai/chat/${data.id}`, {
+            return axios.put(`http://localhost:3000/ai/translate/chat/${data.id}`, {
                 message: messages.length ? messages : undefined,
                 sourceLanguage,
                 targetLanguage,
