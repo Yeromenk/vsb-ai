@@ -1,39 +1,102 @@
-import { useState } from 'react';
-import { SendHorizontal, FilePlus2 } from 'lucide-react';
+import React, {useContext, useState} from 'react';
+import {FilePlus2, Send} from 'lucide-react';
 import './documentInput.css';
+import {useNavigate} from "react-router-dom";
+import {AuthContext} from "../../context/AuthContext";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import axios from "axios";
 
 const DocumentInput = () => {
-    const [inputValue, setInputValue] = useState('');
+    const [file, setFile] = useState(null);
+    const [action, setAction] = useState('');
+    const navigate = useNavigate();
+    const {currentUser} = useContext(AuthContext);
+    const userId = currentUser.id;
 
-    const handleInputChange = (e) => {
-        const textarea = e.target;
-        textarea.style.height = 'auto';
-        textarea.style.overflowY = 'hidden';
-        textarea.style.height = `${textarea.scrollHeight}px`;
+    const queryClient = useQueryClient();
+    const mutation = useMutation({
+        mutationFn: async () => {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('action', action);
+            formData.append('userId', userId);
 
-        if (textarea.scrollHeight > 128) {
-            textarea.style.overflowY = 'auto';
-            textarea.style.height = '128px';
+            // Log form data for debugging
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+
+            const response = await axios.post('http://localhost:3000/ai/chats', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            return response.data.response;
+        },
+        onSuccess: (newChat) => {
+            queryClient.invalidateQueries({queryKey: ['ChatList']});
+            navigate(`/file/chat/${newChat.id}`);
+        },
+        onError: (error) => {
+            console.error("Error in handleSend:", error);
         }
+    })
 
-        setInputValue(textarea.value);
+    const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
+    };
+
+    const handleActionChange = (newAction) => {
+        setAction(newAction);
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!file || !action) return;
+
+        mutation.mutate();
+
+        console.log(`File: ${file.name}, Action: ${action}`);
     };
 
     return (
         <div className='document-input'>
-            <form >
-                <div className='input-container'>
-                    <FilePlus2 className='input-icon' />
-                    <textarea
-                        rows={1}
-                        value={inputValue}
-                        onChange={handleInputChange}
-                        placeholder='What do you want to ask?' />
-                    <button type='submit'>
-                        <SendHorizontal className='send-button' />
-                    </button>
+            <div className="document-input-container">
+                <div className='hello'>
+                    <h1>Summarize a file</h1>
+                    <p>Here you can summarize a file and get an overview</p>
                 </div>
-            </form>
+                <div className="file-container">
+                    <form onSubmit={handleSubmit}>
+                        <div className='file-input-container'>
+                            <label className='file-label'>
+                                <FilePlus2 className='input-icon'/>
+                                <span>{file ? file.name : 'Choose a file'}</span>
+                                <input type='file' onChange={handleFileChange} hidden/>
+                            </label>
+                        </div>
+                        <div className='action-buttons'>
+                            <button
+                                type='button'
+                                className={action === 'summarize' ? 'active' : ''}
+                                onClick={() => handleActionChange('summarize')}
+                            >
+                                Summarize
+                            </button>
+                            <button
+                                type='button'
+                                className={action === 'describe' ? 'active' : ''}
+                                onClick={() => handleActionChange('describe')}
+                            >
+                                Describe
+                            </button>
+                        </div>
+                        <button type='submit' disabled={!file || !action}>
+                            <Send className='button-icon'/> Submit
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     );
 };

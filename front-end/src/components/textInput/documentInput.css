@@ -1,92 +1,164 @@
+/* General container styling */
 .document-input {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
     width: 100%;
+
+}
+
+.document-input-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: white;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.hello {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px 0;
+    justify-content: center;
+    gap: 20px;
     margin-top: auto;
 }
 
-.document-input form {
-    display: flex;
-    width: 100%;
-    max-width: 600px;
-    position: relative;
+.hello h1 {
+    font-size: 52px;
+    font-weight: 700;
 }
 
-.input-container {
+.hello p {
+    margin-top: 10px;
+    font-size: 20px;
+    color: #333333;
+}
+
+.file-container {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    gap: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 0 auto;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Form styling */
+.document-input form {
+    display: flex;
+    flex-direction: column;
     align-items: center;
     width: 100%;
-    position: relative;
+    gap: 20px;
+}
+
+/* File input container styling */
+.file-input-container {
+    width: 100%;
+}
+
+.file-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    border: 2px dashed #007bff;
+    border-radius: 8px;
+    background-color: #eaf5ff;
+    color: #007bff;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    text-align: center;
+}
+
+.file-label:hover {
+    background-color: #d0ebff;
+    color: #0056b3;
+}
+
+.file-label span {
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .input-icon {
-    position: absolute;
-    left: 10px;
-    top: 20px;
-    color: #8c959e;
+    width: 24px;
+    height: 24px;
 }
 
-.document-input textarea {
-    width: 100%;
-    padding: 20px 50px 20px 40px; /* Учитываем отступ для иконки */
-    font-size: 18px;
-    border: 2px solid #8c959e;
-    border-radius: 25px;
-    resize: none;
-    overflow-y: auto;
-    max-height: 128px;
-}
-
-.document-input button {
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
+/* Action buttons styling */
+.action-buttons {
     display: flex;
+    gap: 15px;
+    width: 100%;
     justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 50%;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    transition: 0.3s ease-in-out;
 }
 
-.document-input button:hover {
+.action-buttons button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 15px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    font-size: 14px;
+}
+
+.action-buttons button.active {
+    border-color: #007bff;
+    background-color: #eaf5ff;
+    color: #007bff;
+}
+
+.action-buttons button:hover {
+    background-color: #d0ebff;
+    color: #0056b3;
+}
+
+/* Submit button styling */
+.document-input button[type='submit'] {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    width: 100%;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    background-color: #307bd1;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.document-input button[type='submit']:hover {
     background-color: #0056b3;
 }
 
-.output-container {
-    width: 100%;
-    max-width: 600px;
-    margin-top: 20px;
-    padding: 15px;
-    border-radius: 10px;
-    background-color: #f5f5f5;
-    font-size: 16px;
-    color: #333;
-    text-align: left;
+.document-input button[type='submit']:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
 }
 
-@media (max-width: 768px) {
-    .document-input textarea {
-        padding: 15px 40px 15px 35px;
-        font-size: 16px;
-    }
-
-    .input-icon {
-        left: 8px;
-        top: 15px;
-    }
-
-    .document-input button {
-        width: 35px;
-        height: 35px;
-        right: 8px;
-    }
+/* Button icon styling */
+.button-icon {
+    width: 18px;
+    height: 18px;
 }

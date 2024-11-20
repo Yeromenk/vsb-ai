@@ -41,7 +41,7 @@ const TranslateText = () => {
         },
         onSuccess: (newChat) => {
             queryClient.invalidateQueries({ queryKey: ['ChatList'] });
-            navigate(`/chat/${newChat.id}`);
+            navigate(`/translate/chat/${newChat.id}`);
         },
         onError: (error) => {
             console.error("Error in handleSend:", error);

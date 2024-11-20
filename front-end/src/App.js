@@ -4,7 +4,6 @@ import Welcome from "./pages/Welcome/Welcome.jsx";
 import Login from "./pages/Login/Login.jsx";
 import Register from "./pages/Register/Register.jsx";
 import Home from "./layout/Home/Home.jsx";
-import Summarize from "./pages/Summarize/Summarize.jsx";
 import Dashboard from "./layout/Dashboard/Dashboard.jsx";
 import Error from "./pages/Error/Error.jsx";
 import {Toaster} from "react-hot-toast";
@@ -12,6 +11,7 @@ import Message from "./components/messages/Message";
 import TranslateText from "./components/textInput/TranslateText";
 import NewPrompt from "./pages/UserNewPrompt/NewPrompt";
 import FormatingText from "./components/textInput/FormatingText";
+import DocumentInput from "./components/textInput/DocumentInput";
 
 const App = () => {
     return (
@@ -59,7 +59,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: '/summarize',
-                        element: <Summarize/>
+                        element: <DocumentInput/>
                     },
                     {
                         path: '/format',
@@ -70,11 +70,19 @@ const router = createBrowserRouter([
                         element: <TranslateText/>
                     },
                     {
-                        path: '/chat/:id',
-                        element: <Message/>
+                        path: '/translate/chat/:id',
+                        element: <Message type="translate"/>
                     },
                     {
-                      path: 'new-prompt',
+                      path: '/format/chat/:id',
+                      element: <Message type="format" />
+                    },
+                    {
+                      path: '/file/chat/:id',
+                      element: <Message type="file" />
+                    },
+                    {
+                      path: '/new-prompt',
                       element: <NewPrompt />
                     }
                 ]

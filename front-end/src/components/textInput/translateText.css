@@ -16,16 +16,6 @@
     justify-content: flex-start;
 }
 
-.translate-container h1 {
-    font-size: 52px;
-    font-weight: 700;
-}
-
-.translate-container p {
-    margin-top: 10px;
-    font-size: 20px;
-}
-
 .overview {
     display: flex;
     flex-direction: column;

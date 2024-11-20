@@ -27,8 +27,10 @@ model Chat {
   id          String     @id @default(cuid()) // Primary key
   userId      String // User ID (для связки с конкретным пользователем)
   title       String // Название чата
+  type        String // Тип чата (private или group)
   createdAt   DateTime   @default(now()) // Время создания чата
   history     Message[] // Связь с моделью Message
+  files       File[] // Связь с моделью File
   UserChats   UserChats? @relation(fields: [userChatsId], references: [id])
   userChatsId Int?
 }
@@ -39,6 +41,17 @@ model Message {
   role      Role // Роль (user или model)
   text      String // Текст сообщения
   createdAt DateTime @default(now()) // Время создания сообщения
+
+  chat Chat @relation(fields: [chatId], references: [id]) // Связь с моделью Chat
+}
+
+model File {
+  id        Int      @id @default(autoincrement()) // Primary key
+  chatId    String // Foreign key для связи с моделью Chat
+  fileName  String // Имя файла
+  filePath  String // Путь к файлу
+  fileType  String // Тип файла
+  createdAt DateTime @default(now()) // Время создания файла
 
   chat Chat @relation(fields: [chatId], references: [id]) // Связь с моделью Chat
 }
