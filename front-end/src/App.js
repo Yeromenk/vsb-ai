@@ -12,6 +12,7 @@ import TranslateText from "./components/textInput/TranslateText";
 import NewPrompt from "./pages/UserNewPrompt/NewPrompt";
 import FormatingText from "./components/textInput/FormatingText";
 import DocumentInput from "./components/textInput/DocumentInput";
+import UserPrompt from "./components/textInput/UserPrompt";
 
 const App = () => {
     return (
@@ -84,6 +85,10 @@ const router = createBrowserRouter([
                     {
                       path: '/new-prompt',
                       element: <NewPrompt />
+                    },
+                    {
+                        path: '/user-prompt',
+                        element: <UserPrompt />
                     }
                 ]
             }

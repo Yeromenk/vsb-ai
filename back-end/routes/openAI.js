@@ -8,17 +8,46 @@ import verifyToken from "../controllers/auth.js";
 import {getTranslation} from "../lib/translateAI.js";
 import {getCompletion} from "../lib/openAI.js";
 import {extractTextFromDocx, getFile} from "../lib/fileAI.js";
+import {getNewPrompt} from "../lib/newPromptAI.js";
 
 const prisma = new PrismaClient();
 
 // TODO: Add a new chat (new prompt from user)
 // create a new custom chat (new prompt from user)
-router.post('/chats/prompt', async (req, res) => {
+router.post('/chats/prompt', verifyToken, async (req, res) => {
+    const userId = req.user.id;
     const {name, description, instructions} = req.body;
-    try {
 
+    try {
+        const aiResponse = await getNewPrompt(instructions);
+
+        const newUserChar = await prisma.chat.create({
+            data: {
+                userId: userId,
+                title: name,
+                description: description,
+                instructions: instructions,
+                history: {
+                    create: [
+                        {
+                            role: 'user',
+                            text: instructions,
+                        },
+                        {
+                            role: 'model',
+                            text: aiResponse,
+                        },
+                    ],
+                },
+            },
+            include: {
+                history: true,
+            },
+        })
+
+        res.status(201).json({response: newUserChar});
     } catch (error) {
-        console.error("Error in /chats/prompt:", error);
+        console.error("Error in /newUserchats/prompt:", error);
         res.status(500).json({error: "Internal Server Error"});
     }
 })
@@ -312,6 +341,70 @@ router.put('/file/chat/:id', verifyToken, upload.single('file'), async (req, res
         res.status(500).json({error: "Error adding chat"});
     }
 })
+
+// update a chat title
+router.put('/chat/:id', verifyToken, async (req, res) => {
+    const userId = req.user.id;
+    const chatId = req.params.id
+    const {title} = req.body;
+
+    try {
+        const updatedChat = await prisma.chat.update({
+            where: {
+                id: chatId,
+                userId: userId,
+            },
+            data: {
+                title: title,
+            },
+        });
+
+        res.status(200).json({response: updatedChat});
+    } catch (error) {
+        console.error("Error in chats:", error);
+        res.status(500).json({error: "Error adding chat"});
+    }
+})
+
+// delete a chat
+router.delete('/chat/:id', verifyToken, async (req, res) => {
+    const userId = req.user.id;
+    const chatId = req.params.id;
+
+    try {
+        const chat = await prisma.chat.findFirst({
+            where: {
+                id: chatId,
+                userId: userId,
+            },
+        });
+
+        if (!chat) {
+            return res.status(404).json({ error: 'Chat not found or not authorized' });
+        }
+
+        // Delete all related records in a transaction
+        await prisma.$transaction([
+            // Delete messages first
+            prisma.message.deleteMany({
+                where: { chatId: chatId }
+            }),
+            // Delete files next
+            prisma.file.deleteMany({
+                where: { chatId: chatId }
+            }),
+            // Delete chat last
+            prisma.chat.delete({
+                where: { id: chatId }
+            })
+        ]);
+
+        res.status(200).json({ response: 'Chat deleted' });
+    } catch (error) {
+        console.error("Error in /chat:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 
 router.post('/translate', async (req, res) => {
     const {message, sourceLanguage, targetLanguage} = req.body;

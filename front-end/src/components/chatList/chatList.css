@@ -45,7 +45,6 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-
     padding: 5px 5px 0 5px;
 }
 
@@ -61,10 +60,70 @@
     box-shadow: #cccccc 0 0 5px 0;
 }
 
+
+.monthYear {
+    font-size: 20px;
+    font-weight: bold;
+    color: #423f3f;
+}
+
 .active-chat {
     border-radius: 16px;
     transition: background-color 0.2s ease, color 0.2s ease;
     box-shadow: #cccccc 0 0 5px 0;
+}
+
+.chatsLinks {
+    margin-top: 8px;
+}
+
+.chat-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+/* chatList.css */
+.chat-item input {
+    background: transparent;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    padding: 4px 8px;
+    color: inherit;
+    width: 80%;
+}
+
+.chat-item input:focus {
+    outline: none;
+    border-color: #666;
+}
+
+.chat-icons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.icon-edit-icon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+    color: blue;
+}
+
+.icon-delete-icon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+    color: red;
+}
+
+.icon-edit-icon:hover, .icon-delete-icon:hover {
+    transform: scale(1.1);
 }
 
 .footer {

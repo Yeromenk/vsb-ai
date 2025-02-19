@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { SendHorizontal, FilePlus2 } from 'lucide-react';
-import './NewPrompt.css';
+import './NewChat.css';
 
-const NewPrompt = () => {
+const NewChat = () => {
     const [inputValue, setInputValue] = useState('');
 
     const handleInputChange = (e) => {
@@ -20,6 +20,10 @@ const NewPrompt = () => {
     };
 
     return (
+        <div className='new-chat-container'>
+            <div className="new-chat">
+
+            </div>
         <div className='document-input'>
             <form >
                 <div className='input-container'>
@@ -35,7 +39,8 @@ const NewPrompt = () => {
                 </div>
             </form>
         </div>
+        </div>
     );
 };
 
-export default NewPrompt;
+export default NewChat;

@@ -5,7 +5,7 @@ import './Dashboard.css';
 const Dashboard = () => {
     return (
         <div className='chat-layout'>
-                <ChatList/>
+            <ChatList />
             <div className='chat-content'>
                 <Outlet/>
             </div>

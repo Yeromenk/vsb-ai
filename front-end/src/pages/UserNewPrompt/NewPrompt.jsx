@@ -1,16 +1,22 @@
 import React from 'react';
 import './NewPrompt.css';
-import { useState } from 'react';
+import {useState} from 'react';
+import axios from 'axios';
+import {toast} from "react-hot-toast";
+import {useNavigate} from "react-router-dom";
 
 // TODO - Implement the getNewPrompt function
 const NewPrompt = () => {
     const [instructions, setInstructions] = useState('');
+    const [description, setDescription] = useState('');
+    const [name, setName] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     const handleCreateChat = async () => {
-        if (!instructions) {
-            setError('Instructions cannot be empty.');
+        if (!instructions || !description || !name) {
+            setError('All fields are required.');
             return;
         }
 
@@ -18,8 +24,15 @@ const NewPrompt = () => {
         setError(null);
 
         try {
-            // const aiResponse = await getNewPrompt(instructions);
-            // setResponse(aiResponse); // Сохранение ответа ИИ
+            const response = await axios.post('http://localhost:3000/ai/chats/prompt', {
+                name,
+                description,
+                instructions
+            })
+
+            toast.success('Chat created successfully');
+            navigate(`/chat/${response.data.response.id}`);
+            console.log(response);
         } catch (err) {
             setError('Failed to generate chat. Please try again.');
             console.error(err);
@@ -39,20 +52,24 @@ const NewPrompt = () => {
                     <h3>Name</h3>
                     <input
                         type="text"
-                        placeholder="Name"
+                        placeholder="Give a chat name"
                         className='text'
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                     />
 
                     <h3>Description</h3>
                     <input
                         type="text"
-                        placeholder="Description"
+                        placeholder="Write a description for what the chat is about"
                         className='text'
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
                     />
 
                     <h3>Instructions</h3>
                     <textarea
-                        placeholder="Instructions"
+                        placeholder="What this chat do? "
                         className='instructions'
                         value={instructions}
                         onChange={(e) => setInstructions(e.target.value)}
