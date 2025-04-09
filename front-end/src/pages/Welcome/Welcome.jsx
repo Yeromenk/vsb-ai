@@ -14,7 +14,7 @@ const Welcome = () => {
                 <p>This is a platform where you can translate, summarize and create alternative text</p>
                 {currentUser ? (
                     <Link to='/home'>
-                        <button>Get Started</button>
+                        <button>Continue</button>
                     </Link>
                 ) : (
                     <Link to='/login'>

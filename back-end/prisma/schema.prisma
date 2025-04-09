@@ -24,15 +24,17 @@ model UserChats {
 }
 
 model Chat {
-  id          String     @id @default(cuid()) // Primary key
-  userId      String // User ID (для связки с конкретным пользователем)
-  title       String // Название чата
-  type        String // Тип чата (private или group)
-  createdAt   DateTime   @default(now()) // Время создания чата
-  history     Message[] // Связь с моделью Message
-  files       File[] // Связь с моделью File
-  UserChats   UserChats? @relation(fields: [userChatsId], references: [id])
-  userChatsId Int?
+  id           String     @id @default(cuid()) // Primary key
+  userId       String // User ID (для связки с конкретным пользователем)
+  title        String // Название чата
+  type         String // Тип чата (private или group)
+  description  String? // Make it optional
+  instructions String? // Add this field to store instructions
+  createdAt    DateTime   @default(now()) // Время создания чата
+  history      Message[] // Связь с моделью Message
+  files        File[] // Связь с моделью File
+  UserChats    UserChats? @relation(fields: [userChatsId], references: [id])
+  userChatsId  Int?
 }
 
 model Message {

@@ -1,9 +1,52 @@
-import { useState } from 'react';
-import { SendHorizontal} from 'lucide-react';
+import { useContext, useState } from 'react';
+import { SendHorizontal } from 'lucide-react';
 import './UserPrompt.css';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { AuthContext } from '../../context/AuthContext';
+import {useMutation, useQueryClient, useQuery} from '@tanstack/react-query';
 
 const UserPrompt = () => {
     const [inputValue, setInputValue] = useState('');
+    const [loading, setLoading] = useState(false);
+    const { id: chatId } = useParams();
+    const { currentUser } = useContext(AuthContext);
+    const queryClient = useQueryClient();
+
+    const { data } = useQuery({
+        queryKey: ['chat', chatId],
+        queryFn: () => axios.get(`http://localhost:3000/ai/chat/${chatId}`, {
+            withCredentials: true,
+        }).then(res => res.data.response)
+    });
+
+    const mutation = useMutation({
+        mutationFn: async (message) => {
+            setLoading(true);
+            const response = await axios.put(
+                `http://localhost:3000/ai/prompt/chat/${chatId}`,
+                { message },
+                { withCredentials: true }
+            );
+            return response.data.response;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries(['chat', chatId]);
+            setInputValue('');
+        },
+        onError: (error) => {
+            console.error('Error sending message:', error);
+        },
+        onSettled: () => {
+            setLoading(false);
+        }
+    });
+
+    const handleSend = async (event) => {
+        event.preventDefault();
+        if (inputValue.trim() === '') return;
+        mutation.mutate(inputValue);
+    };
 
     const handleInputChange = (e) => {
         const textarea = e.target;
@@ -22,18 +65,23 @@ const UserPrompt = () => {
     return (
         <div className="user-prompt-container">
             <div className="user-prompt">
-                <h1>Some text</h1>
+                <h1>{data?.title || 'Custom Chat'}</h1>
+                {data?.description && <p className="description">{data.description}</p>}
             </div>
             <div className="document-input-prompt">
-                <form>
+                <form onSubmit={handleSend}>
                     <div className="input-container">
                         <textarea
                             rows={1}
                             value={inputValue}
-                            onChange={handleInputChange}
+                            onChange={(e) => setInputValue(e.target.value)}
+                            onInput={handleInputChange}
                             placeholder="What do you want to ask?"
+                            disabled={loading}
                         />
-                        <button type="submit">
+                        <button
+                            type="submit"
+                            disabled={loading || !inputValue.trim()}>
                             <SendHorizontal className="send-button" />
                         </button>
                     </div>

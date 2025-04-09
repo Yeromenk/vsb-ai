@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './translateText.css';
-import { ChevronDown, ArrowRight } from 'lucide-react';
+import {ChevronDown, ArrowRight} from 'lucide-react';
 import axios from "axios";
-import { useContext } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+import {useContext} from "react";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {useNavigate} from "react-router-dom";
+import {AuthContext} from "../../context/AuthContext";
 
 const TranslateText = () => {
     const [sourceLanguage, setSourceLanguage] = useState('English');
@@ -13,8 +13,9 @@ const TranslateText = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [input, setInput] = useState('');
+    const [loading] = useState(false);
 
-    const { currentUser } = useContext(AuthContext);
+    const {currentUser} = useContext(AuthContext);
     const userId = currentUser.id;
     const navigate = useNavigate();
 
@@ -40,7 +41,7 @@ const TranslateText = () => {
             return response.data.response;
         },
         onSuccess: (newChat) => {
-            queryClient.invalidateQueries({ queryKey: ['ChatList'] });
+            queryClient.invalidateQueries({queryKey: ['ChatList']});
             navigate(`/translate/chat/${newChat.id}`);
         },
         onError: (error) => {
@@ -108,7 +109,9 @@ const TranslateText = () => {
                                 </div>
                             )}
                         </div>
-                        <button className="submit-btn" onClick={handleSend}>
+                        <button className="submit-btn"
+                                onClick={handleSend}
+                                disabled={loading || !input.trim()}>
                             Translate <ArrowRight/>
                         </button>
                     </div>

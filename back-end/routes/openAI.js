@@ -14,20 +14,27 @@ const prisma = new PrismaClient();
 
 // TODO: Add a new chat (new prompt from user)
 // create a new custom chat (new prompt from user)
-router.post('/chats/prompt', verifyToken, async (req, res) => {
+router.post('/chats/new-prompt', verifyToken, async (req,
+                                                     res) => {
     const userId = req.user.id;
-    const {name, description, instructions} = req.body;
+    const {
+        name,
+        description,
+        instructions
+    } = req.body;
 
     try {
+        // Get initial AI response based on instructions
         const aiResponse = await getNewPrompt(instructions);
 
-        const newUserChar = await prisma.chat.create({
-            data: {
-                userId: userId,
-                title: name,
-                description: description,
-                instructions: instructions,
-                history: {
+        const newCustomChat = await prisma.chat.create({
+            data   : {
+                userId      : userId,
+                title       : name,
+                type        : 'custom',
+                description : description,
+                instructions: instructions, // Store instructions for future use
+                history     : {
                     create: [
                         {
                             role: 'user',
@@ -43,18 +50,65 @@ router.post('/chats/prompt', verifyToken, async (req, res) => {
             include: {
                 history: true,
             },
-        })
+        });
 
-        res.status(201).json({response: newUserChar});
+        // Connect to userChats
+        let userChats = await prisma.userChats.findFirst({
+            where: {
+                userId: userId,
+            },
+        });
+
+        if (!userChats) {
+            await prisma.userChats.create({
+                data: {
+                    userId: userId,
+                    chats : {
+                        connect: {
+                            id: newCustomChat.id,
+                        },
+                    },
+                },
+            });
+        } else {
+            await prisma.userChats.update({
+                where: {
+                    id: userChats.id,
+                },
+                data : {
+                    chats: {
+                        connect: {
+                            id: newCustomChat.id,
+                        },
+                    },
+                },
+            });
+        }
+
+        res.status(201)
+           .json({response: newCustomChat});
     } catch (error) {
-        console.error("Error in /newUserchats/prompt:", error);
-        res.status(500).json({error: "Internal Server Error"});
+        console.error("Error in /new-prompt/chat:", error);
+        res.status(500)
+           .json({error: "Internal Server Error"});
     }
-})
+});
 
 // Create a new chat
-router.post('/chats', upload.single('file'), async (req, res) => {
-    const {message, userId, sourceLanguage, targetLanguage, style, tone, action} = req.body;
+router.post('/chats', upload.single('file'), async (req,
+                                                    res) => {
+    const {
+        message,
+        userId,
+        sourceLanguage,
+        targetLanguage,
+        style,
+        tone,
+        action,
+        name,
+        description,
+        instructions
+    } = req.body;
     const file = req.file;
 
     let responseText;
@@ -71,24 +125,30 @@ router.post('/chats', upload.single('file'), async (req, res) => {
             const extractedText = await extractTextFromDocx(file.path);
 
             if (!extractedText || extractedText.length === 0) {
-                return res.status(400).json({error: "File is empty or contains unreadable text"});
+                return res.status(400)
+                          .json({error: "File is empty or contains unreadable text"});
             }
 
             responseText = await getFile(extractedText, action);
             chatType = 'file';
         } catch (error) {
-            return res.status(500).json({error: "Error processing the file"});
+            return res.status(500)
+                      .json({error: "Error processing the file"});
         }
+    } else if (name && description && instructions) {
+        responseText = await getNewPrompt(instructions);
+        chatType = 'custom';
     } else {
-        return res.status(400).json({error: "Invalid request"});
+        return res.status(400)
+                  .json({error: "Invalid request"});
     }
 
     try {
         const newChat = await prisma.chat.create({
-            data: {
-                userId: userId,
-                title: message ? message.substring(0, 40) : file.originalname,
-                type: chatType,
+            data   : {
+                userId : userId,
+                title  : message ? message.substring(0, 40) : file.originalname,
+                type   : chatType,
                 history: {
                     create: [
                         {
@@ -101,7 +161,7 @@ router.post('/chats', upload.single('file'), async (req, res) => {
                         }
                     ],
                 },
-                files: file ? {
+                files  : file ? {
                     create: {
                         fileName: file.originalname,
                         filePath: file.path,
@@ -111,7 +171,7 @@ router.post('/chats', upload.single('file'), async (req, res) => {
             },
             include: {
                 history: true,
-                files: true,
+                files  : true,
             },
         });
 
@@ -125,7 +185,7 @@ router.post('/chats', upload.single('file'), async (req, res) => {
             await prisma.userChats.create({
                 data: {
                     userId: userId,
-                    chats: {
+                    chats : {
                         connect: {
                             id: newChat.id,
                         },
@@ -137,7 +197,7 @@ router.post('/chats', upload.single('file'), async (req, res) => {
                 where: {
                     id: userChats.id,
                 },
-                data: {
+                data : {
                     chats: {
                         connect: {
                             id: newChat.id,
@@ -147,21 +207,24 @@ router.post('/chats', upload.single('file'), async (req, res) => {
             });
         }
 
-        res.status(201).send({response: newChat});
+        res.status(201)
+           .send({response: newChat});
     } catch (error) {
         console.error("Error in /chats:", error);
-        res.status(500).json({error: "Internal Server Error"});
+        res.status(500)
+           .json({error: "Internal Server Error"});
     }
 });
 
 
 // Get all user chats
-router.get('/userChats', verifyToken, async (req, res) => {
+router.get('/userChats', verifyToken, async (req,
+                                             res) => {
     const userId = req.user.id;
 
     try {
         const userChats = await prisma.userChats.findFirst({
-            where: {
+            where  : {
                 userId: userId,
             },
             include: {
@@ -170,25 +233,29 @@ router.get('/userChats', verifyToken, async (req, res) => {
         });
 
         if (!userChats) {
-            return res.status(404).json({error: 'User chats not found'});
+            return res.status(404)
+                      .json({error: 'User chats not found'});
         }
 
-        res.status(200).json({response: userChats.chats});
+        res.status(200)
+           .json({response: userChats.chats});
     } catch (error) {
         console.error("Error in /userChats:", error);
-        res.status(500).json({error: "Error in fetching /userChats"});
+        res.status(500)
+           .json({error: "Error in fetching /userChats"});
     }
 })
 
 // Get a specific chat
-router.get('/chat/:id', verifyToken, async (req, res) => {
+router.get('/chat/:id', verifyToken, async (req,
+                                            res) => {
     const userId = req.user.id;
     const chatId = req.params.id
 
     try {
         const chat = await prisma.chat.findFirst({
-            where: {
-                id: chatId,
+            where  : {
+                id    : chatId,
                 userId: userId,
             },
             include: {
@@ -197,30 +264,38 @@ router.get('/chat/:id', verifyToken, async (req, res) => {
         });
 
         if (!chat) {
-            return res.status(404).json({error: 'User chats not found'});
+            return res.status(404)
+                      .json({error: 'User chats not found'});
         }
 
-        res.status(200).json({response: chat});
+        res.status(200)
+           .json({response: chat});
     } catch (error) {
         console.error("Error in chats:", error);
-        res.status(500).json({error: "Error in fetching chats"});
+        res.status(500)
+           .json({error: "Error in fetching chats"});
     }
 })
 
 // update a chat format
-router.put('/format/chat/:id', verifyToken, async (req, res) => {
+router.put('/format/chat/:id', verifyToken, async (req,
+                                                   res) => {
     const userId = req.user.id;
     const chatId = req.params.id
-    const {message, style, tone} = req.body;
+    const {
+        message,
+        style,
+        tone
+    } = req.body;
     const formattedText = await getCompletion(message, style, tone);
 
     try {
         const updatedChat = await prisma.chat.update({
-            where: {
-                id: chatId,
+            where  : {
+                id    : chatId,
                 userId: userId,
             },
-            data: {
+            data   : {
                 history: {
                     create: [
                         {
@@ -239,27 +314,34 @@ router.put('/format/chat/:id', verifyToken, async (req, res) => {
             },
         });
 
-        res.status(200).json({response: updatedChat});
+        res.status(200)
+           .json({response: updatedChat});
     } catch (error) {
         console.error("Error in chats:", error);
-        res.status(500).json({error: "Error adding chat"});
+        res.status(500)
+           .json({error: "Error adding chat"});
     }
 })
 
 // Update a chat translate
-router.put('/translate/chat/:id', verifyToken, async (req, res) => {
+router.put('/translate/chat/:id', verifyToken, async (req,
+                                                      res) => {
     const userId = req.user.id;
     const chatId = req.params.id
-    const {message, sourceLanguage, targetLanguage} = req.body;
+    const {
+        message,
+        sourceLanguage,
+        targetLanguage
+    } = req.body;
     const translatedText = await getTranslation(message, sourceLanguage, targetLanguage);
 
     try {
         const updatedChat = await prisma.chat.update({
-            where: {
-                id: chatId,
+            where  : {
+                id    : chatId,
                 userId: userId,
             },
-            data: {
+            data   : {
                 history: {
                     create: [
                         {
@@ -278,15 +360,18 @@ router.put('/translate/chat/:id', verifyToken, async (req, res) => {
             },
         });
 
-        res.status(200).json({response: updatedChat});
+        res.status(200)
+           .json({response: updatedChat});
     } catch (error) {
         console.error("Error in chats:", error);
-        res.status(500).json({error: "Error adding chat"});
+        res.status(500)
+           .json({error: "Error adding chat"});
     }
 })
 
 // Update a chat file
-router.put('/file/chat/:id', verifyToken, upload.single('file'), async (req, res) => {
+router.put('/file/chat/:id', verifyToken, upload.single('file'), async (req,
+                                                                        res) => {
     const userId = req.user.id;
     const chatId = req.params.id
     const {action} = req.body;
@@ -295,28 +380,31 @@ router.put('/file/chat/:id', verifyToken, upload.single('file'), async (req, res
     // const fileAction = await getFile(file, action);
 
     if (!file || !action) {
-        return res.status(400).json({error: "File and action are required"});
+        return res.status(400)
+                  .json({error: "File and action are required"});
     }
 
     try {
         const extractedText = await extractTextFromDocx(file.path);
 
         if (!extractedText || extractedText.length === 0) {
-            return res.status(400).json({error: "File is empty or contains unreadable text"});
+            return res.status(400)
+                      .json({error: "File is empty or contains unreadable text"});
         }
 
         const modelResponse = await getFile(extractedText, action);
 
         if (!modelResponse || modelResponse.length === 0) {
-            return res.status(400).json({error: "Model response is empty"});
+            return res.status(400)
+                      .json({error: "Model response is empty"});
         }
 
         const updatedChat = await prisma.chat.update({
-            where: {
-                id: chatId,
+            where  : {
+                id    : chatId,
                 userId: userId,
             },
-            data: {
+            data   : {
                 history: {
                     create: [
                         {
@@ -335,15 +423,76 @@ router.put('/file/chat/:id', verifyToken, upload.single('file'), async (req, res
             },
         });
 
-        res.status(200).json({response: updatedChat});
+        res.status(200)
+           .json({response: updatedChat});
     } catch (error) {
         console.error("Error in chats:", error);
-        res.status(500).json({error: "Error adding chat"});
+        res.status(500)
+           .json({error: "Error adding chat"});
     }
 })
 
+// update a chat prompt
+router.put('/prompt/chat/:id', verifyToken, async (req,
+                                                   res) => {
+    const userId = req.user.id;
+    const chatId = req.params.id;
+    const {message} = req.body;
+
+    try {
+        const chat = await prisma.chat.findFirst({  // Changed from Chat to chat
+            where : {
+                id    : chatId,
+                userId: userId,
+            },
+            select: {
+                instructions: true,
+            }
+        });
+
+        if (!chat) {
+            return res.status(404)
+                      .json({error: 'Chat not found'});
+        }
+
+        const aiResponse = await getNewPrompt(chat.instructions, message);  // Changed from Chat to chat
+
+        const updatedChat = await prisma.chat.update({
+            where  : {
+                id    : chatId,
+                userId: userId,
+            },
+            data   : {
+                history: {
+                    create: [
+                        {
+                            role: 'user',
+                            text: message,
+                        },
+                        {
+                            role: 'model',
+                            text: aiResponse,
+                        },
+                    ],
+                },
+            },
+            include: {
+                history: true,
+            },
+        });
+
+        res.status(200)
+           .json({response: updatedChat});
+    } catch (error) {
+        console.error("Error in chats:", error);
+        res.status(500)
+           .json({error: "Error adding chat"});
+    }
+});
+
 // update a chat title
-router.put('/chat/:id', verifyToken, async (req, res) => {
+router.put('/chat/:id', verifyToken, async (req,
+                                            res) => {
     const userId = req.user.id;
     const chatId = req.params.id
     const {title} = req.body;
@@ -351,91 +500,131 @@ router.put('/chat/:id', verifyToken, async (req, res) => {
     try {
         const updatedChat = await prisma.chat.update({
             where: {
-                id: chatId,
+                id    : chatId,
                 userId: userId,
             },
-            data: {
+            data : {
                 title: title,
             },
         });
 
-        res.status(200).json({response: updatedChat});
+        res.status(200)
+           .json({response: updatedChat});
     } catch (error) {
         console.error("Error in chats:", error);
-        res.status(500).json({error: "Error adding chat"});
+        res.status(500)
+           .json({error: "Error adding chat"});
     }
 })
 
 // delete a chat
-router.delete('/chat/:id', verifyToken, async (req, res) => {
+router.delete('/chat/:id', verifyToken, async (req,
+                                               res) => {
     const userId = req.user.id;
     const chatId = req.params.id;
 
     try {
         const chat = await prisma.chat.findFirst({
             where: {
-                id: chatId,
+                id    : chatId,
                 userId: userId,
             },
         });
 
         if (!chat) {
-            return res.status(404).json({ error: 'Chat not found or not authorized' });
+            return res.status(404)
+                      .json({error: 'Chat not found or not authorized'});
         }
 
         // Delete all related records in a transaction
         await prisma.$transaction([
             // Delete messages first
             prisma.message.deleteMany({
-                where: { chatId: chatId }
+                where: {chatId: chatId}
             }),
             // Delete files next
             prisma.file.deleteMany({
-                where: { chatId: chatId }
+                where: {chatId: chatId}
             }),
             // Delete chat last
             prisma.chat.delete({
-                where: { id: chatId }
+                where: {id: chatId}
             })
         ]);
 
-        res.status(200).json({ response: 'Chat deleted' });
+        res.status(200)
+           .json({response: 'Chat deleted'});
     } catch (error) {
         console.error("Error in /chat:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        res.status(500)
+           .json({error: "Internal Server Error"});
     }
 });
 
-router.post('/translate', async (req, res) => {
-    const {message, sourceLanguage, targetLanguage} = req.body;
+router.post('/translate', async (req,
+                                 res) => {
+    const {
+        message,
+        sourceLanguage,
+        targetLanguage
+    } = req.body;
     try {
         const translatedText = await getTranslation(message, sourceLanguage, targetLanguage);
-        res.status(200).json({translatedText});
+        res.status(200)
+           .json({translatedText});
     } catch (error) {
         console.error("Error in /translate:", error);
-        res.status(500).json({error: "Internal Server Error"});
+        res.status(500)
+           .json({error: "Internal Server Error"});
     }
 })
 
-router.post('/format', async (req, res) => {
-    const {message, style, tone} = req.body;
+router.post('/format', async (req,
+                              res) => {
+    const {
+        message,
+        style,
+        tone
+    } = req.body;
     try {
         const completion = await getCompletion(message, style, tone);
-        res.status(200).json({response: completion});
+        res.status(200)
+           .json({response: completion});
     } catch (error) {
         console.error("Error in /format:", error);
-        res.status(500).json({error: "Internal Server Error"});
+        res.status(500)
+           .json({error: "Internal Server Error"});
     }
 })
 
-router.post('/file', async (req, res) => {
-    const {file, action} = req.body;
+router.post('/file', async (req,
+                            res) => {
+    const {
+        file,
+        action
+    } = req.body;
     try {
         const fileAction = await getFile(file, action);
-        res.status(200).json({response: fileAction});
+        res.status(200)
+           .json({response: fileAction});
     } catch (error) {
         console.error("Error in /file:", error);
-        res.status(500).json({error: "Internal Server Error"});
+        res.status(500)
+           .json({error: "Internal Server Error"});
+    }
+})
+
+router.post('/custom', async (req,
+                              res) => {
+    const {message} = req.body;
+    try {
+        const custom = await getNewPrompt(message);
+        res.status(200)
+           .json({response: custom});
+    } catch (error) {
+        console.error("Error in /custom:", error);
+        res.status(500)
+           .json({error: "Internal Server Error"});
     }
 })
 

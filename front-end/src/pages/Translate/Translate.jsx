@@ -6,6 +6,7 @@ import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {AuthContext} from "../../context/AuthContext";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css';
+import toast from "react-hot-toast";
 
 const Translate = ({data}) => {
     const [sourceLanguage, setSourceLanguage] = useState('English');
@@ -21,9 +22,11 @@ const Translate = ({data}) => {
     const firstLetter = currentUser?.username.charAt(0).toUpperCase();
 
     useEffect(() => {
-        if (endRef.current) {
-            endRef.current.scrollIntoView({behavior: "smooth"});
-        }
+        setTimeout(() => {
+            if (endRef.current) {
+                endRef.current.scrollIntoView({behavior: "smooth"});
+            }
+        }, 100);
     }, [data, messages, response]);
 
     const handleLanguageChange = (newLanguage, type) => {
@@ -67,8 +70,8 @@ const Translate = ({data}) => {
     const add = async (text, isInitial) => {
         if (text.trim() === '') return;
 
-        setLoading(true)
-        if (!isInitial) setMessages(text)
+        setLoading(true);
+        if (!isInitial) setMessages(text);
 
         try {
             const translationResponse = await axios.post('http://localhost:3000/ai/translate', {
@@ -78,15 +81,13 @@ const Translate = ({data}) => {
             });
 
             const translatedText = translationResponse.data.translatedText;
-
             setResponse(translatedText);
-            setLoading(false)
             mutation.mutate();
         } catch (error) {
             console.error("Error in handleSend:", error);
-            setLoading(false)
+            toast.error("Error in translating text. Please try again later.");
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
     };
 
@@ -100,18 +101,22 @@ const Translate = ({data}) => {
     return (
         <>
             <div className="chat">
-                {messages && (<div className="message-container">
-                    <div className="message user-message">{messages}</div>
-                    <div className='avatar user-avatar'>
-                        {firstLetter}
+                {messages && (
+                    <div className="message-container">
+                        <div className="message user-message">{messages}</div>
+                        <div className='avatar user-avatar'>
+                            {firstLetter}
+                        </div>
                     </div>
-                </div>)}
+                )}
                 {loading ? (
                     <div className="message-container">
                         <div className='avatar model-avatar'>
                             <img src='/vsb-logo.jpg' alt='vsb-logo'/>
                         </div>
-                        <div className="message model-message"><Skeleton width="10rem"/></div>
+                        <div className="message model-message">
+                            <Skeleton width="10rem"/>
+                        </div>
                     </div>
                 ) : (
                     response && (
@@ -121,18 +126,15 @@ const Translate = ({data}) => {
                             </div>
                             <div className="message model-message">{response}</div>
                         </div>
-                    ))}
+                    )
+                )}
                 <div ref={endRef}/>
             </div>
-
 
             <div className="container">
                 <div className="language-selection">
                     <div className="dropdown">
-                        <button
-                            className="dropbtn"
-                            onClick={() => toggleDropdown('source')}
-                        >
+                        <button className="dropbtn" onClick={() => toggleDropdown('source')}>
                             {sourceLanguage} <ChevronDown/>
                         </button>
                         {isDropdownOpen && activeDropdown === 'source' && (
@@ -148,10 +150,7 @@ const Translate = ({data}) => {
                     </div>
                     <ArrowRight className="arrow-icon"/>
                     <div className="dropdown">
-                        <button
-                            className="dropbtn"
-                            onClick={() => toggleDropdown('target')}
-                        >
+                        <button className="dropbtn" onClick={() => toggleDropdown('target')}>
                             {targetLanguage} <ChevronDown/>
                         </button>
                         {isDropdownOpen && activeDropdown === 'target' && (
@@ -165,7 +164,7 @@ const Translate = ({data}) => {
                             </div>
                         )}
                     </div>
-                    <button className="submit-btn" onClick={handleSend}>
+                    <button className="submit-btn" onClick={handleSend} disabled={loading || !input.trim()}>
                         Translate <ArrowRight/>
                     </button>
                 </div>
@@ -175,7 +174,6 @@ const Translate = ({data}) => {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                 ></textarea>
-
             </div>
         </>
     );

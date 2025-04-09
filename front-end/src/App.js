@@ -13,6 +13,7 @@ import NewPrompt from "./pages/UserNewPrompt/NewPrompt";
 import FormatingText from "./components/textInput/FormatingText";
 import DocumentInput from "./components/textInput/DocumentInput";
 import UserPrompt from "./components/textInput/UserPrompt";
+import Custom from "./pages/Custom/Custom.jsx";
 
 const App = () => {
     return (
@@ -87,9 +88,21 @@ const router = createBrowserRouter([
                       element: <NewPrompt />
                     },
                     {
-                        path: '/user-prompt',
+                        path: '/custom',
                         element: <UserPrompt />
+                    },
+                    {
+                      path: '/custom/chat/:id',
+                      element: <Message type="custom" />
+                    },
+                    {
+                        path: '/chat/:id',
+                        element: <Message type="custom" />
                     }
+                    // {
+                    //     path: '/chat/:id',
+                    //     element: <UserPrompt />
+                    // }
                 ]
             }
         ]

@@ -7,7 +7,7 @@ const openai = new OpenAI({
 
 export async function getFile(file, action) {
     try {
-        const prompt = `Please ${action} the following file:\n\n"${file}". Write only the ${action}, without the quotation marks`;
+        const prompt = `Please ${action} the following file:\n\n"${file}". Write only the ${action}, without the quotation marks. Write in language that is easy to understand.`;
 
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini",

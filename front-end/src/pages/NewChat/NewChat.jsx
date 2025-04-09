@@ -1,9 +1,15 @@
-import { useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import { SendHorizontal, FilePlus2 } from 'lucide-react';
 import './NewChat.css';
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import axios from "axios";
 
-const NewChat = () => {
+const NewChat = ({data}) => {
     const [inputValue, setInputValue] = useState('');
+    const endRef = useRef(null);
+    const [message, setMessage] = useState("");
+    const [response, setResponse] = useState("");
+    const [input, setInput] = useState('');
 
     const handleInputChange = (e) => {
         const textarea = e.target;
@@ -18,6 +24,33 @@ const NewChat = () => {
 
         setInputValue(textarea.value);
     };
+
+    useEffect(() => {
+        if (endRef.current) {
+            endRef.current.scrollIntoView({behavior: "smooth"});
+        }
+    }, [message]);
+
+    const queryClient = useQueryClient();
+    const mutation = useMutation({
+        mutationFn: () => {
+            return axios.put(`http://localhost:3000/ai/user-prompt/chat/${data.id}`, {
+                message: message.length ? message : undefined,
+            }, {
+                withCredentials: true,
+            }).then((res) => res.data.response);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['chat', data.id]}).then(() => {
+                setMessage("");
+                setResponse("");
+                setInput('');
+            });
+        },
+        onError: (error) => {
+            console.error("Error in handleSend:", error);
+        }
+    });
 
     return (
         <div className='new-chat-container'>

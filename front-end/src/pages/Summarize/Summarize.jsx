@@ -1,10 +1,11 @@
 import './Summarize.css';
 import {FilePlus2, Send} from "lucide-react";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import axios from "axios";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css';
+import {AuthContext} from "../../context/AuthContext";
 
 const Summarize = ({data}) => {
     const [file, setFile] = useState(null);
@@ -12,6 +13,8 @@ const Summarize = ({data}) => {
     const [response, setResponse] = useState("");
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null);
+    const {currentUser} = useContext(AuthContext);
+    const firstLetter = currentUser?.username.charAt(0).toUpperCase();
     const endRef = useRef()
 
     useEffect(() => {
@@ -26,7 +29,7 @@ const Summarize = ({data}) => {
             const formData = new FormData();
             formData.append('file', file);
             formData.append('action', action);
-            const {data: result} = await axios.put(`http://localhost:3000/ai/format/file/${data.id}`, formData, {
+            const {data: result} = await axios.put(`http://localhost:3000/ai/file/chat/${data.id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -93,13 +96,46 @@ const Summarize = ({data}) => {
     };
 
     return (
+        <>
+
+            {/*<div className="chat">*/}
+            {/*    {messages && (*/}
+            {/*        <div className="message-container">*/}
+            {/*            <div className="message user-message">{messages}</div>*/}
+            {/*            <div className='avatar user-avatar'>*/}
+            {/*                {firstLetter}*/}
+            {/*            </div>*/}
+            {/*        </div>*/}
+            {/*    )}*/}
+            {/*    {loading ? (*/}
+            {/*        <div className="message-container">*/}
+            {/*            <div className='avatar model-avatar'>*/}
+            {/*                <img src='/vsb-logo.jpg' alt='vsb-logo'/>*/}
+            {/*            </div>*/}
+            {/*            <div className="message model-message">*/}
+            {/*                <Skeleton width="10rem"/>*/}
+            {/*            </div>*/}
+            {/*        </div>*/}
+            {/*    ) : (*/}
+            {/*        response && (*/}
+            {/*            <div className="message-container">*/}
+            {/*                <div className='avatar model-avatar'>*/}
+            {/*                    <img src='/vsb-logo.jpg' alt='vsb-logo'/>*/}
+            {/*                </div>*/}
+            {/*                <div className="message model-message">{response}</div>*/}
+            {/*            </div>*/}
+            {/*        )*/}
+            {/*    )}*/}
+            {/*    <div ref={endRef}/>*/}
+            {/*</div>*/}
+
         <div className='document-input'>
             <div className="document-input-container">
                 <div className="file-container">
                     <form onSubmit={handleSubmit}>
                         <div className='file-input-container'>
                             <label className='file-label'>
-                                <FilePlus2 className='input-icon'/>
+                                <FilePlus2 className='file-icon'/>
                                 <span>{file ? file.name : 'Choose a file'}</span>
                                 <input type='file' onChange={handleFileChange} hidden/>
                             </label>
@@ -127,6 +163,7 @@ const Summarize = ({data}) => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 

@@ -37,7 +37,7 @@ export const register = async (req, res) => {
             return res.status(400).json({message: "Password must be at least 8 characters long"})
         }
 
-        // Add later to project !!!
+        // TODO Add later to project !!!
         // const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
         // if (!passwordRegex.test(req.body.password)) {
         //     return res.status(400).json({ message: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character' });
@@ -134,12 +134,13 @@ const verifyToken = (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(token, 'jwtkey')
-        req.user = decoded
+        req.user = jwt.verify(token, 'jwtkey')
         next()
     } catch (error) {
         res.status(403).json({message: 'Forbidden'})
     }
 }
+
+
 
 export default verifyToken

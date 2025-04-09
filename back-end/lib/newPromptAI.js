@@ -4,13 +4,15 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-export async function getNewPrompt(instructions) {
+export async function getNewPrompt(instructions, message) {
     try {
-        const prompt = `${instructions}`;
+        const prompt = message ?
+            `Instructions: ${instructions}\n\nUser message: ${message}` :
+            instructions;
 
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini",
-            messages: [{ role: "user", content: prompt }],
+            messages: [{role: "user", content: prompt}],
             temperature: 0.7,
             max_tokens: 512,
             top_p: 1,

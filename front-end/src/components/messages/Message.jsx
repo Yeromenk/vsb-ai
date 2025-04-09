@@ -7,20 +7,28 @@ import {AuthContext} from "../../context/AuthContext";
 import Translate from "../../pages/Translate/Translate";
 import Format from "../../pages/Formate/Format";
 import Summarize from "../../pages/Summarize/Summarize";
+import UserPrompt from "../textInput/UserPrompt";
 
 const Message = ({type}) => {
     const {currentUser} = useContext(AuthContext);
-    const firstLetter = currentUser?.username.charAt(0).toUpperCase();
+    const firstLetter = currentUser?.username.charAt(0)
+                                   .toUpperCase();
 
     const path = useLocation().pathname;
-    const chatId = path.split("/").pop();
+    const chatId = path.split("/")
+                       .pop();
 
-    const {isPending, data, error} = useQuery({
+    const {
+        isPending,
+        data,
+        error
+    } = useQuery({
         queryKey: ['chat', chatId],
-        queryFn: () =>
+        queryFn : () =>
             axios.get(`http://localhost:3000/ai/chat/${chatId}`, {
                 withCredentials: true,
-            }).then(res => res.data.response),
+            })
+                 .then(res => res.data.response),
     });
 
     return (
@@ -31,7 +39,8 @@ const Message = ({type}) => {
                         ? "Loading..."
                         : error
                             ? "An error occurred"
-                            : data?.history?.map((message, index) => (
+                            : data?.history?.map((message,
+                                                  index) => (
                                 <div key={index} className="message-container">
                                     {message.role === 'model' && (
                                         <div className="avatar model-avatar">
@@ -50,8 +59,13 @@ const Message = ({type}) => {
                             ))}
                 </div>
 
-                {data && (type === 'translate' ? <Translate data={data}/> : type === 'format' ?
-                    <Format data={data}/> : type === 'file' ? <Summarize data={data}/> : null)}
+                {data && (
+                    type === 'translate' ? <Translate data={data}/> :
+                        type === 'format' ? <Format data={data}/> :
+                            type === 'file' ? <Summarize data={data}/> :
+                                type === 'custom' ? <UserPrompt data={data}/> :
+                                    null
+                )}
 
             </div>
         </div>
