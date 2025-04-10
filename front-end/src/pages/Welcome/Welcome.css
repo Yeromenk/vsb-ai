@@ -1,100 +1,103 @@
 .welcome {
-    display: flex;
-    align-items: center;
-    gap: 80px;
-    min-height: 100vh;
-    background-color: white;
-    padding: 5% 8%;
+  display: flex;
+  align-items: center;
+  gap: 80px;
+  height: calc(100vh - 80px);
+  background-color: white;
+  padding: 5% 8%;
 }
 
 .content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 24px;
-    text-align: left;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 24px;
+  text-align: left;
 }
 
 .content h1 {
-    font-size: 52px;
-    font-weight: 700;
-    color: var(--primary);
-    line-height: 1.2;
-    letter-spacing: -0.5px;
+  font-size: 52px;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1.2;
+  letter-spacing: -0.5px;
 }
 
 .content p {
-    font-size: 20px;
-    font-weight: 400;
-    line-height: 1.6;
-    max-width: 540px;
-    color: var(--secondary);
-    margin-bottom: 8px;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.6;
+  max-width: 540px;
+  color: var(--secondary);
+  margin-bottom: 8px;
 }
 
 .content button {
-    padding: 16px 32px;
-    font-size: 18px;
-    font-weight: 600;
-    background-color: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
+  padding: 16px 32px;
+  font-size: 18px;
+  font-weight: 600;
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .content button:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow);
-    background-color: #3685bb;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+  background-color: #3685bb;
 }
 
 .logo {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .logo img {
-    max-width: 450px;
-    border-radius: 10px;
-    box-shadow: var(--shadow);
+  max-width: 450px;
+  border-radius: 10px;
+  box-shadow: var(--shadow);
 }
 
 @media (max-width: 768px) {
-    .welcome {
-        flex-direction: column;
-        height: auto;
-        gap: 40px;
-        padding: 15% 5%;
-        text-align: center;
-    }
+  .welcome {
+    flex-direction: column;
+    height: auto;
+    gap: 20px;
+    padding: 15% 5%;
+    text-align: center;
+  }
 
-    .content {
-        align-items: center;
-        text-align: center;
-    }
+  .content {
+    align-items: center;
+    text-align: center;
+    gap: 16px;
+  }
 
-    .content h1 {
-        font-size: 36px;
-    }
+  .content h1 {
+    font-size: 36px;
+  }
 
-    .content p {
-        font-size: 18px;
-        max-width: 100%;
-    }
+  .content p {
+    font-size: 18px;
+    max-width: 100%;
+  }
 
-    .content button {
-        padding: 14px 28px;
-        font-size: 16px;
-    }
+  .content button {
+    padding: 14px 28px;
+    font-size: 16px;
+  }
 
-    .logo img {
-        max-width: 300px;
-        display: block;
-    }
+  .logo img {
+    max-width: 300px;
+    display: block;
+  }
 }

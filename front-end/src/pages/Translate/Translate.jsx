@@ -1,182 +1,145 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
-import './Translate.css';
-import {ChevronDown, ArrowRight} from 'lucide-react';
-import axios from "axios";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {AuthContext} from "../../context/AuthContext";
-import Skeleton from "react-loading-skeleton";
+// pages/Translate/Translate.jsx
+import { useContext, useEffect, useRef, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+import { AuthContext } from '../../context/AuthContext';
+import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
+import TextTranslator from '../../components/common/TextTranslator/TextTranslator';
+import './Translate.css';
 
-const Translate = ({data}) => {
-    const [sourceLanguage, setSourceLanguage] = useState('English');
-    const [targetLanguage, setTargetLanguage] = useState('Spanish');
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [activeDropdown, setActiveDropdown] = useState(null);
-    const [input, setInput] = useState('');
-    const [messages, setMessages] = useState("");
-    const [response, setResponse] = useState("");
-    const endRef = useRef(null);
-    const [loading, setLoading] = useState(false);
-    const {currentUser} = useContext(AuthContext);
-    const firstLetter = currentUser?.username.charAt(0).toUpperCase();
+const Translate = ({ data }) => {
+  const [messages, setMessages] = useState('');
+  const [response, setResponse] = useState('');
+  const endRef = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const { currentUser } = useContext(AuthContext);
+  const firstLetter = currentUser?.username.charAt(0)
+                                 .toUpperCase();
+  const queryClient = useQueryClient();
 
-    useEffect(() => {
-        setTimeout(() => {
-            if (endRef.current) {
-                endRef.current.scrollIntoView({behavior: "smooth"});
-            }
-        }, 100);
-    }, [data, messages, response]);
+  useEffect(() => {
+    if (endRef.current) {
+      // Using setTimeout ensures DOM updates before scrolling
+      setTimeout(() => {
+        endRef.current.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  }, [messages, response, data?.messages]); // Add data?.messages as dependency
 
-    const handleLanguageChange = (newLanguage, type) => {
-        if (type === 'source') {
-            setSourceLanguage(newLanguage);
-        } else {
-            setTargetLanguage(newLanguage);
-        }
-        setIsDropdownOpen(false);
-        setActiveDropdown(null);
-    };
-
-    const queryClient = useQueryClient();
-    const mutation = useMutation({
-        mutationFn: () => {
-            return axios.put(`http://localhost:3000/ai/translate/chat/${data.id}`, {
-                message: messages.length ? messages : undefined,
-                sourceLanguage,
-                targetLanguage,
-            }, {
-                withCredentials: true,
-            }).then((res) => res.data.response);
+  const mutation = useMutation({
+    mutationFn: () => {
+      return axios.put(
+        `http://localhost:3000/ai/translate/chat/${data.id}`,
+        {
+          message       : messages.length ? messages : undefined,
+          sourceLanguage: data.sourceLanguage,
+          targetLanguage: data.targetLanguage,
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ['chat', data.id]}).then(() => {
-                setMessages("");
-                setResponse("");
-                setInput('');
-            });
+        {
+          withCredentials: true,
         },
-        onError: (error) => {
-            console.error("Error in handleSend:", error);
-        }
-    });
+      );
+    },
+    onSuccess : () => {
+      queryClient.invalidateQueries({ queryKey: ['chat', data.id] })
+                 .then(() => {
+                   setMessages('');
+                   setResponse('');
+                 });
+    },
+    onError   : error => {
+      console.error('Error in handleSend:', error);
+    },
+  });
 
-    const toggleDropdown = (type) => {
-        setIsDropdownOpen((prev) => !prev);
-        setActiveDropdown((prev) => (prev === type ? null : type));
-    };
+  const handleTranslate = async ({
+                                   text,
+                                   sourceLanguage,
+                                   targetLanguage,
+                                 }) => {
+    setLoading(true);
+    setMessages(text);
 
-    const add = async (text, isInitial) => {
-        if (text.trim() === '') return;
+    try {
+      const translationResponse = await axios.post('http://localhost:3000/ai/translate', {
+        message: text,
+        sourceLanguage,
+        targetLanguage,
+      });
 
-        setLoading(true);
-        if (!isInitial) setMessages(text);
+      const translatedText = translationResponse.data.translatedText;
+      setResponse(translatedText);
+      mutation.mutate();
+    } catch (error) {
+      console.error('Error in translation:', error);
+      toast.error('Error in translating text. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        try {
-            const translationResponse = await axios.post('http://localhost:3000/ai/translate', {
-                message: text,
-                sourceLanguage,
-                targetLanguage,
-            });
-
-            const translatedText = translationResponse.data.translatedText;
-            setResponse(translatedText);
-            mutation.mutate();
-        } catch (error) {
-            console.error("Error in handleSend:", error);
-            toast.error("Error in translating text. Please try again later.");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleSend = async (event) => {
-        event.preventDefault();
-        if (!loading) {
-            await add(input, false);
-        }
-    };
-
-    return (
-        <>
-            <div className="chat">
-                {messages && (
-                    <div className="message-container">
-                        <div className="message user-message">{messages}</div>
-                        <div className='avatar user-avatar'>
-                            {firstLetter}
-                        </div>
-                    </div>
-                )}
-                {loading ? (
-                    <div className="message-container">
-                        <div className='avatar model-avatar'>
-                            <img src='/vsb-logo.jpg' alt='vsb-logo'/>
-                        </div>
-                        <div className="message model-message">
-                            <Skeleton width="10rem"/>
-                        </div>
-                    </div>
-                ) : (
-                    response && (
-                        <div className="message-container">
-                            <div className='avatar model-avatar'>
-                                <img src='/vsb-logo.jpg' alt='vsb-logo'/>
-                            </div>
-                            <div className="message model-message">{response}</div>
-                        </div>
-                    )
-                )}
-                <div ref={endRef}/>
-            </div>
-
-            <div className="container">
-                <div className="language-selection">
-                    <div className="dropdown">
-                        <button className="dropbtn" onClick={() => toggleDropdown('source')}>
-                            {sourceLanguage} <ChevronDown/>
-                        </button>
-                        {isDropdownOpen && activeDropdown === 'source' && (
-                            <div className="dropdown-content">
-                                <ul>
-                                    <li onClick={() => handleLanguageChange('English', 'source')}>English</li>
-                                    <li onClick={() => handleLanguageChange('Spanish', 'source')}>Spanish</li>
-                                    <li onClick={() => handleLanguageChange('Italian', 'source')}>Italian</li>
-                                    <li onClick={() => handleLanguageChange('Russian', 'source')}>Russian</li>
-                                </ul>
-                            </div>
-                        )}
-                    </div>
-                    <ArrowRight className="arrow-icon"/>
-                    <div className="dropdown">
-                        <button className="dropbtn" onClick={() => toggleDropdown('target')}>
-                            {targetLanguage} <ChevronDown/>
-                        </button>
-                        {isDropdownOpen && activeDropdown === 'target' && (
-                            <div className="dropdown-content">
-                                <ul>
-                                    <li onClick={() => handleLanguageChange('English', 'target')}>English</li>
-                                    <li onClick={() => handleLanguageChange('Spanish', 'target')}>Spanish</li>
-                                    <li onClick={() => handleLanguageChange('Italian', 'target')}>Italian</li>
-                                    <li onClick={() => handleLanguageChange('Russian', 'target')}>Russian</li>
-                                </ul>
-                            </div>
-                        )}
-                    </div>
-                    <button className="submit-btn" onClick={handleSend} disabled={loading || !input.trim()}>
-                        Translate <ArrowRight/>
-                    </button>
+  return (
+    <div className="translate-page">
+      <div className="chat">
+        {data?.messages?.map((msg, index) => (
+          <div className="message-container" key={index}>
+            {msg.isBot || msg.role === "assistant" ? (
+              <>
+                <div className="avatar model-avatar">
+                  <img src="/vsb-logo.jpg" alt="vsb-logo" />
                 </div>
-                <textarea
-                    className='text-input'
-                    placeholder='Enter text to translate'
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                ></textarea>
+                <div className="message model-message">{msg.content}</div>
+              </>
+            ) : (
+              <>
+                <div className="message user-message">{msg.content}</div>
+                <div className="avatar user-avatar">{firstLetter}</div>
+              </>
+            )}
+          </div>
+        ))}
+
+        {messages && !data?.messages?.some(msg => msg.content === messages) && (
+          <div className="message-container">
+            <div className="message user-message">{messages}</div>
+            <div className="avatar user-avatar">{firstLetter}</div>
+          </div>
+        )}
+
+        {loading ? (
+          <div className="message-container">
+            <div className="avatar model-avatar">
+              <img src="/vsb-logo.jpg" alt="vsb-logo" />
             </div>
-        </>
-    );
+            <div className="message model-message">
+              <Skeleton width="10rem" />
+            </div>
+          </div>
+        ) : (
+          response && !data?.messages?.some(msg => msg.content === response) && (
+            <div className="message-container">
+              <div className="avatar model-avatar">
+                <img src="/vsb-logo.jpg" alt="vsb-logo" />
+              </div>
+              <div className="message model-message">{response}</div>
+            </div>
+          )
+        )}
+        <div ref={endRef} /> {/* Reference element for scrolling */}
+      </div>
+
+      <div className="translator-wrapper">
+        <TextTranslator
+          onSubmit={handleTranslate}
+          loading={loading}
+          initialSource={data?.sourceLanguage || 'English'}
+          initialTarget={data?.targetLanguage || 'Spanish'}
+        />
+      </div>
+    </div>
+  );
 };
 
 export default Translate;
