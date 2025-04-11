@@ -8,17 +8,24 @@ import Translate from '../../pages/Translate/Translate';
 import Format from '../../pages/Format/Format';
 import Summarize from '../../pages/Summarize/Summarize';
 import CustomInput from '../../features/custom/CustomInput';
+import LoadingState from '../common/LoadingState/LoadingState';
+import AiResponse from '../ai-response/AiResponse';
 
 const Message = ({ type }) => {
   const { currentUser } = useContext(AuthContext);
-  const firstLetter = currentUser?.username.charAt(0).toUpperCase();
-
+  const firstLetter = currentUser?.username.charAt(0)
+                                 .toUpperCase();
   const path = useLocation().pathname;
-  const chatId = path.split('/').pop();
+  const chatId = path.split('/')
+                     .pop();
 
-  const { isPending, data, error } = useQuery({
+  const {
+    isPending,
+    data,
+    error,
+  } = useQuery({
     queryKey: ['chat', chatId],
-    queryFn: () =>
+    queryFn : () =>
       axios
         .get(`http://localhost:3000/ai/chat/${chatId}`, {
           withCredentials: true,
@@ -31,22 +38,29 @@ const Message = ({ type }) => {
       <div className="container-message">
         <div className="chat">
           {isPending
-            ? 'Loading...'
+            ? <LoadingState message="Loading..." />
             : error
               ? 'An error occurred'
-              : data?.history?.map((message, index) => (
-                  <div key={index} className="message-container">
-                    {message.role === 'model' && (
+              : data?.history?.map((message,
+                                    index) => (
+                <div key={index} className="message-container">
+                  {message.role === 'user' ? (
+                    <>
+                      <div className="user-message">{message.text}</div>
+                      <div className="avatar user-avatar">{firstLetter}</div>
+                    </>
+                  ) : (
+                    <>
                       <div className="avatar model-avatar">
                         <img src="/vsb-logo.jpg" alt="vsb-logo" />
                       </div>
-                    )}
-                    <div className={`message ${message.role}-message`}>{message.text}</div>
-                    {message.role === 'user' && (
-                      <div className="avatar user-avatar">{firstLetter}</div>
-                    )}
-                  </div>
-                ))}
+                      <div className="model-message">
+                        <AiResponse text={message.text} />
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))}
         </div>
 
         {data &&
@@ -57,7 +71,7 @@ const Message = ({ type }) => {
           ) : type === 'file' ? (
             <Summarize data={data} />
           ) : type === 'custom' ? (
-            <CustomInput data={data} />
+            <CustomInput templateId={data.id} />
           ) : null)}
       </div>
     </div>

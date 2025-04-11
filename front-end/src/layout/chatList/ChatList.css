@@ -184,14 +184,6 @@ a:hover .chat-icons {
   transform: scale(1.2);
 }
 
-.footer {
-  padding: 15px 10px;
-  margin-top: auto;
-  border-top: 1px solid #eaeaea;
-  font-size: 13px;
-  color: #666;
-  text-align: center;
-}
 
 @media (max-width: 768px) {
   .menu-button {

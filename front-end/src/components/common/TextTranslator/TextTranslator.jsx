@@ -12,10 +12,11 @@ const TextTranslator = ({
   const [sourceLanguage, setSourceLanguage] = useState(initialSource);
   const [targetLanguage, setTargetLanguage] = useState(initialTarget);
   const [input, setInput] = useState('');
+  const maxChars = 1000;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (input.trim() === '') return;
+    if (input.trim() === '' || input.length > maxChars) return;
 
     onSubmit({
       text: input,
@@ -24,33 +25,50 @@ const TextTranslator = ({
     });
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && e.ctrlKey) {
+      handleSubmit(e);
+    }
+  };
+
   return (
     <div className="translator-container">
       <div className="language-selection">
-        <LanguageSelector
-          selectedLanguage={sourceLanguage}
-          onChange={(lang) => setSourceLanguage(lang)}
-        />
-        <ArrowRight className="arrow-icon" />
-        <LanguageSelector
-          selectedLanguage={targetLanguage}
-          onChange={(lang) => setTargetLanguage(lang)}
-        />
+        <div className="language-controls">
+          <LanguageSelector
+            selectedLanguage={sourceLanguage}
+            onChange={(lang) => setSourceLanguage(lang)}
+          />
+          <ArrowRight className="arrow-icon" />
+          <LanguageSelector
+            selectedLanguage={targetLanguage}
+            onChange={(lang) => setTargetLanguage(lang)}
+          />
+        </div>
+
         <button
           className="submit-btn"
           onClick={handleSubmit}
-          disabled={loading || !input.trim()}
+          disabled={loading || !input.trim() || input.length > maxChars}
         >
-          Translate <ArrowRight />
+          Translate <ArrowRight size={16} />
         </button>
       </div>
 
-      <textarea
-        className="text-input"
-        placeholder="Enter text to translate"
-        value={input}
-        onChange={e => setInput(e.target.value)}
-      ></textarea>
+      <div className="text-input-container">
+        <textarea
+          className="text-input"
+          placeholder="Enter text to translate..."
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={handleKeyDown}
+          maxLength={maxChars + 10}
+          disabled={loading}
+        ></textarea>
+        <div className="char-counter">
+          {input.length}/{maxChars}
+        </div>
+      </div>
     </div>
   );
 };

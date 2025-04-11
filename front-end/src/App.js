@@ -87,22 +87,16 @@ const router = createBrowserRouter([
             path: '/new-prompt',
             element: <NewPrompt />,
           },
+          // Route for the template view
           {
-            path: '/custom',
+            path: '/template/:id',
             element: <CustomInput />,
           },
+          // Route for conversation based on template
           {
             path: '/custom/chat/:id',
-            element: <Message type="custom" />,
+            element: <Custom />,
           },
-          {
-            path: '/chat/:id',
-            element: <Message type="custom" />,
-          },
-          // {
-          //     path: '/chat/:id',
-          //     element: <CustomInput />
-          // }
         ],
       },
     ],

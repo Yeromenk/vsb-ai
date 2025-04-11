@@ -1,0 +1,124 @@
+.ai-response {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    width: 100%;
+}
+
+.ai-heading {
+    margin-top: 1.5em;
+    margin-bottom: 0.75em;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.ai-h1 {
+    font-size: 1.75em;
+    border-bottom: 1px solid #eaecef;
+    padding-bottom: 0.3em;
+}
+
+.ai-h2 {
+    font-size: 1.5em;
+    border-bottom: 1px solid #eaecef;
+    padding-bottom: 0.3em;
+}
+
+.ai-h3 {
+    font-size: 1.25em;
+}
+
+.ai-list, .ai-ordered-list {
+    padding-left: 2em;
+    margin: 1em 0;
+}
+
+.ai-list-item {
+    margin: 0.3em 0;
+}
+
+.ai-link {
+    color: #0366d6;
+    text-decoration: none;
+}
+
+.ai-link:hover {
+    text-decoration: underline;
+}
+
+.ai-blockquote {
+    border-left: 4px solid #dfe2e5;
+    color: #6a737d;
+    margin: 1em 0;
+    padding: 0 1em;
+}
+
+.ai-inline-code {
+    background-color: rgba(27, 31, 35, 0.05);
+    border-radius: 3px;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 85%;
+    margin: 0;
+    padding: 0.2em 0.4em;
+}
+
+.ai-code-block {
+    margin: 1em 0;
+    background-color: #f6f8fa;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.ai-code-header {
+    background-color: #f1f1f1;
+    border-bottom: 1px solid #ddd;
+    padding: 0.5em 1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ai-code-language {
+    font-size: 0.85em;
+    color: #6a737d;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.ai-pre {
+    margin: 0;
+    padding: 1em;
+    overflow: auto;
+}
+
+.ai-pre code {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 14px;
+}
+
+/* Tips and info callouts */
+.ai-tip, .ai-info, .ai-warning {
+    padding: 1em;
+    margin: 1em 0;
+    border-radius: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.ai-tip {
+    background-color: #f0fdf4;
+    border-left: 4px solid #4ade80;
+}
+
+.ai-info {
+    background-color: #eff6ff;
+    border-left: 4px solid #60a5fa;
+}
+
+.ai-warning {
+    background-color: #fef2f2;
+    border-left: 4px solid #f87171;
+}

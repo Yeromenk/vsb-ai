@@ -1,4 +1,3 @@
-// features/translate/TranslateInput.jsx
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -40,8 +39,8 @@ const TranslateInput = () => {
     <div className="translate-text">
       <div className="translate-container">
         <div className="overview">
-          <h1>Translate Text</h1>
-          <p>Here you can translate a text and get an overview</p>
+          <h1 className="translate-page__title">Translate Text</h1>
+          <p className="translate-page__subtitle">Here you can translate a text and get an overview</p>
         </div>
 
         <TextTranslator

@@ -1,85 +1,99 @@
 .user-prompt-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background-color: white;
 }
 
 .user-prompt {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 0 20px;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .user-prompt h1 {
-  font-size: 52px;
-  font-weight: 700;
-  color: #333;
+    font-size: 52px;
+    font-weight: 700;
+    color: #333;
+}
+
+.description {
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: center;
+    line-height: 1.5;
+    font-size: 18px;
+    color: #555;
 }
 
 .document-input-prompt {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.document-input-prompt button:disabled {
+    background-color: #cfd8dc;
+    cursor: not-allowed;
 }
 
 .document-input-prompt form {
-  display: flex;
-  width: 100%;
-  max-width: 600px;
-  position: relative;
-}
-
-.input-container {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  position: relative;
+    width: 70%;
+    margin: 0 auto;
 }
 
 .input-icon {
-  position: absolute;
-  left: 10px;
-  top: 20px;
-  color: #8c959e;
+    position: absolute;
+    left: 10px;
+    top: 20px;
+    color: #8c959e;
 }
 
 .document-input-prompt textarea {
-  width: 100%;
-  padding: 20px 50px 20px 40px;
-  font-size: 18px;
-  border: 2px solid #8c959e;
-  border-radius: 25px;
-  resize: none;
-  overflow-y: auto;
-  max-height: 128px;
+    width: 100%;
+    padding: 14px 50px 14px 16px;
+    font-size: 16px;
+    border: none;
+    border-radius: 12px;
+    resize: none;
+    overflow-y: auto;
+    max-height: 120px;
+    background-color: transparent;
+}
+
+.document-input-prompt textarea:focus {
+    outline: none;
 }
 
 .document-input-prompt button {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 40px;
-  height: 40px;
-  border: none;
-  border-radius: 50%;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-  transition: 0.3s ease-in-out;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    background-color: #10a37f;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
 }
 
 .document-input button:hover {
-  background-color: #0056b3;
+    background-color: #0056b3;
 }

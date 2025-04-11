@@ -1,8 +1,8 @@
-# Virtual Software Bot (VSB)
+# Applications for Processing Selected Tasks with Large Language Models
 
 ## 🧠 Overview
 
-**Virtual Software Bot (VSB)** is an AI-powered chat assistant application developed as a diploma project for **VŠB - Technical University of Ostrava** by **Maxim Yeremenko**.
+**Applications for Processing Selected Tasks with Large Language Models** is an AI-powered chat assistant application developed as a diploma project for **VŠB - Technical University of Ostrava** by **Maksym Yeromenko**.
 
 The application leverages the power of modern AI (OpenAI API) to provide a user-friendly platform for text-based tasks such as:
 
@@ -56,14 +56,24 @@ The application leverages the power of modern AI (OpenAI API) to provide a user-
 ### Database
 
 - [PostgreSQL](https://www.postgresql.org/)
+- [Prisma](https://www.prisma.io/) — ORM for PostgreSQL
 
 ---
-
-## 🛠️ Installation
-
-### Prerequisites
-
-- Node.js (v16 or higher)  
-- npm or yarn  
-- PostgreSQL running locally or in the cloud  
+## 🚀 Getting Started
+### Installation
+A step-by-step guide to set up the project locally.
+1. Clone the repository
+```
+https://github.com/Yeromenk/vsb-ai.git
+```
+2. In a new terminal, start the frontend server:
+```
+cd ../frontend && npm install && npm run dev
+```
+3. In another terminal, start the backend server:
+```
+cd ../backend && npm install && npm run dev
+```
+4. To `.env` file, add your OpenAI API key, PostgreSQL connection string, and JWT secret:
+5. After that you can use the application. Enjoy!
 

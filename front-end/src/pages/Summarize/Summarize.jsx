@@ -1,4 +1,3 @@
-import './Summarize.css';
 import { FilePlus2, Send } from 'lucide-react';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -26,6 +25,7 @@ const Summarize = ({ data }) => {
   }, [data, response]);
 
   const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: async () => {
       setLoading(true);
@@ -78,7 +78,7 @@ const Summarize = ({ data }) => {
 
   return (
     <div className="summarize-page">
-      <div className="chat">
+      <div className="summarize-message">
         {data?.messages?.map((msg, index) => (
           <div className="message-container" key={index}>
             {msg.role === "assistant" ? (

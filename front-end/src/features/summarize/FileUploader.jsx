@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { FilePlus2, Send } from 'lucide-react';
+import { FilePlus2, FileText, Send } from 'lucide-react';
 import './FileUploader.css';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
@@ -50,44 +50,61 @@ const FileUploader = () => {
     if (!file || !action) return;
 
     mutation.mutate();
-
-    console.log(`File: ${file.name}, Action: ${action}`);
   };
 
   return (
-    <div className="document-input">
-      <div className="document-input-container">
-        <div className="hello">
-          <h1>Summarize a file</h1>
-          <p>Here you can summarize a file and get an overview</p>
+    <div className="file-page">
+      <div className="file-page__container">
+        <div className="file-page__header">
+          <h1 className="file-page__title">Analyze Documents</h1>
+          <p className="file-page__subtitle">
+            Upload a file to summarize or analyze its content with AI
+          </p>
         </div>
-        <div className="file-container">
-          <form onSubmit={handleSubmit}>
-            <div className="file-input-container">
-              <label className="file-label">
-                <FilePlus2 className="file-icon" />
-                <span>{file ? file.name : 'Choose a file'}</span>
-                <input type="file" onChange={handleFileChange} hidden />
+
+        <div className="file-uploader">
+          <form className="file-uploader__form" onSubmit={handleSubmit}>
+            <div className="file-uploader__input-wrapper">
+              <label className="file-uploader__dropzone">
+                <FilePlus2 className="file-uploader__icon" />
+                <span className="file-uploader__text">
+                  {file ? file.name : 'Click to upload a document'}
+                </span>
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  hidden
+                  accept=".pdf,.doc,.docx,.txt,.rtf"
+                />
               </label>
             </div>
-            <div className="action-buttons">
+
+            <div className="file-uploader__actions">
               <button
                 type="button"
-                className={action === 'summarize' ? 'active' : ''}
+                className={`file-uploader__action-btn ${action === 'summarize' ? 'file-uploader__action-btn--active' : ''}`}
                 onClick={() => handleActionChange('summarize')}
               >
+                <FileText size={18} />
                 Summarize
               </button>
               <button
                 type="button"
-                className={action === 'describe' ? 'active' : ''}
+                className={`file-uploader__action-btn ${action === 'describe' ? 'file-uploader__action-btn--active' : ''}`}
                 onClick={() => handleActionChange('describe')}
               >
-                Describe
+                <FileText size={18} />
+                Analyze
               </button>
             </div>
-            <button type="submit" disabled={!file || !action}>
-              <Send className="button-icon" /> Submit
+
+            <button
+              type="submit"
+              className="file-uploader__submit"
+              disabled={!file || !action || mutation.isPending}
+            >
+              <Send className="file-uploader__button-icon" />
+              {mutation.isPending ? "Processing..." : "Submit"}
             </button>
           </form>
         </div>

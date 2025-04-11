@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import './ChatList.css';
-import { Languages, FileText, Text, Menu, CirclePlus, Pencil, Trash2, X } from 'lucide-react';
+import { Languages, FileText, Text, Menu, CirclePlus, Pencil, Trash2, X, User } from 'lucide-react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
@@ -123,7 +123,7 @@ const ChatList = () => {
   });
 
   const customChats = useMemo(() => {
-    return chats.filter(chat => chat.type === 'custom').slice(0, 5); // Limit to 5 recent custom chats
+    return chats.filter(chat => chat.type === 'custom_template').slice(0, 5); // Limit to 5 recent custom chats
   }, [chats]);
 
   return (
@@ -181,11 +181,11 @@ const ChatList = () => {
         {customChats.map(chat => (
           <Link
             key={chat.id}
-            to={`/chat/${chat.id}`}
-            className={`utility-link custom-utility-link ${isActive(`/chat/${chat.id}`) ? 'active' : ''}`}
+            to={`/template/${chat.id}`}
+            className={`utility-link custom-utility-link ${isActive(`/template/${chat.id}`) ? 'active' : ''}`}
             onClick={() => window.innerWidth <= 768 && setIsSidebarOpen(false)}
           >
-            <Text /> {chat.title}
+            <User /> {chat.title}
           </Link>
         ))}
 
@@ -208,6 +208,7 @@ const ChatList = () => {
               <div key={monthYear}>
                 <h2 className="monthYear">{monthYear}</h2>
                 {group.map(chat => {
+                  if (chat.type === 'custom_template') return null;
                   let chatPath;
                   switch (chat.type) {
                     case 'translate':
@@ -219,11 +220,8 @@ const ChatList = () => {
                     case 'format':
                       chatPath = `/format/chat/${chat.id}`;
                       break;
-                    case 'user-prompt':
-                      chatPath = `/user-prompt/chat/${chat.id}`;
-                      break;
-                    case 'custom':
-                      chatPath = `/chat/${chat.id}`;
+                    case 'custom_conversation':
+                      chatPath = `/custom/chat/${chat.id}`;
                       break;
                     default:
                       chatPath = `/chat/${chat.id}`;
@@ -280,10 +278,6 @@ const ChatList = () => {
               </div>
             ))
           )}
-        </div>
-
-        <div className="footer">
-          <p>VSB AI can make mistakes. Recommended to check information</p>
         </div>
       </div>
     </>
