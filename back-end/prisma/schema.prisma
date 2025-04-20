@@ -13,49 +13,49 @@ model User {
   username  String
   password  String
   createdAt DateTime @default(now())
+  githubId  String?  @unique
+  googleId  String?  @unique
 }
 
 model UserChats {
-  id        Int      @id @default(autoincrement()) // Primary key
-  userId    String   @unique // User ID
-  chats     Chat[] // Связь с моделью Chat
-  createdAt DateTime @default(now()) // Дата создания записи
-  updatedAt DateTime @updatedAt // Автоматическое обновление даты при изменениях
+  id        Int      @id @default(autoincrement())
+  userId    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  chats     Chat[]
 }
 
 model Chat {
-  id           String     @id @default(cuid()) // Primary key
-  userId       String // User ID (для связки с конкретным пользователем)
-  title        String // Название чата
-  type         String // Тип чата (private или group)
-  description  String? // Make it optional
-  instructions String? // Add this field to store instructions
-  createdAt    DateTime   @default(now()) // Время создания чата
-  history      Message[] // Связь с моделью Message
-  files        File[] // Связь с моделью File
-  UserChats    UserChats? @relation(fields: [userChatsId], references: [id])
+  id           String     @id @default(cuid())
+  userId       String
+  title        String
+  createdAt    DateTime   @default(now())
   userChatsId  Int?
+  type         String
+  description  String?
+  instructions String?
+  UserChats    UserChats? @relation(fields: [userChatsId], references: [id])
+  files        File[]
+  history      Message[]
 }
 
 model Message {
-  id        Int      @id @default(autoincrement()) // Primary key
-  chatId    String // Foreign key для связи с моделью Chat
-  role      Role // Роль (user или model)
-  text      String // Текст сообщения
-  createdAt DateTime @default(now()) // Время создания сообщения
-
-  chat Chat @relation(fields: [chatId], references: [id]) // Связь с моделью Chat
+  id        Int      @id @default(autoincrement())
+  chatId    String
+  role      Role
+  text      String
+  createdAt DateTime @default(now())
+  chat      Chat     @relation(fields: [chatId], references: [id])
 }
 
 model File {
-  id        Int      @id @default(autoincrement()) // Primary key
-  chatId    String // Foreign key для связи с моделью Chat
-  fileName  String // Имя файла
-  filePath  String // Путь к файлу
-  fileType  String // Тип файла
-  createdAt DateTime @default(now()) // Время создания файла
-
-  chat Chat @relation(fields: [chatId], references: [id]) // Связь с моделью Chat
+  id        Int      @id @default(autoincrement())
+  chatId    String
+  filePath  String
+  fileType  String
+  createdAt DateTime @default(now())
+  fileName  String
+  chat      Chat     @relation(fields: [chatId], references: [id])
 }
 
 enum Role {

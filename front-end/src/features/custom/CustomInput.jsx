@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SendHorizontal } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -6,6 +6,7 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import './CustomInput.css';
 import { handleTextareaAutoResize } from '../../utils/TextAutoResize';
 import LoadingState from '../../components/common/LoadingState/LoadingState';
+import { toast } from 'react-hot-toast';
 
 const CustomInput = () => {
   const [inputValue, setInputValue] = useState('');
@@ -13,6 +14,7 @@ const CustomInput = () => {
   const { id: templateId } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [unauthorized, setUnauthorized] = useState(false);
 
   // Fetch template details
   const { data: template, isLoading } = useQuery({
@@ -22,10 +24,23 @@ const CustomInput = () => {
         .get(`http://localhost:3000/ai/chat/${templateId}`, {
           withCredentials: true,
         })
-        .then(res => res.data.response),
+        .then(res => res.data.response)
+        .catch(err => {
+          if (err.response?.data?.unauthorized) {
+            setUnauthorized(true);
+          }
+          throw err;
+        }),
   });
 
-  // Mutation to create a conversation from template
+  useEffect(() => {
+    if (unauthorized) {
+      toast.error("You don't have access to this template");
+      navigate('/home');
+    }
+  }, [unauthorized, navigate]);
+
+  // Mutation to create a conversation from a template
   const mutation = useMutation({
     mutationFn: async message => {
       setLoading(true);

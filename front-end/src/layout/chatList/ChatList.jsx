@@ -4,12 +4,11 @@ import { Languages, FileText, Text, Menu, CirclePlus, Pencil, Trash2, X, User } 
 import { useContext, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 import { useLocation } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import DeleteModal from '../../components/common/Modal/DeleteModal';
+import LoadingState from '../../components/common/LoadingState/LoadingState';
 
 const ChatList = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -50,15 +49,28 @@ const ChatList = () => {
 
   const { isPending, data, error } = useQuery({
     queryKey: ['ChatList'],
-    queryFn: () =>
-      axios
-        .get('http://localhost:3000/ai/userChats', {
+    queryFn: async () => {
+      try {
+        if (!currentUser?.id) {
+          return { response: [] };
+        }
+
+        const response = await axios.get('http://localhost:3000/ai/userChats', {
           withCredentials: true,
           params: {
             userId: currentUser.id,
           },
-        })
-        .then(res => res.data),
+        });
+
+        return response.data;
+      } catch (err) {
+        if (err.response && err.response.status === 404) {
+          return { response: [] };
+        }
+        throw err;
+      }
+    },
+    enabled: !!currentUser?.id,
   });
 
   const handleEdit = async (chatId, newTitle) => {
@@ -103,9 +115,9 @@ const ChatList = () => {
   };
 
   const isActive = path => location.pathname === path;
-  const chats = data?.response || [];
+  const chats = useMemo(() => data?.response || [], [data]);
 
-  // Sort chats by newest first
+  // Sort chats by the newest first
   const sortedChats = chats.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   // Group chats by month-year
@@ -192,18 +204,18 @@ const ChatList = () => {
         <h1>Chat List</h1>
         <div className="list">
           {isPending ? (
-            <Skeleton
-              count={5}
-              style={{
-                marginBottom: '20px',
-                padding: '10px',
-              }}
-            />
+            <div className="loading-state">
+              <LoadingState message="Loading chats..." />
+            </div>
           ) : error ? (
-            'An error occurred'
+            <div className="error-message">
+              Something went wrong. Please try again later.
+            </div>
           ) : chats.length === 0 ? (
-            <p>No chats yet</p>
-          ) : (
+            <div className="empty-state">
+              No chats yet. Start a conversation to see your chat history.
+            </div>
+          )  : (
             Object.entries(groupedChats).map(([monthYear, group]) => (
               <div key={monthYear}>
                 <h2 className="monthYear">{monthYear}</h2>

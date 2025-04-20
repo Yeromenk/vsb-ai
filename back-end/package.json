@@ -11,7 +11,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@prisma/client": "^5.21.1",
+    "@prisma/client": "^6.6.0",
     "@react-oauth/google": "^0.12.1",
     "@tanstack/react-query": "^5.59.16",
     "bcrypt": "^5.1.1",
@@ -21,12 +21,19 @@
     "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "express-session": "^1.18.1",
+    "fs": "^0.0.1-security",
+    "fs-extra": "^11.3.0",
     "google-auth-library": "^9.14.2",
     "jsonwebtoken": "^9.0.2",
     "mammoth": "^1.8.0",
     "multer": "^1.4.5-lts.1",
     "nodemon": "^3.1.7",
     "openai": "^4.68.4",
+    "passport": "^0.7.0",
+    "passport-github2": "^0.1.12",
+    "passport-google-oauth20": "^2.0.0",
+    "pdf-parse": "^1.1.1",
     "pg": "^8.13.0"
   },
   "devDependencies": {
@@ -35,6 +42,6 @@
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.0.0",
     "prettier": "3.5.3",
-    "prisma": "^5.21.1"
+    "prisma": "^6.6.0"
   }
 }

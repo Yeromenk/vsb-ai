@@ -7,7 +7,7 @@ const TextTranslator = ({
                           onSubmit,
                           loading = false,
                           initialSource = 'English',
-                          initialTarget = 'Spanish'
+                          initialTarget = 'Spanish',
                         }) => {
   const [sourceLanguage, setSourceLanguage] = useState(initialSource);
   const [targetLanguage, setTargetLanguage] = useState(initialTarget);
@@ -21,8 +21,10 @@ const TextTranslator = ({
     onSubmit({
       text: input,
       sourceLanguage,
-      targetLanguage
+      targetLanguage,
     });
+
+    setInput('');
   };
 
   const handleKeyDown = (e) => {

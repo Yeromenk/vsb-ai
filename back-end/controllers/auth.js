@@ -1,6 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import passport from 'passport';
+import { Strategy as GitHubStrategy } from 'passport-github2';
+import {Strategy as GoogleStrategy} from 'passport-google-oauth20';
 
 const prisma = new PrismaClient();
 
@@ -132,6 +135,144 @@ const verifyToken = (req, res, next) => {
     next();
   } catch (error) {
     res.status(403).json({ message: 'Forbidden' });
+  }
+};
+
+// Configure GitHub OAuth strategy
+passport.use(new GitHubStrategy({
+    clientID: process.env.GITHUB_CLIENT_ID,
+    clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    callbackURL: "http://localhost:3000/auth/github/callback"
+  },
+  async function(accessToken, refreshToken, profile, done) {
+    try {
+      // Check if a user exists
+      let user = await prisma.user.findFirst({
+        where: {
+          OR: [
+            { email: profile.emails?.[0]?.value },
+            { githubId: profile.id }
+          ]
+        }
+      });
+
+      // If a user doesn't exist, create a new one
+      if (!user) {
+        user = await prisma.user.create({
+          data: {
+            email: profile.emails?.[0]?.value || `github-${profile.id}@example.com`,
+            username: profile.username || profile.displayName,
+            password: bcrypt.hashSync(Math.random().toString(36).slice(-8), 10), // Random password
+            githubId: profile.id
+          }
+        });
+      }
+      // If a user exists but doesn't have githubId, update it
+      else if (!user.githubId) {
+        user = await prisma.user.update({
+          where: { id: user.id },
+          data: { githubId: profile.id }
+        });
+      }
+
+      return done(null, user);
+    } catch (err) {
+      return done(err);
+    }
+  }
+));
+
+// Add the GitHub callback handler
+export const githubCallback = async (req, res) => {
+  try {
+    const token = jwt.sign({ id: req.user.id }, 'jwtkey');
+
+    res.cookie('access_token', token, {
+      httpOnly: true,
+    });
+
+    res.cookie('user_data', JSON.stringify({
+      id: req.user.id,
+      username: req.user.username,
+      email: req.user.email,
+    }), {
+      httpOnly: false
+    })
+
+    // Redirect to home page after successful login
+    res.redirect('http://localhost:3001/home');
+  } catch (error) {
+    res.redirect('http://localhost:3001/login?error=github-auth-failed');
+  }
+};
+
+// Add this to your existing auth.js file alongside the GitHub strategy
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "http://localhost:3000/auth/google/callback",
+    scope: ['profile', 'email']
+  },
+  async function(accessToken, refreshToken, profile, done) {
+    try {
+      // Check if a user exists
+      let user = await prisma.user.findFirst({
+        where: {
+          OR: [
+            { email: profile.emails?.[0]?.value },
+            { googleId: profile.id }
+          ]
+        }
+      });
+
+      // If a user doesn't exist, create a new one
+      if (!user) {
+        user = await prisma.user.create({
+          data: {
+            email: profile.emails?.[0]?.value || `google-${profile.id}@example.com`,
+            username: profile.displayName || `user-${profile.id}`,
+            password: bcrypt.hashSync(Math.random().toString(36).slice(-8), 10), // Random password
+            googleId: profile.id
+          }
+        });
+      }
+      // If a user exists but doesn't have googleId, update it
+      else if (!user.googleId) {
+        user = await prisma.user.update({
+          where: { id: user.id },
+          data: { googleId: profile.id }
+        });
+      }
+
+      return done(null, user);
+    } catch (err) {
+      console.log("Google auth error:", err);
+      return done(err);
+    }
+  }
+));
+
+// Add Google callback handler
+export const googleCallback = async (req, res) => {
+  try {
+    const token = jwt.sign({ id: req.user.id }, 'jwtkey');
+
+    res.cookie('access_token', token, {
+      httpOnly: true,
+    });
+
+    res.cookie('user_data', JSON.stringify({
+      id: req.user.id,
+      username: req.user.username,
+      email: req.user.email,
+    }), {
+      httpOnly: false
+    });
+
+    // Redirect to home page after successful login
+    res.redirect('http://localhost:3001/home');
+  } catch (error) {
+    res.redirect('http://localhost:3001/login?error=google-auth-failed');
   }
 };
 

@@ -1,3 +1,5 @@
+/* Complete Login.css file */
+
 .login {
     display: flex;
     align-items: center;
@@ -37,6 +39,24 @@
     position: relative;
 }
 
+.password-toggle {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--secondary);
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.password-toggle:hover {
+    opacity: 1;
+}
+
 .input-container .icon {
     position: absolute;
     top: 50%;
@@ -63,7 +83,7 @@
     outline: none;
 }
 
-.error-message {
+.error-message-login {
     color: #e74c3c;
     font-size: 14px;
     text-align: left;
@@ -71,7 +91,7 @@
     margin-bottom: 4px;
 }
 
-.form-login form button {
+.form-login form button[type="submit"] {
     padding: 16px 32px;
     font-size: 18px;
     font-weight: 600;
@@ -80,35 +100,39 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.2s,
-    box-shadow 0.2s;
+    transition: transform 0.2s, background-color 0.2s, box-shadow 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
 }
 
-.form-login form button:hover {
+.form-login form button[type="submit"]:hover {
     background-color: #3685bb;
     transform: translateY(-2px);
     box-shadow: var(--shadow);
 }
 
-.form-login form p {
-    margin-top: 8px;
-    color: var(--secondary);
-}
-
-.form-login form p a {
-    color: var(--accent);
-    text-decoration: none;
+.primary-button {
+    padding: 16px 32px;
+    font-size: 18px;
     font-weight: 600;
-    transition: color 0.2s;
+    color: white;
+    background-color: var(--accent);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
-.form-login form p a:hover {
-    color: #3685bb;
-    text-decoration: underline;
+.primary-button:hover {
+    background-color: #3685bb;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
 }
 
 .logo {
@@ -122,6 +146,82 @@
     max-width: 450px;
     border-radius: 10px;
     box-shadow: var(--shadow);
+}
+
+/* OAuth Buttons Container */
+.oauth-buttons {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.link-button {
+    flex: 1;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #24292e;
+    background-color: #ffffff;
+    border: 1px solid rgba(27, 31, 35, 0.15);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 1px 0 rgba(27, 31, 35, 0.04);
+}
+
+.link-button:hover {
+    background-color: #f3f4f6;
+    border-color: rgba(27, 31, 35, 0.2);
+}
+
+.link-button:active {
+    background-color: #ebecf0;
+    border-color: rgba(27, 31, 35, 0.25);
+    transform: translateY(1px);
+}
+
+.google-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.social-login {
+    position: relative;
+    margin: 10px 0 16px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.social-login::before {
+    content: "";
+    display: block;
+    height: 1px;
+    width: 100%;
+    background-color: #e0e0e0;
+    position: absolute;
+    top: 10px;
+}
+
+.social-login span {
+    align-self: center;
+    padding: 0 16px;
+    font-size: 14px;
+    color: #6e7781;
+    position: relative;
+    z-index: 1;
+}
+
+@media (max-width: 480px) {
+    .oauth-buttons {
+        flex-direction: column;
+        gap: 12px;
+    }
 }
 
 @media (max-width: 768px) {

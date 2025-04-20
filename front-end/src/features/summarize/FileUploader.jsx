@@ -60,6 +60,9 @@ const FileUploader = () => {
           <p className="file-page__subtitle">
             Upload a file to summarize or analyze its content with AI
           </p>
+          <p className="file-page__subtitle-formats">
+            Supported formats: <strong>.docx</strong>
+          </p>
         </div>
 
         <div className="file-uploader">
@@ -74,7 +77,7 @@ const FileUploader = () => {
                   type="file"
                   onChange={handleFileChange}
                   hidden
-                  accept=".pdf,.doc,.docx,.txt,.rtf"
+                  accept=".pdf,.docx,.txt"
                 />
               </label>
             </div>

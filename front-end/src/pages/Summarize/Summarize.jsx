@@ -1,38 +1,22 @@
-import { FilePlus2, Send } from 'lucide-react';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import { FilePlus2, FileText, Send } from 'lucide-react';
+import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
-import { AuthContext } from '../../context/AuthContext';
+import toast from 'react-hot-toast';
+import './Summarize.css';
 
-const Summarize = ({ data }) => {
+const Summarize = ({ data, setPendingMessage, setIsAiLoading }) => {
   const [file, setFile] = useState(null);
   const [action, setAction] = useState('');
-  const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const { currentUser } = useContext(AuthContext);
-  const firstLetter = currentUser?.username.charAt(0).toUpperCase();
-  const endRef = useRef();
-
-  useEffect(() => {
-    if (endRef.current) {
-      setTimeout(() => {
-        endRef.current.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    }
-  }, [data, response]);
-
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: async () => {
-      setLoading(true);
       const formData = new FormData();
       formData.append('file', file);
       formData.append('action', action);
-      const { data: result } = await axios.put(
+      return axios.put(
         `http://localhost:3000/ai/file/chat/${data.id}`,
         formData,
         {
@@ -42,21 +26,24 @@ const Summarize = ({ data }) => {
           withCredentials: true,
         }
       );
-      return result.response;
     },
-    onSuccess: result => {
-      queryClient.invalidateQueries({ queryKey: ['chat', data.id] }).then(() => {
-        setResponse(result);
-        setFile(null);
-        setAction('');
-        setError(null);
-        setLoading(false);
-      });
+    onSuccess: () => {
+      queryClient.invalidateQueries(['chat', data.id])
+                 .then(() => {
+                   setPendingMessage(null);
+                   setIsAiLoading(false);
+                   setFile(null);
+                   setAction('');
+                 });
     },
     onError: error => {
-      setError(error);
+      console.error('Error processing file:', error);
+      toast.error('Error processing file. Please try again.');
+      setPendingMessage(null);
+      setIsAiLoading(false);
+    },
+    onSettled: () => {
       setLoading(false);
-      console.error('Error in handleSend:', error);
     },
   });
 
@@ -70,89 +57,84 @@ const Summarize = ({ data }) => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    if (!file || !action) return;
+    if (!file || !action || loading) return;
 
-    mutation.mutate();
-    console.log(`File: ${file.name}, Action: ${action}`);
+    // Show pending message immediately
+    setPendingMessage(`Processing file: ${file.name} (${action})`);
+    // Show AI is thinking
+    setIsAiLoading(true);
+    setLoading(true);
+
+    // Process file
+    try {
+      // First analyze the file
+      const fileData = new FormData();
+      fileData.append('file', file);
+      fileData.append('action', action);
+
+      await axios.post('http://localhost:3000/ai/file', {
+        file: file.name,
+        action: action
+      });
+
+      // Then update the chat with the file analysis
+      mutation.mutate();
+    } catch (error) {
+      console.error('Error processing file:', error);
+      toast.error('Error processing file. Please try again.');
+      setPendingMessage(null);
+      setIsAiLoading(false);
+      setLoading(false);
+    }
   };
 
   return (
     <div className="summarize-page">
-      <div className="summarize-message">
-        {data?.messages?.map((msg, index) => (
-          <div className="message-container" key={index}>
-            {msg.role === "assistant" ? (
-              <>
-                <div className="avatar model-avatar">
-                  <img src="/vsb-logo.jpg" alt="vsb-logo" />
-                </div>
-                <div className="message model-message">{msg.content}</div>
-              </>
-            ) : (
-              <>
-                <div className="message user-message">{msg.content}</div>
-                <div className="avatar user-avatar">{firstLetter}</div>
-              </>
-            )}
+      <div className="file-uploader">
+        <form className="file-uploader__form" onSubmit={handleSubmit}>
+          <div className="file-uploader__input-wrapper">
+            <label className="file-uploader__dropzone">
+              <FilePlus2 className="file-uploader__icon" />
+              <span className="file-uploader__text">
+                  {file ? file.name : 'Click to upload a document'}
+                </span>
+              <input
+                type="file"
+                onChange={handleFileChange}
+                hidden
+                accept=".pdf,.doc,.docx,.txt,.rtf"
+              />
+            </label>
           </div>
-        ))}
 
-        {loading && (
-          <div className="message-container">
-            <div className="avatar model-avatar">
-              <img src="/vsb-logo.jpg" alt="vsb-logo" />
-            </div>
-            <div className="message model-message">
-              <Skeleton width="10rem" />
-            </div>
+          <div className="file-uploader__actions">
+            <button
+              type="button"
+              className={`file-uploader__action-btn ${action === 'summarize' ? 'file-uploader__action-btn--active' : ''}`}
+              onClick={() => handleActionChange('summarize')}
+            >
+              <FileText size={18} />
+              Summarize
+            </button>
+            <button
+              type="button"
+              className={`file-uploader__action-btn ${action === 'describe' ? 'file-uploader__action-btn--active' : ''}`}
+              onClick={() => handleActionChange('describe')}
+            >
+              <FileText size={18} />
+              Analyze
+            </button>
           </div>
-        )}
 
-        {response && !data?.messages?.some(msg => msg.content === response) && (
-          <div className="message-container">
-            <div className="avatar model-avatar">
-              <img src="/vsb-logo.jpg" alt="vsb-logo" />
-            </div>
-            <div className="message model-message">{response}</div>
-          </div>
-        )}
-
-        <div ref={endRef} />
-      </div>
-
-      <div className="document-input">
-        <div className="document-input-container">
-          <div className="file-container">
-            <form onSubmit={handleSubmit}>
-              <div className="file-input-container">
-                <label className="file-label">
-                  <FilePlus2 className="file-icon" />
-                  <span>{file ? file.name : 'Choose a file'}</span>
-                  <input type="file" onChange={handleFileChange} hidden />
-                </label>
-              </div>
-              <div className="action-buttons">
-                <button
-                  type="button"
-                  className={action === 'summarize' ? 'active' : ''}
-                  onClick={() => handleActionChange('summarize')}
-                >
-                  Summarize
-                </button>
-                <button
-                  type="button"
-                  className={action === 'describe' ? 'active' : ''}
-                  onClick={() => handleActionChange('describe')}
-                >
-                  Describe
-                </button>
-              </div>
-              <button type="submit" disabled={!file || !action || loading}>
-                <Send className="button-icon" /> Submit
-              </button>
-            </form>
-          </div>
-        </div>
+          <button
+            type="submit"
+            className="file-uploader__submit"
+            disabled={!file || !action || mutation.isPending}
+          >
+            <Send className="file-uploader__button-icon" />
+            {mutation.isPending ? "Processing..." : "Submit"}
+          </button>
+        </form>
       </div>
     </div>
   );

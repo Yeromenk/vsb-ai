@@ -27,7 +27,9 @@
   padding: 20px 20px 100px;
   width: 100%;
   scroll-behavior: smooth;
-  max-height: calc(100vh - 200px);
+  min-height: calc(100vh - 200px);
+  max-height: calc(100vh - 405px);
+  transition: max-height 0.2s ease;
 }
 
 .message-content-wrapper {
@@ -42,8 +44,6 @@
   margin: 15px 0;
   width: 100%;
 }
-
-
 
 /* Styles for the user and model chat-message */
 .user-message,
@@ -126,7 +126,6 @@
 }
 
 .model-message p {
-  margin: 0.8em 0;
   line-height: 1.6;
 }
 

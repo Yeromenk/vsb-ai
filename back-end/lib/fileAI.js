@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import mammoth from 'mammoth';
+import path from 'path';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -25,14 +26,35 @@ export async function getFile(file, action) {
     });
   } catch (error) {
     console.error('Error fetching completion(file):', error);
+    throw error; // Re-throw to properly handle the error
   }
 }
 
-export async function extractTextFromDocx(filePath) {
+export async function extractTextFromFile(filePath) {
+  try {
+    const extension = path.extname(filePath).toLowerCase();
+
+    switch (extension) {
+      case '.docx':
+        return await extractTextFromDocx(filePath);
+      default:
+        throw new Error(`Unsupported file type: ${extension}`);
+    }
+  } catch (error) {
+    console.error(`Error extracting text from file: ${error.message}`);
+    throw error;
+  }
+}
+
+async function extractTextFromDocx(filePath) {
   try {
     const result = await mammoth.extractRawText({ path: filePath });
     return result.value;
   } catch (e) {
     console.error('Error in extractTextFromDocx:', e);
+    throw e;
   }
 }
+
+
+

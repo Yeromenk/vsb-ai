@@ -1,30 +1,23 @@
 import './Format.css';
-import { SendHorizontal } from 'lucide-react';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import { ChevronDown, SendHorizontal } from 'lucide-react';
+import React, { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import Skeleton from 'react-loading-skeleton';
-import { AuthContext } from '../../context/AuthContext';
 
-const Format = ({ data }) => {
+const Format = ({
+                  data,
+                  setPendingMessage,
+                  setIsAiLoading,
+                }) => {
   const [style, setStyle] = useState('Simple');
   const [tone, setTone] = useState('Formal');
   const [isStyleDropdownOpen, setIsStyleDropdownOpen] = useState(false);
   const [isToneDropdownOpen, setIsToneDropdownOpen] = useState(false);
   const [input, setInput] = useState('');
-  const endRef = useRef(null);
-  const [messages, setMessages] = useState('');
-  const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
-  const { currentUser } = useContext(AuthContext);
-  const firstLetter = currentUser?.username.charAt(0).toUpperCase();
-
-  useEffect(() => {
-    if (endRef.current) {
-      endRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [data, messages, response]);
+  const maxChars = 2000;
+  const queryClient = useQueryClient();
 
   const handleStyleChange = newStyle => {
     setStyle(newStyle);
@@ -36,161 +29,161 @@ const Format = ({ data }) => {
     setIsToneDropdownOpen(false);
   };
 
-  const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: () => {
+    mutationFn: (formData) => {
       return axios
         .put(
           `http://localhost:3000/ai/format/chat/${data.id}`,
-          {
-            message: messages.length ? messages : undefined,
-            style,
-            tone,
-          },
+          formData,
           {
             withCredentials: true,
-          }
-        )
-        .then(res => res.data.response);
+          },
+        );
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['chat', data.id] }).then(() => {
-        setMessages('');
-        setResponse('');
-        setInput('');
-      });
+    onSuccess : () => {
+      queryClient.invalidateQueries(['chat', data.id])
+                 .then(() => {
+                   setPendingMessage(null);
+                   setIsAiLoading(false);
+                   setInput('');
+                 });
     },
-    onError: error => {
+    onError   : error => {
       console.error('Error in handleSend:', error);
+      toast.error('Error updating chat history');
+      setPendingMessage(null);
+      setIsAiLoading(false);
+    },
+    onSettled : () => {
+      setLoading(false);
     },
   });
 
-  const add = async (text, isInitial) => {
-    if (text.trim() === '') return;
-
-    setLoading(true);
-    if (!isInitial) setMessages(text);
-
-    try {
-      const formatResponse = await axios.post('http://localhost:3000/ai/format', {
-        message: text,
-        style,
-        tone,
-      });
-
-      const formattedText = formatResponse.data.formattedText;
-      setResponse(formattedText);
-      setLoading(false);
-      mutation.mutate();
-    } catch (error) {
-      console.error('Error in handleSend:', error);
-      toast.error('Error in formatting text. Please try again later.');
-      setLoading(false);
-    } finally {
-      setLoading(false);
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && e.ctrlKey) {
+      handleSend(e);
     }
   };
 
   const handleSend = async event => {
     event.preventDefault();
-    if (!loading) {
-      await add(input, false);
+    if (input.trim() === '' || loading) return;
+
+    // Show pending message immediately
+    setPendingMessage(input);
+    // Show AI is thinking
+    setIsAiLoading(true);
+    setLoading(true);
+
+    try {
+      mutation.mutate({
+        message: input,
+        style,
+        tone,
+      });
+
+      setInput('');
+    } catch (error) {
+      console.error('Error in formatting:', error);
+      toast.error('Error in formatting text. Please try again later.');
+      setPendingMessage(null);
+      setIsAiLoading(false);
+      setLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener('click', closeDropdowns);
+    return () => document.removeEventListener('click', closeDropdowns);
+  }, []);
+
+  const closeDropdowns = (e) => {
+    if (!e.target.closest('.format-dropdown')) {
+      setIsStyleDropdownOpen(false);
+      setIsToneDropdownOpen(false);
     }
   };
 
   return (
-    <>
-      <div className="chat">
-        {messages && (
-          <div className="message-container">
-            <div className="message user-message">{messages}</div>
-            <div className="avatar user-avatar">{firstLetter}</div>
-          </div>
-        )}
-        {loading ? (
-          <div className="message-container">
-            <div className="avatar model-avatar">
-              <img src="/vsb-logo.jpg" alt="vsb-logo" />
-            </div>
-            <div className="message model-message">
-              <Skeleton width="10rem" />
-            </div>
-          </div>
-        ) : (
-          response && (
-            <div className="message-container">
-              <div className="avatar model-avatar">
-                <img src="/vsb-logo.jpg" alt="vsb-logo" />
+    <div className="format-page-container">
+      <div className="format-panel">
+        <div className="format-controls">
+          <div className="format-dropdown">
+            <button
+              className="dropdown-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsStyleDropdownOpen(!isStyleDropdownOpen);
+                setIsToneDropdownOpen(false);
+              }}
+            >
+              <b>Style:</b> {style} <ChevronDown size={16} />
+            </button>
+            {isStyleDropdownOpen && (
+              <div className="dropdown-menu">
+                <div className="dropdown-section">
+                  <div className="dropdown-section-header">Writing Style</div>
+                  <ul className="dropdown-option-list">
+                    <li className="dropdown-option" onClick={() => handleStyleChange('Simple')}>Simple</li>
+                    <li className="dropdown-option" onClick={() => handleStyleChange('Neutral')}>Neutral</li>
+                    <li className="dropdown-option" onClick={() => handleStyleChange('Creative')}>Creative</li>
+                    <li className="dropdown-option" onClick={() => handleStyleChange('Technical')}>Technical</li>
+                  </ul>
+                </div>
               </div>
-              <div className="message model-message">{response}</div>
-            </div>
-          )
-        )}
-        <div ref={endRef} />
-      </div>
+            )}
+          </div>
 
-      <div className="formating-text-container">
-        <div className="formating-text">
-          <div className="text-options">
-            <div className="text-options-row">
-              <div className="dropdown">
-                <button
-                  className="dropdown-toggle"
-                  onClick={() => setIsStyleDropdownOpen(!isStyleDropdownOpen)}
-                >
-                  <b>Style:</b> {style}
-                </button>
-                {isStyleDropdownOpen && (
-                  <div className="dropdown-content">
-                    <div className="dropdown-section">
-                      <strong>Style</strong>
-                      <ul>
-                        <li onClick={() => handleStyleChange('Neutral')}>Neutral</li>
-                        <li onClick={() => handleStyleChange('Creative')}>Creative</li>
-                        <li onClick={() => handleStyleChange('Technical')}>Technical</li>
-                      </ul>
-                    </div>
-                  </div>
-                )}
+          <div className="format-dropdown">
+            <button
+              className="dropdown-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsToneDropdownOpen(!isToneDropdownOpen);
+                setIsStyleDropdownOpen(false);
+              }}
+            >
+              <b>Tone:</b> {tone} <ChevronDown size={16} />
+            </button>
+            {isToneDropdownOpen && (
+              <div className="dropdown-menu">
+                <div className="dropdown-section">
+                  <div className="dropdown-section-header">Writing Tone</div>
+                  <ul className="dropdown-option-list">
+                    <li className="dropdown-option" onClick={() => handleToneChange('Formal')}>Formal</li>
+                    <li className="dropdown-option" onClick={() => handleToneChange('Informal')}>Informal</li>
+                    <li className="dropdown-option" onClick={() => handleToneChange('Diplomatic')}>Diplomatic</li>
+                    <li className="dropdown-option" onClick={() => handleToneChange('Persuasive')}>Persuasive</li>
+                  </ul>
+                </div>
               </div>
-              <div className="dropdown">
-                <button
-                  className="dropdown-toggle"
-                  onClick={() => setIsToneDropdownOpen(!isToneDropdownOpen)}
-                >
-                  <b>Tone:</b> {tone}
-                </button>
-                {isToneDropdownOpen && (
-                  <div className="dropdown-content">
-                    <div className="dropdown-section">
-                      <strong>Tone</strong>
-                      <ul>
-                        <li onClick={() => handleToneChange('Formal')}>Formal</li>
-                        <li onClick={() => handleToneChange('Informal')}>Informal</li>
-                        <li onClick={() => handleToneChange('Diplomatic')}>Diplomatic</li>
-                      </ul>
-                    </div>
-                  </div>
-                )}
-              </div>
-              <button
-                className="submit-button"
-                onClick={handleSend}
-                disabled={input.trim() === '' || loading}
-              >
-                Format <SendHorizontal className="button-icon" />
-              </button>
-            </div>
+            )}
+          </div>
+
+          <button
+            className="format-submit-button"
+            onClick={handleSend}
+            disabled={input.trim() === '' || input.length > maxChars || mutation.isPending}
+          >
+            Format <SendHorizontal className="button-icon" />
+          </button>
+        </div>
+
+        <div className="format-input-container">
             <textarea
-              className="text-input"
+              className="format-textarea"
               placeholder="Enter your text here..."
               value={input}
               onChange={e => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              disabled={mutation.isPending}
             />
+          <div className="char-counter">
+            {input.length}/{maxChars}
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
