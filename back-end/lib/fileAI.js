@@ -8,38 +8,42 @@ const openai = new OpenAI({
 
 export async function getFile(file, action) {
   try {
-    const prompt = `Please ${action} the following file:\n\n"${file}". Write only the ${action}, without the quotation marks. Write in language that is easy to understand.`;
+    const systemPrompt = `You are a document analysis assistant.
+    
+    Format your responses using proper markdown:
+    - Use headings (# ## ###) to organize your content
+    - Use **bold** and *italic* for emphasis
+    - Create lists with - or 1. when appropriate
+    - Break your response into clear sections with headings`;
+
+    const userPrompt = `Please ${action} the following document content:\n\n${file}`;
 
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
-      messages: [{ role: 'user', content: prompt }],
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt }
+      ],
       temperature: 0.7,
-      max_tokens: 256,
+      max_tokens: 800, // Increased to handle larger documents
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
     });
 
-    console.log('Completion response:', completion);
-    return completion.choices[0].message.content.split('\n').map(line => {
-      return line.trim();
-    });
+    console.log('File analysis generated with markdown formatting');
+    // Return the content directly, don't split into lines
+    return completion.choices[0].message.content;
   } catch (error) {
     console.error('Error fetching completion(file):', error);
-    throw error; // Re-throw to properly handle the error
+    throw error;
   }
 }
 
 export async function extractTextFromFile(filePath) {
   try {
-    const extension = path.extname(filePath).toLowerCase();
+    return await extractTextFromDocx(filePath);
 
-    switch (extension) {
-      case '.docx':
-        return await extractTextFromDocx(filePath);
-      default:
-        throw new Error(`Unsupported file type: ${extension}`);
-    }
   } catch (error) {
     console.error(`Error extracting text from file: ${error.message}`);
     throw error;

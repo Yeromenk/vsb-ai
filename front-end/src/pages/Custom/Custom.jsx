@@ -10,7 +10,7 @@ import AiResponse from '../../components/ai-response/AiResponse';
 import './Custom.css';
 import Skeleton from 'react-loading-skeleton';
 
-const Custom = () => {
+const Custom = ({inputRef}) => {
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [pendingMessage, setPendingMessage] = useState(null);
@@ -67,13 +67,9 @@ const Custom = () => {
     event.preventDefault();
     if (inputValue.trim() === '' || loading) return;
 
-    // Immediately show user message
     setPendingMessage(inputValue);
-
-    // Clear input
     setInputValue('');
 
-    // Send to API
     mutation.mutate(inputValue);
   };
 
@@ -85,7 +81,7 @@ const Custom = () => {
 
   return (
     <div className="message">
-      <div className="container-message">
+      <div className="container-message" ref={inputRef}>
         <div className="chat">
           <div className="message-content-wrapper">
             {chat?.history?.map((message, index) => (
@@ -108,7 +104,7 @@ const Custom = () => {
               </div>
             ))}
 
-            {/* Show pending user message immediately */}
+            {/* Show a pending user message immediately */}
             {pendingMessage && (
               <div className="message-container">
                 <div className="user-message">{pendingMessage}</div>

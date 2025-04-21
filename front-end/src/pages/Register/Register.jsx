@@ -186,7 +186,7 @@ const Register = () => {
           </button>
 
           <div className="social-login">
-            <span>OR</span>
+            <p>OR</p>
             <div className="oauth-buttons">
               <button
                 type="button"

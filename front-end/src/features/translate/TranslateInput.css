@@ -59,7 +59,34 @@
 }
 
 @media (max-width: 768px) {
-  .container {
-    padding: 20px;
+  .translate-text {
+    padding: 10px;
+    height: 90vh;
+  }
+
+  .translate-container {
+    padding: 12px;
+  }
+
+  .overview {
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .translate-text {
+    padding: 8px;
+    justify-content: flex-start;
+    height: 90vh;
+  }
+
+  .translate-container {
+    padding: 10px;
+  }
+
+  .overview {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    gap: 12px;
   }
 }

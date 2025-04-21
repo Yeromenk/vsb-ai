@@ -59,7 +59,7 @@ router.put('/file/chat/:id', verifyToken, upload.single('file'), async (req, res
             },
             {
               role: 'model',
-              text: modelResponse.join('\n'),
+              text: modelResponse
             },
           ],
         },
@@ -87,3 +87,5 @@ router.post('/file', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+export default router;

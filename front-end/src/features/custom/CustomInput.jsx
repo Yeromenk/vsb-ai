@@ -1,15 +1,13 @@
-import { useEffect, useState } from 'react';
-import { SendHorizontal } from 'lucide-react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import './CustomInput.css';
-import { handleTextareaAutoResize } from '../../utils/TextAutoResize';
-import LoadingState from '../../components/common/LoadingState/LoadingState';
 import { toast } from 'react-hot-toast';
+import LoadingState from '../../components/common/LoadingState/LoadingState';
+import MessageInput from '../../components/common/MessageInput/MessageInput';
+import './CustomInput.css';
 
 const CustomInput = () => {
-  const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
   const { id: templateId } = useParams();
   const navigate = useNavigate();
@@ -19,18 +17,20 @@ const CustomInput = () => {
   // Fetch template details
   const { data: template, isLoading } = useQuery({
     queryKey: ['template', templateId],
-    queryFn: () =>
-      axios
-        .get(`http://localhost:3000/ai/chat/${templateId}`, {
-          withCredentials: true,
-        })
-        .then(res => res.data.response)
-        .catch(err => {
-          if (err.response?.data?.unauthorized) {
-            setUnauthorized(true);
-          }
-          throw err;
-        }),
+    queryFn: async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:3000/ai/chat/${templateId}`,
+          { withCredentials: true }
+        );
+        return res.data.response;
+      } catch (err) {
+        if (err.response?.data?.unauthorized) {
+          setUnauthorized(true);
+        }
+        throw err;
+      }
+    },
   });
 
   useEffect(() => {
@@ -42,40 +42,31 @@ const CustomInput = () => {
 
   // Mutation to create a conversation from a template
   const mutation = useMutation({
-    mutationFn: async message => {
+    mutationFn: async (message) => {
       setLoading(true);
       const response = await axios.post(
         'http://localhost:3000/ai/chats/custom-conversation',
-        {
-          templateId,
-          message,
-        },
+        { templateId, message },
         { withCredentials: true }
       );
       return response.data.response;
     },
-    onSuccess: newChat => {
+    onSuccess: (newChat) => {
       queryClient.invalidateQueries(['ChatList']);
-      // Navigate to the new conversation
       navigate(`/custom/chat/${newChat.id}`);
     },
-    onError: error => {
+    onError: (error) => {
       console.error('Error creating conversation:', error);
+      toast.error('Failed to create conversation. Please try again.');
     },
     onSettled: () => {
       setLoading(false);
     },
   });
 
-  const handleSend = async event => {
-    event.preventDefault();
-    if (inputValue.trim() === '') return;
-    mutation.mutate(inputValue);
-  };
-
-  const handleInputChange = e => {
-    handleTextareaAutoResize(e, setInputValue);
-  };
+  const handleSubmit = useCallback((message) => {
+    mutation.mutate(message);
+  }, [mutation]);
 
   if (isLoading) return <LoadingState message="Loading template..." />;
 
@@ -83,26 +74,13 @@ const CustomInput = () => {
     <div className="message">
       <div className="container-message">
         <div className="user-prompt-container">
-          <div className="user-prompt">
-            <h1>{template?.title || 'Custom Chat'}</h1>
-            {template?.description && <p className="description">{template.description}</p>}
-          </div>
-          <div className="document-input-prompt">
-            <form onSubmit={handleSend}>
-              <div className="custom-input-container">
-                <textarea
-                  rows={1}
-                  value={inputValue}
-                  onChange={handleInputChange}
-                  placeholder="Start a new conversation..."
-                  disabled={loading}
-                />
-                <button type="submit" disabled={loading || !inputValue.trim()}>
-                  <SendHorizontal className="send-button" />
-                </button>
-              </div>
-            </form>
-          </div>
+          <MessageInput
+            onSubmit={handleSubmit}
+            loading={loading}
+            title={template?.title || 'Custom Chat'}
+            description={template?.description}
+            placeholder="Start a new conversation..."
+          />
         </div>
       </div>
     </div>

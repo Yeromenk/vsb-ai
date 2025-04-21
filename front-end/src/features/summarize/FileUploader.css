@@ -192,19 +192,44 @@
 }
 
 @media (max-width: 768px) {
+    .file-page {
+        height: auto; /* Remove fixed height */
+        min-height: 90vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .file-page__container {
+        padding: 16px;
+        flex: 1;
+        justify-content: space-between;
+    }
+
+    .file-page__header {
+        margin-top: 0; /* Keep the header at the top */
+        margin-bottom: 24px;
+        width: 100%;
+    }
+
     .file-uploader {
-        padding: 24px;
+        padding: 20px;
+        margin-top: 0;
+        width: 100%;
     }
 
     .file-page__title {
-        font-size: 36px;
+        font-size: 28px;
+        text-align: center;
+        margin-bottom: 8px;
     }
 
     .file-page__subtitle {
         font-size: 16px;
     }
 
+    /* Make sure the file actions fit on mobile */
     .file-uploader__actions {
         grid-template-columns: 1fr;
+        gap: 12px;
     }
 }

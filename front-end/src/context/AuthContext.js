@@ -5,12 +5,40 @@ export const AuthContext = createContext(undefined);
 
 export const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user')) || null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Function to validate the stored user session
+    const validateSession = async () => {
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+
+      if (storedUser) {
+        try {
+          // Make a request to validate session
+          await axios.get('http://localhost:3000/auth/validate-session', {
+            withCredentials: true
+          });
+          // If successful, session is valid
+          setCurrentUser(storedUser);
+        } catch (error) {
+          // If session is invalid, clear local storage
+          console.log('Session expired:', error);
+          localStorage.removeItem('user');
+          setCurrentUser(null);
+        }
+      }
+
+      setLoading(false);
+    };
+
+    validateSession();
+    checkExternalAuth();
+  }, []);
+
     // Check for GitHub / Google auth cookie when the component mounts
     const checkExternalAuth = () => {
       try {
-        // Parse GitHub user data from cookie
+        // Parse GitHub / Google user data from cookie
         const userCookie = document.cookie
                                    .split('; ')
                                    .find(row => row.startsWith('user_data='));
@@ -28,13 +56,11 @@ export const AuthContextProvider = ({ children }) => {
       }
     };
 
-    checkExternalAuth();
-  }, []);
 
   const login = async inputs => {
     try {
       const res = await axios.post('http://localhost:3000/auth/login', inputs, {
-        withCredentials: true, // !!!
+        withCredentials: true,
       });
       setCurrentUser(res.data);
     } catch (e) {
@@ -46,7 +72,7 @@ export const AuthContextProvider = ({ children }) => {
   const logout = async () => {
     try {
       await axios.post('http://localhost:3000/auth/logout', {}, {
-        withCredentials: true // Add this to ensure cookie is properly cleared
+        withCredentials: true
       });
       setCurrentUser(null);
       localStorage.removeItem('user');
@@ -56,10 +82,12 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    localStorage.setItem('user', JSON.stringify(currentUser));
+    if (currentUser) {
+      localStorage.setItem('user', JSON.stringify(currentUser));
+    }
   }, [currentUser]);
 
   return (
-    <AuthContext.Provider value={{ currentUser, login, logout }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ currentUser, login, logout, loading }}>{children}</AuthContext.Provider>
   );
 };

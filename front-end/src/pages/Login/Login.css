@@ -217,6 +217,16 @@
     z-index: 1;
 }
 
+.social-login p {
+    align-self: center;
+    padding: 0 16px;
+    font-size: 14px;
+    color: #6e7781;
+    position: relative;
+    z-index: 1;
+    background-color: white;
+}
+
 @media (max-width: 480px) {
     .oauth-buttons {
         flex-direction: column;

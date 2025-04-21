@@ -24,6 +24,8 @@ const Message = ({ type }) => {
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [unauthorized, setUnauthorized] = useState(false);
   const navigate = useNavigate();
+  const [inputHeight, setInputHeight] = useState(0);
+  const inputRef = useRef(null);
 
   // Fetch conversation data
   const { data: chat, isLoading, error } = useQuery({
@@ -42,7 +44,7 @@ const Message = ({ type }) => {
         })
   });
 
-  // Scroll to bottom whenever messages update
+  // Scroll to the bottom whenever messages update
   useEffect(() => {
     if (endRef.current) {
       endRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -55,6 +57,19 @@ const Message = ({ type }) => {
       navigate('/home');
     }
   })
+
+  useEffect(() => {
+    if (inputRef.current) {
+      const height = inputRef.current.offsetHeight;
+      setInputHeight(height);
+
+      // Apply dynamic style to a chat container
+      const chatElement = document.querySelector('.chat');
+      if (chatElement) {
+        chatElement.style.maxHeight = `calc(100vh - ${Math.max(320, height + 120)}px)`;
+      }
+    }
+  }, [chat?.type]); // Re-measure when a chat type changes
 
   return (
     <div className="message">
@@ -85,7 +100,7 @@ const Message = ({ type }) => {
                   </div>
                 ))}
 
-            {/* Show pending user message */}
+            {/* Show a pending user message */}
             {pendingMessage && (
               <div className="message-container">
                 <div className="user-message">{pendingMessage}</div>
@@ -105,7 +120,7 @@ const Message = ({ type }) => {
               </div>
             )}
 
-            {/* Reference for scrolling to bottom */}
+            {/* Reference for scrolling to the bottom */}
             <div ref={endRef} />
           </div>
         </div>
@@ -116,21 +131,26 @@ const Message = ({ type }) => {
               data={chat}
               setPendingMessage={setPendingMessage}
               setIsAiLoading={setIsAiLoading}
+              inputRef={inputRef}
             />
           ) : type === 'format' ? (
             <Format
               data={chat}
               setPendingMessage={setPendingMessage}
               setIsAiLoading={setIsAiLoading}
+              inputRef={inputRef}
             />
           ) : type === 'file' ? (
             <Summarize
               data={chat}
               setPendingMessage={setPendingMessage}
               setIsAiLoading={setIsAiLoading}
+              inputRef={inputRef}
             />
           ) : type === 'custom' ? (
-            <Custom />
+            <Custom
+              inputRef={inputRef}
+            />
           ) : null)}
       </div>
     </div>

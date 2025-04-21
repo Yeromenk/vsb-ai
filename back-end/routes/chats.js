@@ -46,6 +46,12 @@ router.post('/chats', upload.single('file'), async (req, res) => {
       }
 
       responseText = await getFile(extractedText, action);
+
+      // Ensure responseText is properly formatted
+      if (!responseText) {
+        responseText = ['Error processing file'];
+      }
+
       chatType = 'file';
     } catch (error) {
       return res.status(500).json({ error: 'Error processing the file' });

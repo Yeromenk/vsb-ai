@@ -6,6 +6,10 @@ import session from 'express-session';
 import passport from 'passport';
 import authRoutes from './routes/auth.js';
 import formatAI from './routes/chats.js';
+import translateRoutes from './routes/translate.js';
+import fileRoutes from './routes/file.js';
+import summarizeRoutes from './routes/format.js';
+import customRoutes from './routes/custom.js';
 import { connectToDatabase, prisma } from './prisma/db.js';
 
 const app = express();
@@ -54,6 +58,10 @@ passport.deserializeUser(async (id, done) => {
 // 4. Routes
 app.use('/auth', authRoutes);
 app.use('/ai', formatAI);
+app.use('/ai', translateRoutes)
+app.use('/ai', fileRoutes)
+app.use('/ai', summarizeRoutes)
+app.use('/ai', customRoutes)
 
 connectToDatabase();
 

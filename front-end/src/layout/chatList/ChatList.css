@@ -242,6 +242,25 @@ a:hover .chat-icons {
         display: block;
     }
 
+    .root .header {
+        position: relative;
+    }
+
+    .root .header h1 {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+    }
+
+    .root .logout-button {
+        z-index: 2;
+    }
+
+    .menu-close-button {
+        display: block;
+    }
+
     .chatList {
         width: 80%;
         position: fixed;

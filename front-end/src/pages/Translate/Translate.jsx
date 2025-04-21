@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import TextTranslator from '../../components/common/TextTranslator/TextTranslator';
 import './Translate.css';
 
-const Translate = ({ data,  setPendingMessage, setIsAiLoading  }) => {
+const Translate = ({ data,  setPendingMessage, setIsAiLoading, inputRef  }) => {
   const [loading, setLoading] = useState(false);
   const queryClient = useQueryClient();
 
@@ -41,13 +41,11 @@ const Translate = ({ data,  setPendingMessage, setIsAiLoading  }) => {
 
   const handleTranslate = async (translationData) => {
     setLoading(true);
-    // Show pending message immediately
     setPendingMessage(translationData.text);
-    // Show AI is thinking
     setIsAiLoading(true);
 
     try {
-      // First get translation
+      // First, get translation
       await axios.post('http://localhost:3000/ai/translate', {
         message: translationData.text,
         sourceLanguage: translationData.sourceLanguage,
@@ -68,7 +66,7 @@ const Translate = ({ data,  setPendingMessage, setIsAiLoading  }) => {
 
   return (
     <div className="translate-page">
-      <div className="translator-wrapper">
+      <div className="translator-wrapper" ref={inputRef}>
         <TextTranslator
           onSubmit={handleTranslate}
           loading={loading}

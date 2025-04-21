@@ -1,0 +1,118 @@
+.message-input {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100%;
+    padding: 20px 0;
+}
+
+.message-input__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: auto 0; /* This centers it vertically */
+    padding: 20px 0;
+}
+
+.message-input__header h1 {
+    font-size: 52px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.message-input__description {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    line-height: 1.5;
+    font-size: 18px;
+    color: #555;
+}
+
+.document-input-prompt {
+    width: 100%;
+    margin-top: auto; /* This pushes it to the bottom */
+    padding: 10px 0;
+}
+
+.custom-input-container-message {
+    position: relative;
+    width: 100%;
+    border-radius: 12px;
+    background-color: #f0f2f5;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+    margin: 0 auto;
+    max-width: 800px;
+}
+
+.custom-input-container-message:focus-within {
+    box-shadow: 0 6px 16px rgba(16, 163, 127, 0.15);
+    transform: translateY(-1px);
+}
+
+.document-input-prompt textarea {
+    width: 100%;
+    padding: 16px 50px 16px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 12px;
+    resize: none;
+    overflow-y: auto;
+    max-height: 120px;
+    background-color: transparent;
+    color: #333;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+.document-input-prompt textarea:focus {
+    outline: none;
+}
+
+.document-input-prompt button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    background-color: #10a37f;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.document-input-prompt button:hover:not(:disabled) {
+    background-color: #0c8c6c;
+    transform: translateY(-50%) scale(1.05);
+}
+
+.document-input-prompt button:disabled {
+    background-color: #cfd8dc;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.send-button {
+    width: 18px;
+    height: 18px;
+}
+
+@media (max-width: 768px) {
+    .message-input__header h1 {
+        font-size: 32px;
+    }
+
+    .message-input__description {
+        font-size: 16px;
+    }
+}

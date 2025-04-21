@@ -1,3 +1,4 @@
+
 .user-prompt-container {
     display: flex;
     flex-direction: column;
@@ -96,4 +97,61 @@
 
 .document-input button:hover {
     background-color: #0056b3;
+}
+
+@media (max-width: 768px) {
+    .user-prompt-container {
+        padding: 12px;
+    }
+
+    .user-prompt {
+        padding: 0 12px;
+    }
+
+    .document-input-prompt form {
+        width: 100%;
+        padding: 0 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-prompt-container {
+        padding: 10px 8px;
+    }
+
+    .user-prompt {
+        padding: 0 8px;
+    }
+
+    .description {
+        margin: 12px auto;
+    }
+
+    .document-input-prompt {
+        padding: 8px 0;
+    }
+
+    .document-input-prompt form {
+        padding: 0 8px;
+    }
+
+    .custom-input-container {
+        padding: 8px;
+    }
+
+    .document-input-prompt textarea {
+        padding: 10px 40px 10px 12px;
+        font-size: 15px;
+    }
+
+    .document-input-prompt button {
+        width: 28px;
+        height: 28px;
+        right: 8px;
+    }
+
+    .send-button {
+        width: 16px;
+        height: 16px;
+    }
 }

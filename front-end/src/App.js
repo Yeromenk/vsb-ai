@@ -14,12 +14,14 @@ import FormatInput from './features/format/FormatInput';
 import FileUploader from './features/summarize/FileUploader';
 import CustomInput from './features/custom/CustomInput';
 import Custom from './pages/Custom/Custom.jsx';
+import ProtectedRoute from './components/common/ProtectedRoute/ProtectedRoute';
 
 const App = () => {
   return (
-    <div>
+    <>
       <RouterProvider router={router} />
-    </div>
+      <Toaster />
+    </>
   );
 };
 
@@ -27,7 +29,6 @@ const Layout = () => {
   return (
     <>
       <Root />
-      <Toaster />
       <Outlet />
     </>
   );
@@ -53,7 +54,7 @@ const router = createBrowserRouter([
         element: <Register />,
       },
       {
-        element: <Dashboard />,
+        element: <ProtectedRoute><Dashboard /></ProtectedRoute>,
         children: [
           {
             path: '/home',
