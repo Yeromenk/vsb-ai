@@ -1,6 +1,5 @@
 import OpenAI from 'openai';
 import mammoth from 'mammoth';
-import path from 'path';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -25,14 +24,13 @@ export async function getFile(file, action) {
         { role: 'user', content: userPrompt }
       ],
       temperature: 0.7,
-      max_tokens: 800, // Increased to handle larger documents
+      max_tokens: 800,
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
     });
 
     console.log('File analysis generated with markdown formatting');
-    // Return the content directly, don't split into lines
     return completion.choices[0].message.content;
   } catch (error) {
     console.error('Error fetching completion(file):', error);

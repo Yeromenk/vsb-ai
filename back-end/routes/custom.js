@@ -128,7 +128,7 @@ router.put('/chats/custom-conversation/:id', verifyToken, async (req, res) => {
   const { message } = req.body;
 
   try {
-    // Get chat to ensure it exists and belongs to user
+    // Get chat to ensure it exists and belongs to a user
     const chat = await prisma.chat.findUnique({
       where: { id: chatId },
       include: { history: true },

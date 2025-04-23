@@ -1,4 +1,3 @@
-/* Main container for the entire message area */
 .message {
   display: flex;
   padding: 20px;
@@ -10,7 +9,6 @@
   overflow: hidden;
 }
 
-/* Container for all chat-message */
 .container-message {
   display: flex;
   flex-direction: column;
@@ -18,18 +16,16 @@
   width: 100%;
 }
 
-/* Chat area for individual chat-message */
-/* Update this rule in Message.css */
 .chat {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  padding: 20px 20px 20px; /* Reduced bottom padding */
+  padding: 20px 20px 20px;
   width: 100%;
   scroll-behavior: smooth;
-  min-height: 300px; /* Set minimum height */
-  max-height: calc(100vh - 420px); /* Increased space for inputs */
+  min-height: 300px;
+  max-height: calc(100vh - 220px);
   transition: max-height 0.3s ease;
 }
 
@@ -38,7 +34,6 @@
   margin: 0 auto;
 }
 
-/* Container for each message and its avatar */
 .message-container {
   display: flex;
   align-items: flex-start;
@@ -46,7 +41,6 @@
   width: 100%;
 }
 
-/* Styles for the user and model chat-message */
 .user-message,
 .model-message {
   padding: 15px 20px;
@@ -56,7 +50,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Specific styles for user message */
 .user-message {
   background-color: #e1f5fe;
   align-self: flex-end;
@@ -65,7 +58,6 @@
   border: 1px solid #bbdefb;
 }
 
-/* Specific styles for model message */
 .model-message {
   background-color: #ffffff;
   align-self: flex-start;
@@ -86,7 +78,6 @@
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* Model message markdown styling enhancements */
 .model-message .ai-response {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
@@ -185,7 +176,6 @@
   background-color: #f6f8fa;
 }
 
-/* Common style for the avatar */
 .avatar {
   width: 40px;
   height: 40px;
@@ -199,13 +189,11 @@
   flex-shrink: 0;
 }
 
-/* User avatar styling */
 .user-avatar {
   background-color: #4285f4;
   margin-left: 10px;
 }
 
-/* Model avatar styling */
 .model-avatar {
   background-color: #673ab7;
   margin-right: 15px;
@@ -219,3 +207,93 @@
   object-fit: cover;
 }
 
+@media (max-width: 1200px) {
+  .message-content-wrapper {
+    width: 80%;
+  }
+}
+
+@media (max-width: 992px) {
+  .message-content-wrapper {
+    width: 85%;
+  }
+
+  .user-message,
+  .model-message {
+    max-width: 80%;
+  }
+}
+
+@media (max-width: 768px) {
+  .message-content-wrapper {
+    width: 95%;
+  }
+
+  .chat {
+    padding: 15px 10px;
+    max-height: calc(100vh - 380px);
+  }
+
+  .message-container {
+    margin: 10px 0;
+  }
+
+  .user-message,
+  .model-message {
+    padding: 12px 16px;
+    max-width: 85%;
+  }
+
+  .model-message h1 {
+    font-size: 1.4em;
+  }
+
+  .model-message h2 {
+    font-size: 1.2em;
+  }
+
+  .model-message h3 {
+    font-size: 1.1em;
+  }
+}
+
+@media (max-width: 576px) {
+  .message-content-wrapper {
+    width: 100%;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+
+  .user-message,
+  .model-message {
+    padding: 10px 14px;
+    font-size: 0.95rem;
+  }
+
+  .user-avatar {
+    margin-left: 8px;
+  }
+
+  .model-avatar {
+    margin-right: 8px;
+  }
+
+  .model-message pre {
+    padding: 12px;
+  }
+
+  .model-message code {
+    font-size: 80%;
+  }
+}
+
+@media (max-width: 400px) {
+  .user-message,
+  .model-message {
+    max-width: 90%;
+  }
+}

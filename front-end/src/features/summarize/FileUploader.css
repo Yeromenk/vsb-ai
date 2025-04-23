@@ -193,7 +193,7 @@
 
 @media (max-width: 768px) {
     .file-page {
-        height: auto; /* Remove fixed height */
+        height: auto;
         min-height: 90vh;
         display: flex;
         flex-direction: column;
@@ -206,7 +206,7 @@
     }
 
     .file-page__header {
-        margin-top: 0; /* Keep the header at the top */
+        margin-top: 0;
         margin-bottom: 24px;
         width: 100%;
     }
@@ -227,7 +227,6 @@
         font-size: 16px;
     }
 
-    /* Make sure the file actions fit on mobile */
     .file-uploader__actions {
         grid-template-columns: 1fr;
         gap: 12px;

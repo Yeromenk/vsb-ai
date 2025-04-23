@@ -14,14 +14,14 @@ export const AuthContextProvider = ({ children }) => {
 
       if (storedUser) {
         try {
-          // Make a request to validate session
+          // Make a request to validate a session
           await axios.get('http://localhost:3000/auth/validate-session', {
             withCredentials: true
           });
           // If successful, session is valid
           setCurrentUser(storedUser);
         } catch (error) {
-          // If session is invalid, clear local storage
+          // If a session is invalid, clear local storage
           console.log('Session expired:', error);
           localStorage.removeItem('user');
           setCurrentUser(null);

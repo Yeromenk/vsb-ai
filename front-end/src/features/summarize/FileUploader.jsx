@@ -44,7 +44,7 @@ const FileUploader = () => {
           <p className="file-page__subtitle-formats">Supported formats: .docx</p>
         </div>
 
-        {/* Remove the extra div with file-uploader class */}
+        {/* Remove the extra div with the file-uploader class */}
         <FileProcessing
           onSubmit={mutation.mutate}
           loading={mutation.isPending}

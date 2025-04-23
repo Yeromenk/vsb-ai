@@ -44,6 +44,8 @@ const Translate = ({ data,  setPendingMessage, setIsAiLoading, inputRef  }) => {
     setPendingMessage(translationData.text);
     setIsAiLoading(true);
 
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     try {
       // First, get translation
       await axios.post('http://localhost:3000/ai/translate', {

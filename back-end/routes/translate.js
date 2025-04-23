@@ -6,7 +6,7 @@ import { getTranslation } from '../lib/translateAI.js';
 const router = express.Router();
 const prisma = new PrismaClient();
 
-// Update a chat translate
+// Update a chat translation
 router.put('/translate/chat/:id', verifyToken, async (req, res) => {
   const userId = req.user.id;
   const chatId = req.params.id;

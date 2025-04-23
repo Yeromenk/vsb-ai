@@ -12,7 +12,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin: auto 0; /* This centers it vertically */
+    margin: auto 0;
     padding: 20px 0;
 }
 
@@ -34,7 +34,7 @@
 
 .document-input-prompt {
     width: 100%;
-    margin-top: auto; /* This pushes it to the bottom */
+    margin-top: auto;
     padding: 10px 0;
 }
 

@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useState, useEffect } from 'react';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { SendHorizontal } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
@@ -9,26 +9,35 @@ import LoadingState from '../../components/common/LoadingState/LoadingState';
 import AiResponse from '../../components/ai-response/AiResponse';
 import './Custom.css';
 import Skeleton from 'react-loading-skeleton';
+import { toast } from 'react-hot-toast';
 
-const Custom = ({inputRef}) => {
+const Custom = ({inputRef, }) => {
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [pendingMessage, setPendingMessage] = useState(null);
+  const [unauthorized, setUnauthorized] = useState(false);
   const endRef = useRef(null);
   const { id: chatId } = useParams();
   const { currentUser } = useContext(AuthContext);
   const queryClient = useQueryClient();
   const firstLetter = currentUser?.username.charAt(0).toUpperCase();
+  const navigate = useNavigate();
 
   // Fetch conversation data
-  const { data: chat, isLoading } = useQuery({
+  const { data: chat, isLoading, error } = useQuery({
     queryKey: ['chat', chatId],
     queryFn: () =>
       axios
         .get(`http://localhost:3000/ai/chat/${chatId}`, {
           withCredentials: true,
         })
-        .then(res => res.data.response),
+        .then(res => res.data.response)
+        .catch(error => {
+        if(error.response?.data?.unauthorized){
+          setUnauthorized(true);
+        }
+        throw error;
+      })
   });
 
   useEffect(() => {
@@ -36,6 +45,13 @@ const Custom = ({inputRef}) => {
       endRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [chat?.history, pendingMessage, loading]);
+
+  useEffect(() => {
+    if (unauthorized) {
+      toast.error("You don't have access to this chat");
+      navigate('/home');
+    }
+  })
 
   // Mutation to add messages to conversation
   const mutation = useMutation({
