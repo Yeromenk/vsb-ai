@@ -44,6 +44,29 @@ const Message = ({ type }) => {
         })
   });
 
+
+  // TODO: add a function to handle the edit of the AI response
+  const handleEditAiResponse = (messageIndex, originalText) => {
+    const editedText = prompt("Edit the AI response:", originalText);
+    if (editedText && editedText !== originalText) {
+      // Update the message in the UI immediately
+      const updatedChat = {...chat};
+      updatedChat.history[messageIndex].text = editedText;
+
+      // Update in the database
+      axios.put(`http://localhost:3000/ai/edit-message/${chat.id}/${chat.history[messageIndex].id}`, {
+        text: editedText
+      }, { withCredentials: true })
+           .then(() => {
+             toast.success('Response updated successfully');
+           })
+           .catch(error => {
+             toast.error('Failed to update response');
+             console.error('Edit error:', error);
+           });
+    }
+  };
+
   // Scroll to the bottom whenever messages update
   useEffect(() => {
     if (endRef.current) {
@@ -93,7 +116,10 @@ const Message = ({ type }) => {
                           <img src="/vsb-logo.jpg" alt="vsb-logo" />
                         </div>
                         <div className="model-message">
-                          <AiResponse text={message.text} />
+                          <AiResponse
+                              onEdit={(text) => handleEditAiResponse(index, text)}
+                              text={message.text}
+                          />
                         </div>
                       </>
                     )}

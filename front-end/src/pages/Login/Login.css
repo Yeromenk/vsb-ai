@@ -225,6 +225,21 @@
     background-color: white;
 }
 
+.vsb-form {
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    width: 100%;
+}
+
+.vsb-form h3 {
+    margin-bottom: 16px;
+    font-size: 18px;
+    color: var(--primary);
+}
+
 @media (max-width: 480px) {
     .oauth-buttons {
         flex-direction: column;

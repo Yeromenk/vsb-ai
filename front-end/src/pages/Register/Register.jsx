@@ -103,8 +103,8 @@ const Register = () => {
       const response = await axios.post('http://localhost:3000/auth/register', inputs);
       localStorage.setItem('token', response.data.token);
       await login(inputs);
-      navigate('/home');
-      toast.success(response.data.message || 'Registration successful!');
+      navigate('/verify-email');
+      toast.success(response.data.message || 'Registration successful! Please verify your email!');
     } catch (e) {
       if (e.response) {
         toast.error(e.response.data.message);

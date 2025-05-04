@@ -10,6 +10,7 @@ import translateRoutes from './routes/translate.js';
 import fileRoutes from './routes/file.js';
 import summarizeRoutes from './routes/format.js';
 import customRoutes from './routes/custom.js';
+import emailRoutes from './routes/email.js';
 import { connectToDatabase, prisma } from './prisma/db.js';
 
 const app = express();
@@ -62,6 +63,7 @@ app.use('/ai', translateRoutes)
 app.use('/ai', fileRoutes)
 app.use('/ai', summarizeRoutes)
 app.use('/ai', customRoutes)
+app.use('/ai', emailRoutes)
 
 connectToDatabase();
 

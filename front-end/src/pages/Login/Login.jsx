@@ -169,6 +169,16 @@ const Login = () => {
                 </svg>
                 <span>Google</span>
               </button>
+
+              <button
+                  type="button"
+                  className="link-button"
+                  onClick={() => navigate('/vsb-login')}
+              >
+                <img src="/vsb-logo.jpg" alt="VSB" width="20" height="20" />
+                <span>VSB Login</span>
+              </button>
+
             </div>
           </div>
 

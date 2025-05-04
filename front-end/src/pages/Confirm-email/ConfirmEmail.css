@@ -1,0 +1,245 @@
+/* Base container */
+.confirm-email-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 80px);
+    background-color: #f5f7fa;
+    padding: 20px;
+}
+
+/* Two-column layout */
+.confirm-email-card-two-column {
+    display: flex;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 800px;
+    overflow: hidden;
+}
+
+.left-column {
+    padding: 30px;
+    background-color: #f8fafc;
+    border-right: 1px solid #e2e8f0;
+    width: 50%;
+}
+
+.right-column {
+    padding: 30px;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.left-column h2 {
+    font-size: 24px;
+    color: #2d3748;
+    margin-bottom: 24px;
+    font-weight: 600;
+}
+
+/* Info blocks */
+.info-block {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 16px;
+}
+
+.info-block h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+    color: #2d3748;
+    font-weight: 600;
+}
+
+.info-block ol, .info-block ul {
+    padding-left: 20px;
+    margin-bottom: 10px;
+}
+
+.info-block li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.info-block ul {
+    margin-top: 8px;
+}
+
+.info-block.success {
+    background-color: #f0fff4;
+    border-left: 4px solid #38a169;
+}
+
+.info-block.error {
+    background-color: #fff5f5;
+    border-left: 4px solid #e53e3e;
+}
+
+.info-block p {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+/* Logo styling */
+.email-logo {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.email-logo-image {
+    height: 60px;
+    width: auto;
+}
+
+/* Verification form */
+.verification-form {
+    width: 100%;
+    max-width: 320px;
+}
+
+.verification-form h3 {
+    font-size: 18px;
+    margin-bottom: 16px;
+    color: #2d3748;
+    font-weight: 600;
+    text-align: center;
+}
+
+.email-input-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 10px 16px;
+    margin: 12px 0;
+    background: white;
+}
+
+.email-icon {
+    color: #718096;
+    margin-right: 12px;
+}
+
+.email-input-container input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    padding: 6px 0;
+    color: #2d3748;
+}
+
+/* Button styling */
+.confirm-email-button {
+    background-color: #4b70e2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.confirm-email-button:hover {
+    background-color: #3a5bc7;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(74, 85, 104, 0.15);
+}
+
+.confirm-email-button:disabled {
+    background-color: #a0aec0;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Status indicators */
+.verification-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.verification-status p {
+    margin: 16px 0;
+    color: #4a5568;
+}
+
+/* Icon styling */
+.button-icon {
+    margin-right: 8px;
+}
+
+.button-icon-right {
+    margin-left: 8px;
+}
+
+.icon-spin {
+    animation: spin 2s linear infinite;
+    color: #4b70e2;
+}
+
+.icon-success {
+    color: #38a169;
+}
+
+.icon-error {
+    color: #e53e3e;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .confirm-email-card-two-column {
+        flex-direction: column;
+    }
+
+    .left-column, .right-column {
+        width: 100%;
+        padding: 24px 20px;
+    }
+
+    .left-column {
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+    }
+}
+
+@media (max-width: 576px) {
+    .email-logo-image {
+        height: 50px;
+    }
+
+    .left-column h2 {
+        font-size: 20px;
+    }
+
+    .verification-form {
+        max-width: 100%;
+    }
+}

@@ -260,4 +260,48 @@ router.delete('/chat/:id', verifyToken, async (req, res) => {
   }
 });
 
+// search chats
+router.get('/searchChat', verifyToken, async (req, res) => {
+  const userId = req.user.id;
+  const { searchQuery } = req.query;
+
+  if (!searchQuery || searchQuery.trim() === '') {
+    return res.status(400).json({ error: 'Search query parameter is required' });
+  }
+
+  try {
+    // Get all user's chats with their messages
+    const userChats = await prisma.chat.findMany({
+      where: {
+        userId: userId,
+      },
+      include: {
+        history: true
+      }
+    });
+
+    // Text-based search implementation
+    const results = userChats.filter(chat => {
+      // Search in chat title
+      if (chat.title.toLowerCase().includes(searchQuery.toLowerCase())) {
+        return true;
+      }
+
+      // Search in message content
+      return !!(chat.history && chat.history.some(msg =>
+        msg.text.toLowerCase()
+           .includes(searchQuery.toLowerCase())
+      ));
+
+
+    });
+
+    res.status(200).json({ response: results });
+  } catch (error) {
+    console.error('Error in /searchChat:', error);
+    res.status(500).json({ error: 'Error searching chats' });
+  }
+});
+
+
 export default router;

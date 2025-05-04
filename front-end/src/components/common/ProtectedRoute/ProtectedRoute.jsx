@@ -1,40 +1,51 @@
-import { useContext, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../../context/AuthContext';
+import axios from 'axios';
 import LoadingState from '../LoadingState/LoadingState';
 
 const ProtectedRoute = ({ children }) => {
-  const { currentUser, loading } = useContext(AuthContext);
-  const navigate = useNavigate();
-  const location = useLocation();
+    const { currentUser } = useContext(AuthContext);
+    const [isVerified, setIsVerified] = useState(true);
+    const [isChecking, setIsChecking] = useState(true);
+    const location = useLocation();
 
+    useEffect(() => {
+        if (!currentUser) {
+            setIsChecking(false);
+            return;
+        }
 
-  useEffect(() => {
-    if (!loading) {
-      if (!currentUser && !location.pathname.includes('/welcome') &&
-        !location.pathname.includes('/login') &&
-        !location.pathname.includes('/register')) {
-        navigate('/');
-      }
+        const checkVerification = async () => {
+            try {
+                const response = await axios.get('http://localhost:3000/auth/check-verification', {
+                    withCredentials: true
+                });
+                setIsVerified(response.data.isVerified);
+            } catch (error) {
+                console.error('Error checking verification status:', error);
+                setIsVerified(true);
+            } finally {
+                setIsChecking(false);
+            }
+        };
+
+        checkVerification();
+    }, [currentUser]);
+
+    if (isChecking) {
+        return <LoadingState message="Checking authentication..." />;
     }
-  }, [currentUser, loading, navigate, location.pathname]);
 
-  if (loading) {
-    return (
-      <div style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#f8f9fa'
-      }}>
-        <LoadingState message="Checking authentication..." />
-      </div>
-    );
-  }
+    if (!currentUser) {
+        return <Navigate to="/login" state={{ from: location }} replace />;
+    }
 
-  // For public routes or authenticated users
-  return children;
+    if (!isVerified) {
+        return <Navigate to="/verify-email" replace />;
+    }
+
+    return children;
 };
 
 export default ProtectedRoute;
