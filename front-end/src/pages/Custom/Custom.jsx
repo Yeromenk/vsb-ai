@@ -11,7 +11,7 @@ import './Custom.css';
 import Skeleton from 'react-loading-skeleton';
 import { toast } from 'react-hot-toast';
 
-const Custom = ({inputRef, }) => {
+const Custom = ({ inputRef }) => {
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [pendingMessage, setPendingMessage] = useState(null);
@@ -24,7 +24,11 @@ const Custom = ({inputRef, }) => {
   const navigate = useNavigate();
 
   // Fetch conversation data
-  const { data: chat, isLoading, error } = useQuery({
+  const {
+    data: chat,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['chat', chatId],
     queryFn: () =>
       axios
@@ -33,11 +37,11 @@ const Custom = ({inputRef, }) => {
         })
         .then(res => res.data.response)
         .catch(error => {
-        if(error.response?.data?.unauthorized){
-          setUnauthorized(true);
-        }
-        throw error;
-      })
+          if (error.response?.data?.unauthorized) {
+            setUnauthorized(true);
+          }
+          throw error;
+        }),
   });
 
   useEffect(() => {
@@ -51,7 +55,7 @@ const Custom = ({inputRef, }) => {
       toast.error("You don't have access to this chat");
       navigate('/home');
     }
-  })
+  });
 
   // Mutation to add messages to conversation
   const mutation = useMutation({
@@ -89,6 +93,46 @@ const Custom = ({inputRef, }) => {
     mutation.mutate(inputValue);
   };
 
+  const handleEditAiResponse = (messageIndex, messageId, editedText) => {
+    // Create a copy of the current chat data for an optimistic update
+    const previousData = queryClient.getQueryData(['chat', chatId]);
+
+    // Apply optimistic update to show changes immediately
+    if (previousData) {
+      const updatedChat = { ...previousData };
+      // Ensure we're working with a clean copy of the history array
+      updatedChat.history = [...updatedChat.history];
+      // Update the specific message
+      updatedChat.history[messageIndex] = {
+        ...updatedChat.history[messageIndex],
+        text: editedText,
+      };
+
+      // Update the cache immediately
+      queryClient.setQueryData(['chat', chatId], updatedChat);
+    }
+
+    // Send update to server
+    axios
+      .put(
+        `http://localhost:3000/ai/edit-message/${chatId}/${messageId}`,
+        { text: editedText },
+        { withCredentials: true }
+      )
+      .then(() => {
+        toast.success('Response updated successfully');
+      })
+      .catch(error => {
+        toast.error('Failed to update response');
+        console.error('Edit error:', error);
+
+        // Revert to original data on error
+        if (previousData) {
+          queryClient.setQueryData(['chat', chatId], previousData);
+        }
+      });
+  };
+
   const handleInputChange = e => {
     handleTextareaAutoResize(e, setInputValue);
   };
@@ -113,7 +157,12 @@ const Custom = ({inputRef, }) => {
                       <img src="/vsb-logo.jpg" alt="vsb-logo" />
                     </div>
                     <div className="model-message">
-                      <AiResponse text={message.text} />
+                      <AiResponse
+                        text={message.text}
+                        showEditButton={true}
+                        showEmailButton={true}
+                        onEdit={editedText => handleEditAiResponse(index, message.id, editedText)}
+                      />
                     </div>
                   </>
                 )}

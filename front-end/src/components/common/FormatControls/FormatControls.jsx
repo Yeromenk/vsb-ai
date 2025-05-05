@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { ChevronDown, SendHorizontal } from 'lucide-react';
 
 const FormatControls = ({
-                          onSubmit,
-                          loading = false,
-                          initialStyle = 'Simple',
-                          initialTone = 'Formal',
-                          buttonText = 'Format',
-                          maxChars = 2000,
-                        }) => {
+  onSubmit,
+  loading = false,
+  initialStyle = 'Simple',
+  initialTone = 'Formal',
+  buttonText = 'Format',
+  maxChars = 2000,
+}) => {
   const [style, setStyle] = useState(initialStyle);
   const [tone, setTone] = useState(initialTone);
   const [isStyleDropdownOpen, setIsStyleDropdownOpen] = useState(false);

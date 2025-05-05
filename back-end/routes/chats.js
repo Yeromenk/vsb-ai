@@ -276,8 +276,8 @@ router.get('/searchChat', verifyToken, async (req, res) => {
         userId: userId,
       },
       include: {
-        history: true
-      }
+        history: true,
+      },
     });
 
     // Text-based search implementation
@@ -288,12 +288,10 @@ router.get('/searchChat', verifyToken, async (req, res) => {
       }
 
       // Search in message content
-      return !!(chat.history && chat.history.some(msg =>
-        msg.text.toLowerCase()
-           .includes(searchQuery.toLowerCase())
-      ));
-
-
+      return !!(
+        chat.history &&
+        chat.history.some(msg => msg.text.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
     });
 
     res.status(200).json({ response: results });
@@ -302,6 +300,5 @@ router.get('/searchChat', verifyToken, async (req, res) => {
     res.status(500).json({ error: 'Error searching chats' });
   }
 });
-
 
 export default router;

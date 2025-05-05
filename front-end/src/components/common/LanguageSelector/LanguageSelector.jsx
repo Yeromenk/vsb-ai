@@ -3,13 +3,13 @@ import { ChevronDown } from 'lucide-react';
 import './LanguageSelector.css';
 
 const LanguageSelector = ({
-                            selectedLanguage,
-                            onChange,
-                            languages = ['English', 'Spanish', 'Italian', 'Russian']
-                          }) => {
+  selectedLanguage,
+  onChange,
+  languages = ['English', 'Spanish', 'Italian', 'Russian'],
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleSelect = (language) => {
+  const handleSelect = language => {
     onChange(language);
     setIsOpen(false);
   };

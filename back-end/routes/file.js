@@ -25,12 +25,12 @@ router.put('/file/chat/:id', verifyToken, upload.single('file'), async (req, res
         id: chatId,
         userId: userId,
       },
-    })
+    });
 
     if (!chat) {
       return res.status(403).json({
         message: 'Access denied: You do not have permission to modify this chat',
-        unauthorized: true
+        unauthorized: true,
       });
     }
 
@@ -59,7 +59,7 @@ router.put('/file/chat/:id', verifyToken, upload.single('file'), async (req, res
             },
             {
               role: 'model',
-              text: modelResponse
+              text: modelResponse,
             },
           ],
         },

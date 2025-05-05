@@ -14,23 +14,18 @@ const Summarize = ({ data, setPendingMessage, setIsAiLoading, inputRef }) => {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('action', action);
-      return axios.put(
-        `http://localhost:3000/ai/file/chat/${data.id}`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          withCredentials: true,
-        }
-      );
+      return axios.put(`http://localhost:3000/ai/file/chat/${data.id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        withCredentials: true,
+      });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['chat', data.id])
-                 .then(() => {
-                   setPendingMessage(null);
-                   setIsAiLoading(false);
-                 });
+      queryClient.invalidateQueries(['chat', data.id]).then(() => {
+        setPendingMessage(null);
+        setIsAiLoading(false);
+      });
     },
     onError: error => {
       console.error('Error processing file:', error);
@@ -54,7 +49,7 @@ const Summarize = ({ data, setPendingMessage, setIsAiLoading, inputRef }) => {
       // First, upload the file info
       await axios.post('http://localhost:3000/ai/file', {
         file: file.name,
-        action: action
+        action: action,
       });
 
       // Then update the chat with the file analysis

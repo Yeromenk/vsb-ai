@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { FilePlus2, FileText, Send } from 'lucide-react';
 
-const FileProcessing = ({
-                          onSubmit,
-                          loading = false,
-                        }) => {
+const FileProcessing = ({ onSubmit, loading = false }) => {
   const [file, setFile] = useState(null);
   const [action, setAction] = useState('');
 
@@ -21,10 +18,9 @@ const FileProcessing = ({
     if (!file || !action || loading) return;
 
     onSubmit({ file, action });
-    
-      setFile(null);
-      setAction('');
 
+    setFile(null);
+    setAction('');
   };
 
   return (
@@ -36,12 +32,7 @@ const FileProcessing = ({
             <span className="file-uploader__text">
               {file ? file.name : 'Click to upload a document'}
             </span>
-            <input
-              type="file"
-              onChange={handleFileChange}
-              hidden
-              name="file"
-            />
+            <input type="file" onChange={handleFileChange} hidden name="file" />
           </label>
         </div>
 
@@ -74,7 +65,7 @@ const FileProcessing = ({
           disabled={!file || !action || loading}
         >
           <Send className="file-uploader__button-icon" />
-          {loading ? "Processing..." : "Submit"}
+          {loading ? 'Processing...' : 'Submit'}
         </button>
       </form>
     </div>

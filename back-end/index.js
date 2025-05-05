@@ -11,6 +11,7 @@ import fileRoutes from './routes/file.js';
 import summarizeRoutes from './routes/format.js';
 import customRoutes from './routes/custom.js';
 import emailRoutes from './routes/email.js';
+import editMessageRoutes from './routes/edit-message.js';
 import { connectToDatabase, prisma } from './prisma/db.js';
 
 const app = express();
@@ -27,15 +28,17 @@ app.use(express.json());
 app.use(cookieParser());
 
 // 2. Session and passport middleware
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: false,
-    httpOnly: true,
-  }
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false,
+      httpOnly: true,
+    },
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -48,7 +51,7 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser(async (id, done) => {
   try {
     const user = await prisma.user.findUnique({
-      where: { id }
+      where: { id },
     });
     done(null, user);
   } catch (error) {
@@ -59,11 +62,12 @@ passport.deserializeUser(async (id, done) => {
 // 4. Routes
 app.use('/auth', authRoutes);
 app.use('/ai', formatAI);
-app.use('/ai', translateRoutes)
-app.use('/ai', fileRoutes)
-app.use('/ai', summarizeRoutes)
-app.use('/ai', customRoutes)
-app.use('/ai', emailRoutes)
+app.use('/ai', translateRoutes);
+app.use('/ai', fileRoutes);
+app.use('/ai', summarizeRoutes);
+app.use('/ai', customRoutes);
+app.use('/ai', emailRoutes);
+app.use('/ai', editMessageRoutes);
 
 connectToDatabase();
 

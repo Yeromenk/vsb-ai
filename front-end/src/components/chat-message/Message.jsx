@@ -28,7 +28,11 @@ const Message = ({ type }) => {
   const inputRef = useRef(null);
 
   // Fetch conversation data
-  const { data: chat, isLoading, error } = useQuery({
+  const {
+    data: chat,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['chat', chatId],
     queryFn: () =>
       axios
@@ -37,35 +41,12 @@ const Message = ({ type }) => {
         })
         .then(res => res.data.response)
         .catch(error => {
-          if(error.response?.data?.unauthorized){
+          if (error.response?.data?.unauthorized) {
             setUnauthorized(true);
           }
           throw error;
-        })
+        }),
   });
-
-
-  // TODO: add a function to handle the edit of the AI response
-  const handleEditAiResponse = (messageIndex, originalText) => {
-    const editedText = prompt("Edit the AI response:", originalText);
-    if (editedText && editedText !== originalText) {
-      // Update the message in the UI immediately
-      const updatedChat = {...chat};
-      updatedChat.history[messageIndex].text = editedText;
-
-      // Update in the database
-      axios.put(`http://localhost:3000/ai/edit-message/${chat.id}/${chat.history[messageIndex].id}`, {
-        text: editedText
-      }, { withCredentials: true })
-           .then(() => {
-             toast.success('Response updated successfully');
-           })
-           .catch(error => {
-             toast.error('Failed to update response');
-             console.error('Edit error:', error);
-           });
-    }
-  };
 
   // Scroll to the bottom whenever messages update
   useEffect(() => {
@@ -79,7 +60,7 @@ const Message = ({ type }) => {
       toast.error("You don't have access to this chat");
       navigate('/home');
     }
-  })
+  });
 
   useEffect(() => {
     if (inputRef.current) {
@@ -99,32 +80,37 @@ const Message = ({ type }) => {
       <div className="container-message">
         <div className="chat">
           <div className="message-content-wrapper">
-            {isLoading
-              ? <LoadingState message="Loading..." />
-              : error
-                ? (unauthorized ? null : <div className="error-state"> An error occurred </div>)
-                : chat?.history?.map((message, index) => (
-                  <div key={index} className="message-container">
-                    {message.role === 'user' ? (
-                      <>
-                        <div className="user-message">{message.text}</div>
-                        <div className="avatar user-avatar">{firstLetter}</div>
-                      </>
-                    ) : (
-                      <>
-                        <div className="avatar model-avatar">
-                          <img src="/vsb-logo.jpg" alt="vsb-logo" />
-                        </div>
-                        <div className="model-message">
-                          <AiResponse
-                              onEdit={(text) => handleEditAiResponse(index, text)}
-                              text={message.text}
-                          />
-                        </div>
-                      </>
-                    )}
-                  </div>
-                ))}
+            {isLoading ? (
+              <LoadingState message="Loading..." />
+            ) : error ? (
+              unauthorized ? null : (
+                <div className="error-state"> An error occurred </div>
+              )
+            ) : (
+              chat?.history?.map((message, index) => (
+                <div key={index} className="message-container">
+                  {message.role === 'user' ? (
+                    <>
+                      <div className="user-message">{message.text}</div>
+                      <div className="avatar user-avatar">{firstLetter}</div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="avatar model-avatar">
+                        <img src="/vsb-logo.jpg" alt="vsb-logo" />
+                      </div>
+                      <div className="model-message">
+                        <AiResponse
+                          text={message.text}
+                          showEditButton={type === 'custom'}
+                          showEmailButton={type === 'custom'}
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))
+            )}
 
             {/* Show a pending user message */}
             {pendingMessage && (
@@ -174,9 +160,7 @@ const Message = ({ type }) => {
               inputRef={inputRef}
             />
           ) : type === 'custom' ? (
-            <Custom
-              inputRef={inputRef}
-            />
+            <Custom inputRef={inputRef} />
           ) : null)}
       </div>
     </div>

@@ -4,17 +4,17 @@ import LanguageSelector from '../LanguageSelector/LanguageSelector';
 import './TextTranslator.css';
 
 const TextTranslator = ({
-                          onSubmit,
-                          loading = false,
-                          initialSource = 'English',
-                          initialTarget = 'Spanish',
-                        }) => {
+  onSubmit,
+  loading = false,
+  initialSource = 'English',
+  initialTarget = 'Spanish',
+}) => {
   const [sourceLanguage, setSourceLanguage] = useState(initialSource);
   const [targetLanguage, setTargetLanguage] = useState(initialTarget);
   const [input, setInput] = useState('');
   const maxChars = 1000;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     if (input.trim() === '' || input.length > maxChars) return;
 
@@ -27,7 +27,7 @@ const TextTranslator = ({
     setInput('');
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = e => {
     if (e.key === 'Enter' && e.ctrlKey) {
       handleSubmit(e);
     }
@@ -39,12 +39,12 @@ const TextTranslator = ({
         <div className="language-controls">
           <LanguageSelector
             selectedLanguage={sourceLanguage}
-            onChange={(lang) => setSourceLanguage(lang)}
+            onChange={lang => setSourceLanguage(lang)}
           />
           <ArrowRight className="arrow-icon" />
           <LanguageSelector
             selectedLanguage={targetLanguage}
-            onChange={(lang) => setTargetLanguage(lang)}
+            onChange={lang => setTargetLanguage(lang)}
           />
         </div>
 

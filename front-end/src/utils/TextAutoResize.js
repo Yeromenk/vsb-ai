@@ -1,5 +1,4 @@
-export const handleTextareaAutoResize = (e,
-                                         setValue) => {
+export const handleTextareaAutoResize = (e, setValue) => {
   const textarea = e.target;
   textarea.style.height = 'auto';
   textarea.style.overflowY = 'hidden';

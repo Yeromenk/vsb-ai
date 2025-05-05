@@ -1,4 +1,4 @@
-import {  useState } from 'react';
+import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -6,12 +6,12 @@ import toast from 'react-hot-toast';
 import TextTranslator from '../../components/common/TextTranslator/TextTranslator';
 import './Translate.css';
 
-const Translate = ({ data,  setPendingMessage, setIsAiLoading, inputRef  }) => {
+const Translate = ({ data, setPendingMessage, setIsAiLoading, inputRef }) => {
   const [loading, setLoading] = useState(false);
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (translationData) => {
+    mutationFn: translationData => {
       return axios.put(
         `http://localhost:3000/ai/translate/chat/${data.id}`,
         {
@@ -25,21 +25,20 @@ const Translate = ({ data,  setPendingMessage, setIsAiLoading, inputRef  }) => {
       );
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['chat', data.id] })
-                 .then(() => {
-                   setPendingMessage(null);
-                   setIsAiLoading(false);
-                 });
+      queryClient.invalidateQueries({ queryKey: ['chat', data.id] }).then(() => {
+        setPendingMessage(null);
+        setIsAiLoading(false);
+      });
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Error in handleSend:', error);
       toast.error('Error updating chat history');
       setPendingMessage(null);
       setIsAiLoading(false);
-    }
+    },
   });
 
-  const handleTranslate = async (translationData) => {
+  const handleTranslate = async translationData => {
     setLoading(true);
     setPendingMessage(translationData.text);
     setIsAiLoading(true);

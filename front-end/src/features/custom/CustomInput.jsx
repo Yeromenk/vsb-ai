@@ -19,10 +19,9 @@ const CustomInput = () => {
     queryKey: ['template', templateId],
     queryFn: async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:3000/ai/chat/${templateId}`,
-          { withCredentials: true }
-        );
+        const res = await axios.get(`http://localhost:3000/ai/chat/${templateId}`, {
+          withCredentials: true,
+        });
         return res.data.response;
       } catch (err) {
         if (err.response?.data?.unauthorized) {
@@ -42,20 +41,23 @@ const CustomInput = () => {
 
   // Mutation to create a conversation from a template
   const mutation = useMutation({
-    mutationFn: async (message) => {
+    mutationFn: async message => {
       setLoading(true);
       const response = await axios.post(
         'http://localhost:3000/ai/chats/custom-conversation',
-        { templateId, message },
+        {
+          templateId,
+          message,
+        },
         { withCredentials: true }
       );
       return response.data.response;
     },
-    onSuccess: (newChat) => {
+    onSuccess: newChat => {
       queryClient.invalidateQueries(['ChatList']);
       navigate(`/custom/chat/${newChat.id}`);
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Error creating conversation:', error);
       toast.error('Failed to create conversation. Please try again.');
     },
@@ -64,9 +66,12 @@ const CustomInput = () => {
     },
   });
 
-  const handleSubmit = useCallback((message) => {
-    mutation.mutate(message);
-  }, [mutation]);
+  const handleSubmit = useCallback(
+    message => {
+      mutation.mutate(message);
+    },
+    [mutation]
+  );
 
   if (isLoading) return <LoadingState message="Loading template..." />;
 

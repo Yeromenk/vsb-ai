@@ -196,14 +196,14 @@ router.get('/template/:id', verifyToken, async (req, res) => {
       where: {
         id: templateId,
         userId: userId,
-        type: 'custom_template'
-      }
+        type: 'custom_template',
+      },
     });
 
     if (!template) {
       return res.status(403).json({
         message: 'Access denied: You do not have permission to view this template',
-        unauthorized: true
+        unauthorized: true,
       });
     }
 
@@ -212,9 +212,9 @@ router.get('/template/:id', verifyToken, async (req, res) => {
     console.error('Error fetching template:', error);
     res.status(403).json({
       message: 'Failed to access template',
-      unauthorized: true
+      unauthorized: true,
     });
   }
 });
 
-export default router
+export default router;

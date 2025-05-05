@@ -17,9 +17,13 @@ const NewPrompt = () => {
 
   const createChatMutation = useMutation({
     mutationFn: async chatData => {
-      const response = await axios.post('http://localhost:3000/ai/chats/custom-template', chatData, {
-        withCredentials: true,
-      });
+      const response = await axios.post(
+        'http://localhost:3000/ai/chats/custom-template',
+        chatData,
+        {
+          withCredentials: true,
+        }
+      );
       return response.data.response;
     },
     onSuccess: data => {
@@ -63,7 +67,8 @@ const NewPrompt = () => {
         </div>
         <p className="prompt-description">
           <Info size={18} className="info-icon" />
-          Create a custom chat with specific instructions for how the AI should respond to your needs.
+          Create a custom chat with specific instructions for how the AI should respond to your
+          needs.
         </p>
         <div className="form-prompt">
           <div className="input-group">
@@ -112,7 +117,9 @@ const NewPrompt = () => {
           )}
 
           <button onClick={handleCreateChat} disabled={loading} className="create-button">
-            {loading ? 'Creating...' : (
+            {loading ? (
+              'Creating...'
+            ) : (
               <>
                 <Save size={20} />
                 <span>Create Custom Chat</span>

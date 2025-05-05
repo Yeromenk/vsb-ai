@@ -13,11 +13,7 @@ const TranslateInput = () => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: async ({
-                         text,
-                         sourceLanguage,
-                         targetLanguage,
-                       }) => {
+    mutationFn: async ({ text, sourceLanguage, targetLanguage }) => {
       const response = await axios.post('http://localhost:3000/ai/chats', {
         message: text,
         sourceLanguage,
@@ -26,11 +22,11 @@ const TranslateInput = () => {
       });
       return response.data.response;
     },
-    onSuccess : newChat => {
+    onSuccess: newChat => {
       queryClient.invalidateQueries({ queryKey: ['ChatList'] });
       navigate(`/translate/chat/${newChat.id}`);
     },
-    onError   : error => {
+    onError: error => {
       console.error('Error in handleSend:', error);
     },
   });
@@ -40,13 +36,12 @@ const TranslateInput = () => {
       <div className="translate-container">
         <div className="overview">
           <h1 className="translate-page__title">Translate Text</h1>
-          <p className="translate-page__subtitle">Here you can translate a text and get an overview</p>
+          <p className="translate-page__subtitle">
+            Here you can translate a text and get an overview
+          </p>
         </div>
 
-        <TextTranslator
-          onSubmit={mutation.mutate}
-          loading={mutation.isPending}
-        />
+        <TextTranslator onSubmit={mutation.mutate} loading={mutation.isPending} />
       </div>
     </div>
   );

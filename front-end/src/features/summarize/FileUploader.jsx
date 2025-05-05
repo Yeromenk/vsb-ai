@@ -40,15 +40,14 @@ const FileUploader = () => {
       <div className="file-page__container">
         <div className="file-page__header">
           <h1 className="file-page__title">Analyze Documents</h1>
-          <p className="file-page__subtitle">Upload a file to summarize or analyze its content with AI</p>
+          <p className="file-page__subtitle">
+            Upload a file to summarize or analyze its content with AI
+          </p>
           <p className="file-page__subtitle-formats">Supported formats: .docx</p>
         </div>
 
         {/* Remove the extra div with the file-uploader class */}
-        <FileProcessing
-          onSubmit={mutation.mutate}
-          loading={mutation.isPending}
-        />
+        <FileProcessing onSubmit={mutation.mutate} loading={mutation.isPending} />
       </div>
     </div>
   );

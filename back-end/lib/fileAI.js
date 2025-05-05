@@ -21,7 +21,7 @@ export async function getFile(file, action) {
       model: 'gpt-4o-mini',
       messages: [
         { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt }
+        { role: 'user', content: userPrompt },
       ],
       temperature: 0.7,
       max_tokens: 800,
@@ -41,7 +41,6 @@ export async function getFile(file, action) {
 export async function extractTextFromFile(filePath) {
   try {
     return await extractTextFromDocx(filePath);
-
   } catch (error) {
     console.error(`Error extracting text from file: ${error.message}`);
     throw error;
@@ -57,6 +56,3 @@ async function extractTextFromDocx(filePath) {
     throw e;
   }
 }
-
-
-

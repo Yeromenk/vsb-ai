@@ -19,12 +19,12 @@ router.put('/translate/chat/:id', verifyToken, async (req, res) => {
         id: chatId,
         userId: userId,
       },
-    })
+    });
 
     if (!chat) {
       return res.status(403).json({
         message: 'Access denied: You do not have permission to modify this chat',
-        unauthorized: true
+        unauthorized: true,
       });
     }
 

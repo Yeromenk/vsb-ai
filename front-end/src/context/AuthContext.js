@@ -16,7 +16,7 @@ export const AuthContextProvider = ({ children }) => {
         try {
           // Make a request to validate a session
           await axios.get('http://localhost:3000/auth/validate-session', {
-            withCredentials: true
+            withCredentials: true,
           });
           // If successful, session is valid
           setCurrentUser(storedUser);
@@ -35,27 +35,24 @@ export const AuthContextProvider = ({ children }) => {
     checkExternalAuth();
   }, []);
 
-    // Check for GitHub / Google auth cookie when the component mounts
-    const checkExternalAuth = () => {
-      try {
-        // Parse GitHub / Google user data from cookie
-        const userCookie = document.cookie
-                                   .split('; ')
-                                   .find(row => row.startsWith('user_data='));
+  // Check for GitHub / Google auth cookie when the component mounts
+  const checkExternalAuth = () => {
+    try {
+      // Parse GitHub / Google user data from cookie
+      const userCookie = document.cookie.split('; ').find(row => row.startsWith('user_data='));
 
-        if (userCookie) {
-          const userData = JSON.parse(decodeURIComponent(userCookie.split('=')[1]));
-          setCurrentUser(userData);
-          localStorage.setItem('user', JSON.stringify(userData));
+      if (userCookie) {
+        const userData = JSON.parse(decodeURIComponent(userCookie.split('=')[1]));
+        setCurrentUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
 
-          // Clear the cookie after reading it
-          document.cookie = 'user_data=; max-age=0; path=/;';
-        }
-      } catch (error) {
-        console.error('Error parsing GitHub auth cookie:', error);
+        // Clear the cookie after reading it
+        document.cookie = 'user_data=; max-age=0; path=/;';
       }
-    };
-
+    } catch (error) {
+      console.error('Error parsing GitHub auth cookie:', error);
+    }
+  };
 
   const login = async inputs => {
     try {
@@ -71,9 +68,13 @@ export const AuthContextProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.post('http://localhost:3000/auth/logout', {}, {
-        withCredentials: true
-      });
+      await axios.post(
+        'http://localhost:3000/auth/logout',
+        {},
+        {
+          withCredentials: true,
+        }
+      );
       setCurrentUser(null);
       localStorage.removeItem('user');
     } catch (error) {
@@ -88,6 +89,8 @@ export const AuthContextProvider = ({ children }) => {
   }, [currentUser]);
 
   return (
-    <AuthContext.Provider value={{ currentUser, login, logout, loading }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ currentUser, login, logout, loading }}>
+      {children}
+    </AuthContext.Provider>
   );
 };

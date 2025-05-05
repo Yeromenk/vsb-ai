@@ -4,32 +4,38 @@ import { handleTextareaAutoResize } from '../../../utils/TextAutoResize';
 import './MessageInput.css';
 
 const MessageInput = ({
-                        onSubmit,
-                        loading = false,
-                        initialValue = '',
-                        placeholder = "Start a new conversation...",
-                        title = "",
-                        description = "",
-                        showHeader = true
-                      }) => {
+  onSubmit,
+  loading = false,
+  initialValue = '',
+  placeholder = 'Start a new conversation...',
+  title = '',
+  description = '',
+  showHeader = true,
+}) => {
   const [inputValue, setInputValue] = useState(initialValue);
 
-  const handleSend = useCallback((event) => {
-    event?.preventDefault();
-    if (inputValue.trim() === '' || loading) return;
-    onSubmit(inputValue);
-    setInputValue('');
-  }, [inputValue, loading, onSubmit]);
+  const handleSend = useCallback(
+    event => {
+      event?.preventDefault();
+      if (inputValue.trim() === '' || loading) return;
+      onSubmit(inputValue);
+      setInputValue('');
+    },
+    [inputValue, loading, onSubmit]
+  );
 
-  const handleInputChange = useCallback((e) => {
+  const handleInputChange = useCallback(e => {
     handleTextareaAutoResize(e, setInputValue);
   }, []);
 
-  const handleKeyDown = useCallback((e) => {
-    if (e.key === 'Enter' && e.ctrlKey) {
-      handleSend(e);
-    }
-  }, [handleSend]);
+  const handleKeyDown = useCallback(
+    e => {
+      if (e.key === 'Enter' && e.ctrlKey) {
+        handleSend(e);
+      }
+    },
+    [handleSend]
+  );
 
   return (
     <div className="message-input">
