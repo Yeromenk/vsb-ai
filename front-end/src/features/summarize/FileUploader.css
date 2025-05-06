@@ -41,13 +41,6 @@
   margin: 0;
 }
 
-.file-page__subtitle-formats {
-  font-size: 16px;
-  color: #555;
-  max-width: 500px;
-  margin: 0;
-}
-
 .file-uploader {
   width: 100%;
   max-width: 500px;

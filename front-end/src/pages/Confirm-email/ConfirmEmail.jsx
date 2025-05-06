@@ -21,7 +21,6 @@ const ConfirmEmail = () => {
     }
   }, [cooldown]);
 
-  // In ConfirmEmail.jsx, update the token extraction logic in useEffect
   useEffect(() => {
     // First check if token is in URL params
     const params = new URLSearchParams(location.search);
@@ -31,8 +30,6 @@ const ConfirmEmail = () => {
     const pathParts = location.pathname.split('/');
     const pathToken = pathParts[pathParts.length - 1];
 
-    // Use either token source - if pathToken is long enough to be a token, use it
-    // otherwise fall back to queryToken
     const token = pathToken && pathToken.length > 30 ? pathToken : queryToken;
 
     if (token && token.length > 30) {
@@ -48,7 +45,6 @@ const ConfirmEmail = () => {
       setVerificationStatus('success');
       toast.success('Email verified successfully!');
 
-      // Auto-redirect to home after successful verification
       setTimeout(() => {
         navigate('/home');
       }, 3000);

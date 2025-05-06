@@ -43,7 +43,6 @@ const FileUploader = () => {
           <p className="file-page__subtitle">
             Upload a file to summarize or analyze its content with AI
           </p>
-          <p className="file-page__subtitle-formats">Supported formats: .docx</p>
         </div>
         <FileProcessing onSubmit={mutation.mutate} loading={mutation.isPending} />
       </div>
