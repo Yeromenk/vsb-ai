@@ -10,6 +10,7 @@ The application leverages the power of modern AI (OpenAI API) to provide a user-
 - Text formatting  
 - Document summarization  
 - Task-specific custom chats
+- Email sending
 
 ---
 
@@ -24,12 +25,16 @@ The application leverages the power of modern AI (OpenAI API) to provide a user-
 
 ### Technical Features
 
-- ✅ User authentication with JWT  
+- ✅ User authentication with JWT, Google, and GitHub
 - 💬 Real-time chat interface with auto-scrolling  
 - 📱 Responsive UI for desktop and mobile  
-- 📁 File upload & parsing support  
+- 📁 File upload and parsing support  
 - 💾 Chat history and saved prompts  
 - ⚙️ Task management for AI queries  
+- 🔒 Secure API endpoints with authentication
+- Email verification and password reset functionality
+- Searching chat history
+
 
 ---
 
@@ -43,6 +48,9 @@ The application leverages the power of modern AI (OpenAI API) to provide a user-
 - CSS  
 - [React Loading Skeleton](https://github.com/dvtng/react-loading-skeleton)  
 - [React Hot Toast](https://react-hot-toast.com/)
+- [Lucide Icons](https://lucide.dev/)
+- [React Router](https://reactrouter.com/en/main)
+- React Markdown
 
 ### Backend
 
@@ -50,8 +58,10 @@ The application leverages the power of modern AI (OpenAI API) to provide a user-
 - [Express.js](https://expressjs.com/)  
 - [Prisma ORM](https://www.prisma.io/)  
 - [Multer](https://github.com/expressjs/multer) — file uploads  
-- [OpenAI API](https://platform.openai.com/)  
+- [OpenAI API](https://platform.reformateTextAi.com/)  
 - [JWT](https://jwt.io/) — authentication
+- [bcrypt](https://www.npmjs.com/package/bcrypt) — password hashing
+- [nodemailer](https://nodemailer.com/about/) — email sending
 
 ### Database
 
@@ -74,6 +84,6 @@ cd ../frontend && npm install && npm run dev
 ```
 cd ../backend && npm install && npm run dev
 ```
-4. To `.env` file, add your OpenAI API key, PostgreSQL connection string, and JWT secret:
-5. After that you can use the application. Enjoy!
+4. To `.env` file in back-end directory, add your OpenAI API key, PostgreSQL connection string, JWT secret, Google and GitHub ID and SECRET, and email credentials for nodemailer.
+5. After that, you can use the application. Enjoy!
 

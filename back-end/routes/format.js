@@ -1,7 +1,7 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import verifyToken from '../controllers/auth.js';
-import { getCompletion } from '../lib/openAI.js';
+import { ReformateText } from '../lib/ReformateTextAi.js';
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -11,7 +11,7 @@ router.put('/format/chat/:id', verifyToken, async (req, res) => {
   const userId = req.user.id;
   const chatId = req.params.id;
   const { message, style, tone } = req.body;
-  const formattedText = await getCompletion(message, style, tone);
+  const formattedText = await ReformateText(message, style, tone);
 
   try {
     const chat = await prisma.chat.findFirst({
@@ -62,7 +62,7 @@ router.put('/format/chat/:id', verifyToken, async (req, res) => {
 router.post('/format', async (req, res) => {
   const { message, style, tone } = req.body;
   try {
-    const completion = await getCompletion(message, style, tone);
+    const completion = await ReformateText(message, style, tone);
     res.status(200).json({ response: completion });
   } catch (error) {
     console.error('Error in /format:', error);

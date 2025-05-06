@@ -6,7 +6,7 @@ const router = express.Router();
 import { PrismaClient } from '@prisma/client';
 import verifyToken from '../controllers/auth.js';
 import { getTranslation } from '../lib/translateAI.js';
-import { getCompletion } from '../lib/openAI.js';
+import { ReformateText } from '../lib/ReformateTextAi.js';
 import { extractTextFromFile, getFile } from '../lib/fileAI.js';
 import { getNewPrompt } from '../lib/newPromptAI.js';
 
@@ -35,7 +35,7 @@ router.post('/chats', upload.single('file'), async (req, res) => {
     responseText = await getTranslation(message, sourceLanguage, targetLanguage);
     chatType = 'translate';
   } else if (style && tone) {
-    responseText = await getCompletion(message, style, tone);
+    responseText = await ReformateText(message, style, tone);
     chatType = 'format';
   } else if (file && action) {
     try {

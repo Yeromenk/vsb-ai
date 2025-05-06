@@ -54,12 +54,10 @@ export const register = async (req, res) => {
     // check if password contains a required pattern
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
     if (!passwordRegex.test(req.body.password)) {
-      return res
-        .status(400)
-        .json({
-          message:
-            'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
-        });
+      return res.status(400).json({
+        message:
+          'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
+      });
     }
 
     const verificationToken = crypto.randomBytes(32).toString('hex');
@@ -347,54 +345,53 @@ passport.use(
       server: {
         url: process.env.LDAP_URL || 'ldaps://ldap.vsb.cz',
         bindDN: function (req) {
-          // More flexible username handling
           const username = req.body.username.replace(/@vsb\.cz$/, '').toUpperCase();
-          return `uid=${username},ou=USERS,o=VSB`;
+          const trailing_context = username.slice(-1);
+          return `cn=${username},ou=${trailing_context},ou=USERS,o=VSB`;
         },
         bindCredentials: function (req) {
           return req.body.password;
         },
         searchBase: 'ou=USERS,o=VSB',
-        searchFilter: function (req) {
-          const username = req.body.username.replace(/@vsb\.cz$/, '').toUpperCase();
-          return `(uid=${username})`;
-        },
+        searchFilter: '(cn={{username}})',
+        searchAttributes: ['displayName', 'mail', 'cn', 'uid'],
         tlsOptions: {
           rejectUnauthorized: false,
         },
       },
       credentialsLookup: function (req) {
         return {
-          username: req.body.username,
+          username: req.body.username.replace(/@vsb\.cz$/, '').toUpperCase(),
           password: req.body.password,
         };
       },
+      handleErrorsAsFailures: true,
+      usernameField: 'username',
+      passwordField: 'password',
       passReqToCallback: true,
     },
     async function (req, user, done) {
       try {
         console.log('LDAP auth successful, user data:', user);
 
-        // Check if a user exists in your database
-        let existingUser = await prisma.user.findFirst({
+        // Create or update user in database
+        let dbUser = await prisma.user.upsert({
           where: {
-            OR: [{ email: user.mail || `${user.uid}@vsb.cz` }, { vsbId: user.uid }],
+            vsbId: user.cn || user.uid,
+          },
+          update: {
+            lastLogin: new Date(),
+          },
+          create: {
+            email: user.mail || `${user.cn || user.uid}@vsb.cz`,
+            username: user.displayName || user.cn || user.uid,
+            password: crypto.randomBytes(16).toString('hex'),
+            vsbId: user.cn || user.uid,
+            isEmailVerified: true,
           },
         });
 
-        if (!existingUser) {
-          // Create a new user
-          existingUser = await prisma.user.create({
-            data: {
-              email: user.mail || `${user.uid}@vsb.cz`,
-              username: user.displayName || user.uid,
-              password: bcrypt.hashSync(Math.random().toString(36).slice(-8), 10),
-              vsbId: user.uid,
-            },
-          });
-        }
-
-        return done(null, existingUser);
+        return done(null, dbUser);
       } catch (err) {
         console.error('VSB auth DB error:', err);
         return done(err);

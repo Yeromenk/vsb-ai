@@ -59,7 +59,7 @@ const VsbLogin = () => {
     <div className="login">
       <div className="form-login">
         <h1>VSB University Login</h1>
-        <form onSubmit={handleSubmit} method="post" action="javascript:void(0)">
+        <form onSubmit={handleSubmit}>
           <div className="input-container">
             <User size={20} className="icon" />
             <input

@@ -17,6 +17,9 @@ import Custom from './pages/Custom/Custom.jsx';
 import ProtectedRoute from './components/common/ProtectedRoute/ProtectedRoute';
 import VsbLoginForm from './pages/VSB-Login/Vsb-login';
 import ConfirmEmail from './pages/Confirm-email/ConfirmEmail';
+import ForgotPassword from './pages/Forgot-password/ForgotPassword';
+import VerifyResetCode from './pages/VerifyResetCode/VerifyResetCode';
+import ResetPassword from './pages/ResetPassword/ResetPassword';
 
 const App = () => {
   return (
@@ -66,6 +69,18 @@ const router = createBrowserRouter([
       {
         path: '/verify-email/:token',
         element: <ConfirmEmail />,
+      },
+      {
+        path: '/forgot-password',
+        element: <ForgotPassword />,
+      },
+      {
+        path: 'verify-reset-code',
+        element: <VerifyResetCode />,
+      },
+      {
+        path: '/reset-password',
+        element: <ResetPassword />,
       },
       {
         element: (

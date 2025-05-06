@@ -9,6 +9,7 @@ import verifyToken, {
 } from '../controllers/auth.js';
 import passport from 'passport';
 import crypto from 'crypto';
+import bcrypt from 'bcryptjs';
 
 import { PrismaClient } from '@prisma/client';
 import nodemailer from 'nodemailer';
@@ -181,6 +182,135 @@ router.get('/check-verification', verifyToken, async (req, res) => {
   }
 });
 
+// request password reset
+router.post('/forgot-password', async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Generate random 6-digit code
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const resetCodeExpiry = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        resetCode,
+        resetCodeExpiry,
+      },
+    });
+
+    // Send email with reset code
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Password Reset Code',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #3a5bc7;">Password Reset Request</h2>
+          <p>Your password reset code is:</p>
+          <div style="padding: 15px; background-color: #f5f5f5; border-radius: 5px; font-size: 24px; text-align: center; letter-spacing: 5px; font-weight: bold;">
+            ${resetCode}
+          </div>
+          <p>This code will expire in 30 minutes.</p>
+          <p style="color: #666; font-size: 12px; margin-top: 20px;">
+            If you did not request this reset, please ignore this email.
+          </p>
+        </div>
+      `,
+    });
+
+    res.status(200).json({ message: 'Reset code sent to your email' });
+  } catch (error) {
+    console.error('Password reset error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Verify reset code
+router.post('/verify-reset-code', async (req, res) => {
+  const { email, code } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (!user.resetCode || user.resetCode !== code) {
+      return res.status(400).json({ message: 'Invalid reset code' });
+    }
+
+    if (user.resetCodeExpiry < new Date()) {
+      return res.status(400).json({ message: 'Reset code has expired' });
+    }
+
+    // Generate a temporary token for password reset
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        resetToken,
+        resetTokenExpiry: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes
+      },
+    });
+
+    res.status(200).json({ resetToken });
+  } catch (error) {
+    console.error('Code verification error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Reset password
+router.post('/reset-password', async (req, res) => {
+  const { resetToken, newPassword } = req.body;
+
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        resetToken,
+        resetTokenExpiry: { gt: new Date() },
+      },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired reset token' });
+    }
+
+    // Validate password
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+      return res.status(400).json({
+        message:
+          'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
+      });
+    }
+
+    // Update password and clear reset fields
+    const hashedPassword = bcrypt.hashSync(newPassword, 10);
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetCode: null,
+        resetCodeExpiry: null,
+        resetToken: null,
+        resetTokenExpiry: null,
+      },
+    });
+
+    res.status(200).json({ message: 'Password reset successful' });
+  } catch (error) {
+    console.error('Password reset error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // TODO: implement the VSB authentication
 // VSB login redirect route
 router.get('/vsb', (req, res) => {
@@ -217,51 +347,53 @@ router.post('/vsb/login', (req, res, next) => {
     return res.status(400).json({ message: 'Username and password required' });
   }
 
-  // VSB usernames typically have a specific format like YER0013
-  // Let's create the correct bindDN format directly
-  const username = req.body.username.trim();
+  // Clean up username
+  req.body.username = req.body.username
+    .trim()
+    .replace(/@vsb\.cz$/, '')
+    .toUpperCase();
+  console.log(`Auth attempt for VSB user: ${req.body.username}`);
 
-  // Remove @vsb.cz if present (handling both formats)
-  const cleanUsername = username.replace(/@vsb\.cz$/, '');
-
-  // Get the proper trailing context - for VSB it should be the OrgUnit
-  // This depends on VSB's LDAP structure - using the last character may not be correct
-  req.body.trailing_context = cleanUsername.slice(-1);
-
-  console.log(`Auth attempt: username=${cleanUsername}, context=${req.body.trailing_context}`);
-
-  // Use custom options to correctly format the bindDN
-  const ldapOptions = {
-    server: {
-      url: process.env.LDAP_URL || 'ldaps://ldap.vsb.cz',
-      bindDN: `cn=${cleanUsername},ou=${req.body.trailing_context},ou=USERS,o=VSB`,
-      bindCredentials: req.body.password,
-      searchBase: 'ou=USERS,o=VSB',
-      searchFilter: `(cn=${cleanUsername})`,
-      tlsOptions: {
-        rejectUnauthorized: false,
-      },
-    },
-  };
-
-  passport.authenticate('ldapauth', ldapOptions, (err, user, info) => {
+  passport.authenticate('ldapauth', (err, user, info) => {
     if (err) {
       console.error('LDAP auth error:', err);
       return res.status(500).json({ message: 'Authentication error: ' + err.message });
     }
+
     if (!user) {
       console.log('Authentication failed - invalid credentials');
       return res.status(401).json({ message: 'Invalid VSB credentials' });
     }
 
-    console.log('LDAP auth successful for:', cleanUsername);
-    req.login(user, err => {
-      if (err) {
-        console.error('Login error:', err);
-        return next(err);
+    req.login(user, loginErr => {
+      if (loginErr) {
+        console.error('Login error:', loginErr);
+        return res.status(500).json({ message: 'Error during login session' });
       }
-      console.log('User logged in, calling callback...');
-      return vsbCallback(req, res);
+
+      const token = jwt.sign({ id: user.id }, 'jwtkey');
+
+      res.cookie('access_token', token, {
+        httpOnly: true,
+      });
+
+      res.cookie(
+        'user_data',
+        JSON.stringify({
+          id: user.id,
+          username: user.username,
+          email: user.email,
+        }),
+        {
+          httpOnly: false,
+        }
+      );
+
+      return res.status(200).json({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      });
     });
   })(req, res, next);
 });

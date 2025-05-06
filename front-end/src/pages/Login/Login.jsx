@@ -127,8 +127,12 @@ const Login = () => {
 
           <button type="submit" className="primary-button">
             <LogIn size={18} />
-            Login with Email
+            Login
           </button>
+
+          <div className="forgot-password">
+            <Link to="/forgot-password">Forgot Password?</Link>
+          </div>
 
           <div className="social-login">
             <p>OR</p>

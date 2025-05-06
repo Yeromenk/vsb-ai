@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// TODO: add function to send email to user
+// Route to send email
 router.post('/send-email', verifyToken, async (req, res) => {
   const { to, subject, content } = req.body;
   const userId = req.user.id;

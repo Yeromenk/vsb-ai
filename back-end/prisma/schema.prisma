@@ -19,6 +19,10 @@ model User {
   isEmailVerified         Boolean   @default(false)
   verificationToken       String?   @unique
   verificationTokenExpiry DateTime?
+  resetCode               String?
+  resetCodeExpiry         DateTime?
+  resetToken              String?   @unique
+  resetTokenExpiry        DateTime?
 }
 
 model UserChats {
