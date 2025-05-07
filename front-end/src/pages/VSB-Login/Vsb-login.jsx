@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { Lock, LogIn, Eye, EyeOff, User } from 'lucide-react';
 import axios from 'axios';
 import './Vsb-login.css';
+import { AuthContext } from '../../context/AuthContext';
 
-// TODO: Add a function to handle the login with VSB credentials
 const VsbLogin = () => {
   const [inputs, setInputs] = useState({
     username: '',
@@ -13,6 +13,7 @@ const VsbLogin = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { refreshUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
@@ -28,8 +29,8 @@ const VsbLogin = () => {
   };
 
   const handleSubmit = async e => {
-    e.preventDefault(); // This must run before any other code
-    if (loading) return; // Prevent double submissions
+    e.preventDefault();
+    if (loading) return;
 
     setLoading(true);
     console.log('Starting VSB login via POST request');
@@ -45,7 +46,19 @@ const VsbLogin = () => {
       console.log('Login response received:', response.status);
       if (response.status === 200) {
         toast.success('VSB login successful');
-        navigate('/home');
+
+        // Read the user_data cookie and set it in localStorage
+        const userCookie = document.cookie.split('; ').find(row => row.startsWith('user_data='));
+        if (userCookie) {
+          const userData = JSON.parse(decodeURIComponent(userCookie.split('=')[1]));
+          localStorage.setItem('user', JSON.stringify(userData));
+
+          refreshUser();
+        }
+
+        setTimeout(() => {
+          navigate('/home');
+        }, 500);
       }
     } catch (error) {
       console.error('VSB login error:', error);

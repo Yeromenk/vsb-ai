@@ -311,89 +311,25 @@ router.post('/reset-password', async (req, res) => {
   }
 });
 
-// TODO: implement the VSB authentication
-// VSB login redirect route
-router.get('/vsb', (req, res) => {
-  // Redirect to VSB login page with return_url parameter
-  const returnUrl = encodeURIComponent('http://localhost:3000/auth/vsb/callback');
-  res.redirect(`https://cas.vsb.cz/cas/login?service=${returnUrl}`);
-});
-
-// VSB callback route
-router.get('/vsb/callback', (req, res, next) => {
-  // Handle the ticket parameter from CAS
-  const ticket = req.query.ticket;
-  if (!ticket) {
-    return res.redirect('http://localhost:3001/login?error=vsb-auth-failed');
-  }
-
-  // Verify the ticket with VSB CAS server
-  // This is where you validate the ticket and get user info
-  passport.authenticate('cas', (err, user, info) => {
-    if (err || !user) {
-      return res.redirect('http://localhost:3001/login?error=vsb-auth-failed');
-    }
-    req.login(user, err => {
-      if (err) return next(err);
-      return vsbCallback(req, res);
-    });
-  })(req, res, next);
-});
-
+// VSB login
 router.post('/vsb/login', (req, res, next) => {
-  console.log('VSB login attempt received');
-
-  if (!req.body.username || !req.body.password) {
-    return res.status(400).json({ message: 'Username and password required' });
-  }
-
-  // Clean up username
-  req.body.username = req.body.username
-    .trim()
-    .replace(/@vsb\.cz$/, '')
-    .toUpperCase();
-  console.log(`Auth attempt for VSB user: ${req.body.username}`);
-
-  passport.authenticate('ldapauth', (err, user, info) => {
+  passport.authenticate('vsb', (err, user) => {
     if (err) {
-      console.error('LDAP auth error:', err);
-      return res.status(500).json({ message: 'Authentication error: ' + err.message });
+      return res.status(500).json({ message: 'Server error during authentication' });
     }
 
     if (!user) {
-      console.log('Authentication failed - invalid credentials');
-      return res.status(401).json({ message: 'Invalid VSB credentials' });
+      return res.status(401).json({
+        message: 'Invalid VSB credentials',
+      });
     }
 
-    req.login(user, loginErr => {
-      if (loginErr) {
-        console.error('Login error:', loginErr);
-        return res.status(500).json({ message: 'Error during login session' });
+    // Authentication successful, proceed with login
+    req.login(user, err => {
+      if (err) {
+        return res.status(500).json({ message: 'Session error' });
       }
-
-      const token = jwt.sign({ id: user.id }, 'jwtkey');
-
-      res.cookie('access_token', token, {
-        httpOnly: true,
-      });
-
-      res.cookie(
-        'user_data',
-        JSON.stringify({
-          id: user.id,
-          username: user.username,
-          email: user.email,
-        }),
-        {
-          httpOnly: false,
-        }
-      );
-
-      return res.status(200).json({
-        id: user.id,
-        username: user.username,
-        email: user.email,
-      });
+      return vsbCallback(req, res);
     });
   })(req, res, next);
 });

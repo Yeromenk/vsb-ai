@@ -336,96 +336,62 @@ export const googleCallback = async (req, res) => {
   }
 };
 
-// TODO: VSB LDAP strategy
-// VSB LDAP strategy
-passport.use(
-  'ldapauth',
-  new LdapStrategy(
-    {
-      server: {
-        url: process.env.LDAP_URL || 'ldaps://ldap.vsb.cz',
-        bindDN: function (req) {
-          const username = req.body.username.replace(/@vsb\.cz$/, '').toUpperCase();
-          const trailing_context = username.slice(-1);
-          return `cn=${username},ou=${trailing_context},ou=USERS,o=VSB`;
-        },
-        bindCredentials: function (req) {
-          return req.body.password;
-        },
-        searchBase: 'ou=USERS,o=VSB',
-        searchFilter: '(cn={{username}})',
-        searchAttributes: ['displayName', 'mail', 'cn', 'uid'],
-        tlsOptions: {
-          rejectUnauthorized: false,
-        },
-      },
-      credentialsLookup: function (req) {
-        return {
-          username: req.body.username.replace(/@vsb\.cz$/, '').toUpperCase(),
-          password: req.body.password,
-        };
-      },
-      handleErrorsAsFailures: true,
-      usernameField: 'username',
-      passwordField: 'password',
-      passReqToCallback: true,
-    },
-    async function (req, user, done) {
-      try {
-        console.log('LDAP auth successful, user data:', user);
+// LDAP config
+const LDAP_OPTIONS = {
+  server: {
+    url: process.env.LDAP_URL,
+    searchBase: 'ou=USERS,o=VSB',
+    searchFilter: '(cn={{username}})',
+    tlsOptions: { rejectUnauthorized: false },
+  },
+};
 
-        // Create or update user in database
-        let dbUser = await prisma.user.upsert({
-          where: {
-            vsbId: user.cn || user.uid,
-          },
-          update: {
-            lastLogin: new Date(),
-          },
-          create: {
-            email: user.mail || `${user.cn || user.uid}@vsb.cz`,
-            username: user.displayName || user.cn || user.uid,
-            password: crypto.randomBytes(16).toString('hex'),
-            vsbId: user.cn || user.uid,
+// register LDAP strategy
+passport.use(
+  'vsb',
+  new LdapStrategy(LDAP_OPTIONS, async (ldapUser, done) => {
+    try {
+      // find or create a local user
+      let user = await prisma.user.findUnique({ where: { vsbId: ldapUser.cn } });
+      if (!user) {
+        user = await prisma.user.create({
+          data: {
+            username: ldapUser.cn,
+            email: ldapUser.mail || `${ldapUser.cn}@vsb.cz`,
+            password: bcrypt.hashSync(Math.random().toString(36), 10),
+            vsbId: ldapUser.cn,
             isEmailVerified: true,
           },
         });
-
-        return done(null, dbUser);
-      } catch (err) {
-        console.error('VSB auth DB error:', err);
-        return done(err);
       }
+      return done(null, user);
+    } catch (err) {
+      return done(err);
     }
-  )
+  })
 );
 
 // VSB login callback
-export const vsbCallback = async (req, res) => {
-  try {
-    const token = jwt.sign({ id: req.user.id }, 'jwtkey');
+export const vsbCallback = (req, res) => {
+  const token = jwt.sign({ id: req.user.id }, 'jwtkey');
 
-    res.cookie('access_token', token, {
-      httpOnly: true,
-    });
+  res.cookie('access_token', token, {
+    httpOnly: true,
+    secure: false,
+    sameSite: 'lax',
+    path: '/',
+  });
 
-    res.cookie(
-      'user_data',
-      JSON.stringify({
-        id: req.user.id,
-        username: req.user.username,
-        email: req.user.email,
-      }),
-      {
-        httpOnly: false,
-      }
-    );
+  res.cookie(
+    'user_data',
+    JSON.stringify({
+      id: req.user.id,
+      username: req.user.username,
+      email: req.user.email,
+    }),
+    { httpOnly: false }
+  );
 
-    // Redirect to home page after successful login
-    res.redirect('http://localhost:3001/home');
-  } catch (error) {
-    res.redirect('http://localhost:3001/login?error=vsb-auth-failed');
-  }
+  res.status(200).json({ message: 'VSB login successful' });
 };
-
 export default verifyToken;

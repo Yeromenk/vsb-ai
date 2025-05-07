@@ -7,6 +7,14 @@ export const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user')) || null);
   const [loading, setLoading] = useState(true);
 
+  // refresh function to allow manual context updates
+  const refreshUser = () => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    if (storedUser) {
+      setCurrentUser(storedUser);
+    }
+  };
+
   useEffect(() => {
     // Function to validate the stored user session
     const validateSession = async () => {
@@ -89,7 +97,7 @@ export const AuthContextProvider = ({ children }) => {
   }, [currentUser]);
 
   return (
-    <AuthContext.Provider value={{ currentUser, login, logout, loading }}>
+    <AuthContext.Provider value={{ currentUser, login, logout, loading, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );
