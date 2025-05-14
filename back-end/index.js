@@ -12,6 +12,8 @@ import summarizeRoutes from './routes/format.js';
 import customRoutes from './routes/custom.js';
 import emailRoutes from './routes/email.js';
 import editMessageRoutes from './routes/edit-message.js';
+import searchChats from './routes/search.js';
+import accountRoutes from './routes/account.js';
 import { connectToDatabase, prisma } from './prisma/db.js';
 
 const app = express();
@@ -68,6 +70,8 @@ app.use('/ai', summarizeRoutes);
 app.use('/ai', customRoutes);
 app.use('/ai', emailRoutes);
 app.use('/ai', editMessageRoutes);
+app.use('/ai', searchChats);
+app.use('/account', accountRoutes);
 
 connectToDatabase();
 

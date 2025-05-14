@@ -1,29 +1,18 @@
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './ChatList.css';
-import {
-  Languages,
-  FileText,
-  Text,
-  Menu,
-  CirclePlus,
-  Pencil,
-  Trash2,
-  X,
-  User,
-  Search,
-} from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import DeleteModal from '../../components/common/Modal/DeleteModal';
-import LoadingState from '../../components/common/LoadingState/LoadingState';
+import SearchBar from '../../components/common/SearchBar/SearchBar';
+import ChatListContent from '../../components/common/ChatListContent/ChatListContent';
+import UtilityLinks from '../../components/common/UtilityLinks/UtilityLinks';
 
 const ChatList = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const location = useLocation();
-  const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
   const [editingChatId, setEditingChatId] = useState(null);
@@ -32,13 +21,55 @@ const ChatList = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchAttempted, setSearchAttempted] = useState(false);
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (window.innerWidth <= 768) {
-      setIsSidebarOpen(false);
-    }
-  }, [location.pathname]);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { currentUser } = useContext(AuthContext);
+
+  const debounce = (func, delay) => {
+    let timeoutId;
+    return function (...args) {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func.apply(func, args), delay);
+    };
+  };
+
+  const debouncedSearch = useRef(
+    debounce(query => {
+      if (query.trim()) {
+        performSearch(query);
+      } else {
+        setSearchResults([]);
+      }
+    }, 300)
+  ).current;
+
+  // Fetch chats
+  const { isPending, data, error } = useQuery({
+    queryKey: ['ChatList'],
+    queryFn: async () => {
+      try {
+        if (!currentUser?.id) return { response: [] };
+
+        const response = await axios.get('http://localhost:3000/ai/userChats', {
+          withCredentials: true,
+          params: { userId: currentUser.id },
+        });
+
+        return response.data;
+      } catch (err) {
+        if (err.response && err.response.status === 404) {
+          return { response: [] };
+        }
+        throw err;
+      }
+    },
+    enabled: !!currentUser?.id,
+  });
+
+  // Event handlers
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   const startEditing = chat => {
     setEditingChatId(chat.id);
@@ -55,49 +86,13 @@ const ChatList = () => {
     setSelectedChat(null);
   };
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  const { currentUser } = useContext(AuthContext);
-
-  const { isPending, data, error } = useQuery({
-    queryKey: ['ChatList'],
-    queryFn: async () => {
-      try {
-        if (!currentUser?.id) {
-          return { response: [] };
-        }
-
-        const response = await axios.get('http://localhost:3000/ai/userChats', {
-          withCredentials: true,
-          params: {
-            userId: currentUser.id,
-          },
-        });
-
-        return response.data;
-      } catch (err) {
-        if (err.response && err.response.status === 404) {
-          return { response: [] };
-        }
-        throw err;
-      }
-    },
-    enabled: !!currentUser?.id,
-  });
-
   const handleEdit = async (chatId, newTitle) => {
     if (newTitle && newTitle.trim()) {
       try {
         await axios.put(
           `http://localhost:3000/ai/chat/${chatId}`,
-          {
-            title: newTitle,
-          },
-          {
-            withCredentials: true,
-          }
+          { title: newTitle },
+          { withCredentials: true }
         );
         toast.success('Chat title updated successfully');
         await queryClient.invalidateQueries(['ChatList']);
@@ -128,6 +123,43 @@ const ChatList = () => {
     }
   };
 
+  const performSearch = async query => {
+    setIsSearching(true);
+    setSearchAttempted(true);
+
+    try {
+      const response = await axios.get('http://localhost:3000/ai/semantic-search', {
+        withCredentials: true,
+        params: { query },
+      });
+      setSearchResults(response.data.response);
+    } catch (error) {
+      console.error('Error searching chats:', error);
+      toast.error('Search failed');
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  const handleSearchInputChange = e => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    debouncedSearch(query);
+  };
+
+  const clearSearch = () => {
+    setSearchQuery('');
+    setSearchResults([]);
+  };
+
+  useEffect(() => {
+    if (window.innerWidth <= 768) {
+      setIsSidebarOpen(false);
+    }
+  }, [location.pathname]);
+
+  // Derived state
   const isActive = path => location.pathname === path;
   const chats = useMemo(() => data?.response || [], [data]);
 
@@ -138,10 +170,7 @@ const ChatList = () => {
   const groupedChats = {};
   sortedChats.forEach(chat => {
     const dateObj = new Date(chat.createdAt);
-    const monthYear = dateObj.toLocaleString('en-US', {
-      month: 'long',
-      year: 'numeric',
-    });
+    const monthYear = dateObj.toLocaleString('en-US', { month: 'long', year: 'numeric' });
     if (!groupedChats[monthYear]) {
       groupedChats[monthYear] = [];
     }
@@ -149,56 +178,8 @@ const ChatList = () => {
   });
 
   const customChats = useMemo(() => {
-    return chats.filter(chat => chat.type === 'custom_template').slice(0, 5); // Limit to 5 recent custom chats
+    return chats.filter(chat => chat.type === 'custom_template').slice(0, 5);
   }, [chats]);
-
-  const debounce = (func, delay) => {
-    let timeoutId;
-    return function (...args) {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        func.apply(func, args);
-      }, delay);
-    };
-  };
-
-  const debouncedSearch = useRef(
-    debounce(query => {
-      if (query.trim()) {
-        performSearch(query);
-      } else {
-        setSearchResults([]);
-      }
-    }, 300)
-  ).current;
-
-  const performSearch = async query => {
-    setIsSearching(true);
-    setSelectedChat(false);
-
-    try {
-      const response = await axios.get('http://localhost:3000/ai/searchChat', {
-        withCredentials: true,
-        params: {
-          userId: currentUser.id,
-          searchQuery: query,
-        },
-      });
-      setSearchResults(response.data.response);
-    } catch (error) {
-      console.error('Error searching chats:', error);
-      toast.error('Error searching chats');
-    } finally {
-      setIsSearching(false);
-      setSearchAttempted(true);
-    }
-  };
-
-  const handleSearchInputChange = e => {
-    const query = e.target.value;
-    setSearchQuery(query);
-    debouncedSearch(query);
-  };
 
   return (
     <>
@@ -222,239 +203,39 @@ const ChatList = () => {
           <X size={24} />
         </button>
 
-        <Link
-          to="/translate"
-          className={`utility-link ${isActive('/translate') ? 'active' : ''}`}
-          onClick={() => window.innerWidth <= 768 && setIsSidebarOpen(false)}
-        >
-          <Languages /> Translate a text
-        </Link>
-        <Link
-          to="/format"
-          className={`utility-link ${isActive('/format') ? 'active' : ''}`}
-          onClick={() => window.innerWidth <= 768 && setIsSidebarOpen(false)}
-        >
-          <Text /> Create an alternative text
-        </Link>
-        <Link
-          to="/summarize"
-          className={`utility-link ${isActive('/summarize') ? 'active' : ''}`}
-          onClick={() => window.innerWidth <= 768 && setIsSidebarOpen(false)}
-        >
-          <FileText /> Summarize a file
-        </Link>
-        <Link
-          to="/new-prompt"
-          className={`utility-link ${isActive('/new-prompt') ? 'active' : ''}`}
-          onClick={() => window.innerWidth <= 768 && setIsSidebarOpen(false)}
-        >
-          <CirclePlus /> New Prompt
-        </Link>
-
-        {/* Display custom chat utility links */}
-        {customChats.map(chat => (
-          <Link
-            key={chat.id}
-            to={`/template/${chat.id}`}
-            className={`utility-link custom-utility-link ${
-              isActive(`/template/${chat.id}`) ? 'active' : ''
-            }`}
-            onClick={() => window.innerWidth <= 768 && setIsSidebarOpen(false)}
-          >
-            <User /> {chat.title}
-          </Link>
-        ))}
+        <UtilityLinks
+          isActive={isActive}
+          customChats={customChats}
+          setIsSidebarOpen={setIsSidebarOpen}
+        />
 
         <h1>Chat List {searchResults.length > 0 && `- ${searchResults.length} results`}</h1>
 
-        <div className="search-container">
-          <div className="search-input-wrapper">
-            <Search size={16} className="search-icon" />
-            <input
-              type="text"
-              placeholder="Search chats..."
-              className="search-input"
-              value={searchQuery}
-              onChange={handleSearchInputChange}
-            />
-          </div>
-          {searchQuery && (
-            <button
-              className="clear-search-button"
-              onClick={() => {
-                setSearchQuery('');
-                setSearchResults([]);
-              }}
-            >
-              <X size={24} />
-            </button>
-          )}
-        </div>
+        <SearchBar
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          handleSearchInputChange={handleSearchInputChange}
+          clearSearch={clearSearch}
+        />
 
         <div className="list">
-          {isPending ? (
-            <div className="loading-state">
-              <LoadingState message="Loading chats..." />
-            </div>
-          ) : error ? (
-            <div className="error-message">Something went wrong. Please try again later.</div>
-          ) : chats.length === 0 ? (
-            <div className="empty-state">
-              No chats yet. Start a conversation to see your chat history.
-            </div>
-          ) : isSearching ? (
-            <div className="loading-state">
-              <LoadingState message="Searching chats..." />
-            </div>
-          ) : searchResults.length > 0 ? (
-            <div>
-              <h2 className="monthYear">Search Results</h2>
-              {searchResults.map(chat => {
-                if (chat.type === 'custom_template') return null;
-                let chatPath;
-                switch (chat.type) {
-                  case 'translate':
-                    chatPath = `/translate/chat/${chat.id}`;
-                    break;
-                  case 'file':
-                    chatPath = `/file/chat/${chat.id}`;
-                    break;
-                  case 'format':
-                    chatPath = `/format/chat/${chat.id}`;
-                    break;
-                  case 'custom_conversation':
-                    chatPath = `/custom/chat/${chat.id}`;
-                    break;
-                  default:
-                    chatPath = `/chat/${chat.id}`;
-                }
-
-                return (
-                  <div className="chatsLinks" key={chat.id}>
-                    <Link
-                      to={chatPath}
-                      className={location.pathname === chatPath ? 'active-chat' : ''}
-                    >
-                      <div className="chat-item">
-                        {editingChatId === chat.id ? (
-                          <form
-                            onSubmit={e => {
-                              e.preventDefault();
-                              handleEdit(chat.id, editingTitle);
-                            }}
-                          >
-                            <input
-                              type="text"
-                              value={editingTitle}
-                              onChange={e => setEditingTitle(e.target.value)}
-                              onBlur={() => handleEdit(chat.id, editingTitle)}
-                              autoFocus
-                            />
-                          </form>
-                        ) : (
-                          <>
-                            <span>{chat.title}</span>
-                            <div className="chat-icons" onClick={e => e.stopPropagation()}>
-                              <Pencil
-                                className="icon-edit-icon"
-                                onClick={e => {
-                                  e.preventDefault();
-                                  startEditing(chat);
-                                }}
-                              />
-                              <Trash2
-                                className="icon-delete-icon"
-                                onClick={e => {
-                                  e.preventDefault();
-                                  openDeleteModel(chat);
-                                }}
-                              />
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </Link>
-                  </div>
-                );
-              })}
-            </div>
-          ) : searchQuery && searchAttempted ? (
-            <div className="empty-state">No result found for "{searchQuery}"</div>
-          ) : (
-            Object.entries(groupedChats).map(([monthYear, group]) => (
-              <div key={monthYear}>
-                <h2 className="monthYear">{monthYear}</h2>
-                {group.map(chat => {
-                  if (chat.type === 'custom_template') return null;
-                  let chatPath;
-                  switch (chat.type) {
-                    case 'translate':
-                      chatPath = `/translate/chat/${chat.id}`;
-                      break;
-                    case 'file':
-                      chatPath = `/file/chat/${chat.id}`;
-                      break;
-                    case 'format':
-                      chatPath = `/format/chat/${chat.id}`;
-                      break;
-                    case 'custom_conversation':
-                      chatPath = `/custom/chat/${chat.id}`;
-                      break;
-                    default:
-                      chatPath = `/chat/${chat.id}`;
-                  }
-
-                  return (
-                    <div className="chatsLinks" key={chat.id}>
-                      <Link
-                        to={chatPath}
-                        className={location.pathname === chatPath ? 'active-chat' : ''}
-                      >
-                        <div className="chat-item">
-                          {editingChatId === chat.id ? (
-                            <form
-                              onSubmit={e => {
-                                e.preventDefault();
-                                handleEdit(chat.id, editingTitle);
-                              }}
-                            >
-                              <input
-                                type="text"
-                                value={editingTitle}
-                                onChange={e => setEditingTitle(e.target.value)}
-                                onBlur={() => handleEdit(chat.id, editingTitle)}
-                                autoFocus
-                              />
-                            </form>
-                          ) : (
-                            <>
-                              <span>{chat.title}</span>
-                              <div className="chat-icons" onClick={e => e.stopPropagation()}>
-                                <Pencil
-                                  className="icon-edit-icon"
-                                  onClick={e => {
-                                    e.preventDefault();
-                                    startEditing(chat);
-                                  }}
-                                />
-                                <Trash2
-                                  className="icon-delete-icon"
-                                  onClick={e => {
-                                    e.preventDefault();
-                                    openDeleteModel(chat);
-                                  }}
-                                />
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      </Link>
-                    </div>
-                  );
-                })}
-              </div>
-            ))
-          )}
+          <ChatListContent
+            isPending={isPending}
+            error={error}
+            chats={chats}
+            isSearching={isSearching}
+            searchResults={searchResults}
+            searchQuery={searchQuery}
+            searchAttempted={searchAttempted}
+            groupedChats={groupedChats}
+            isActive={isActive}
+            editingChatId={editingChatId}
+            editingTitle={editingTitle}
+            setEditingTitle={setEditingTitle}
+            handleEdit={handleEdit}
+            startEditing={startEditing}
+            openDeleteModel={openDeleteModel}
+          />
         </div>
       </div>
     </>

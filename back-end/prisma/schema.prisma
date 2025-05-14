@@ -42,6 +42,7 @@ model Chat {
   type         String
   description  String?
   instructions String?
+  embeddings   Float[]
   UserChats    UserChats? @relation(fields: [userChatsId], references: [id])
   files        File[]
   history      Message[]

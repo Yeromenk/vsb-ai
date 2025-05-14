@@ -18,7 +18,7 @@ const ProtectedRoute = ({ children }) => {
 
     const checkVerification = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/auth/check-verification', {
+        const response = await axios.get('http://localhost:3000/account/check-verification', {
           withCredentials: true,
         });
         setIsVerified(response.data.isVerified);

@@ -1,19 +1,9 @@
 import express from 'express';
-import nodemailer from 'nodemailer';
 import verifyToken from '../controllers/auth.js';
+import { transporter } from '../config/email.js';
 
 const router = express.Router();
 
-// Configure email transporter
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
-
-// Route to send email
 router.post('/send-email', verifyToken, async (req, res) => {
   const { to, subject, content } = req.body;
   const userId = req.user.id;
