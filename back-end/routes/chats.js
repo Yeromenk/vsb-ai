@@ -10,6 +10,7 @@ import { getTranslation } from '../lib/translateAI.js';
 import { ReformateText } from '../lib/ReformateTextAi.js';
 import { extractTextFromFile, getFile } from '../lib/fileAI.js';
 import { getNewPrompt } from '../lib/newPromptAI.js';
+import { generateChatTitle } from '../lib/generateChatTitleAi.js';
 
 const prisma = new PrismaClient();
 
@@ -31,6 +32,15 @@ router.post('/chats', upload.single('file'), async (req, res) => {
 
   let responseText;
   let chatType;
+  let chatTitle;
+
+  if (message) {
+    chatTitle = await generateChatTitle(message);
+  } else if (file) {
+    chatTitle = file.originalname;
+  } else {
+    chatTitle = 'New Chat';
+  }
 
   if (sourceLanguage && targetLanguage) {
     responseText = await getTranslation(message, sourceLanguage, targetLanguage);
@@ -68,7 +78,7 @@ router.post('/chats', upload.single('file'), async (req, res) => {
     const newChat = await prisma.chat.create({
       data: {
         userId: userId,
-        title: message ? message.substring(0, 40) : file.originalname,
+        title: chatTitle,
         type: chatType,
         history: {
           create: [
