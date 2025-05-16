@@ -51,6 +51,7 @@ router.put('/file/chat/:id', verifyToken, upload.single('file'), async (req, res
         id: chatId,
       },
       data: {
+        title: chat.title,
         history: {
           create: [
             {

@@ -38,6 +38,7 @@ model Chat {
   userId       String
   title        String
   createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   userChatsId  Int?
   type         String
   description  String?

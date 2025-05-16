@@ -6,18 +6,9 @@ import { Strategy as GitHubStrategy } from 'passport-github2';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import passportLdapauth from 'passport-ldapauth';
 import crypto from 'crypto';
-import nodemailer from 'nodemailer';
+import { transporter } from '../config/email.js';
 
 const LdapStrategy = passportLdapauth.Strategy;
-
-// Configure email transporter
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
 
 const prisma = new PrismaClient();
 

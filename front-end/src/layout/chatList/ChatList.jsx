@@ -164,13 +164,18 @@ const ChatList = () => {
   const chats = useMemo(() => data?.response || [], [data]);
 
   // Sort chats by the newest first
-  const sortedChats = chats.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const sortedChats = chats
+    .slice()
+    .sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
 
-  // Group chats by month-year
+  // Group chats by month-year based on the most recent activity
   const groupedChats = {};
   sortedChats.forEach(chat => {
-    const dateObj = new Date(chat.createdAt);
+    // Use updatedAt if available, otherwise fall back to createdAt
+    const latestDate = chat.updatedAt || chat.createdAt;
+    const dateObj = new Date(latestDate);
     const monthYear = dateObj.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
     if (!groupedChats[monthYear]) {
       groupedChats[monthYear] = [];
     }

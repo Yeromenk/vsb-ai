@@ -33,6 +33,7 @@ router.put('/translate/chat/:id', verifyToken, async (req, res) => {
         id: chatId,
       },
       data: {
+        title: chat.title,
         history: {
           create: [
             {

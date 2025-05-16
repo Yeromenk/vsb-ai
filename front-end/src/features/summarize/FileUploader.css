@@ -1,6 +1,7 @@
 .file-page {
   display: flex;
   flex-direction: column;
+    justify-content: center;
   height: 100%;
   width: 100%;
 }
@@ -12,6 +13,7 @@
   padding: 20px;
   background-color: white;
   align-items: center;
+  justify-content: flex-start;
 }
 
 .file-page__header {
@@ -186,8 +188,7 @@
 
 @media (max-width: 768px) {
   .file-page {
-    height: auto;
-    min-height: 90vh;
+    height: calc(100vh - 70px);
     display: flex;
     flex-direction: column;
   }
@@ -199,7 +200,7 @@
   }
 
   .file-page__header {
-    margin-top: 0;
+    margin-top: 10px;
     margin-bottom: 24px;
     width: 100%;
   }
@@ -223,5 +224,12 @@
   .file-uploader__actions {
     grid-template-columns: 1fr;
     gap: 12px;
+  }
+}
+
+@media (max-width: 420px) {
+  .file-page__header {
+    margin-top: 100px;
+    margin-bottom: 24px;
   }
 }

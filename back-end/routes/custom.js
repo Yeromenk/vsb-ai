@@ -145,6 +145,7 @@ router.put('/chats/custom-conversation/:id', verifyToken, async (req, res) => {
     await prisma.chat.update({
       where: { id: chatId },
       data: {
+        title: chat.title,
         history: {
           create: [
             {

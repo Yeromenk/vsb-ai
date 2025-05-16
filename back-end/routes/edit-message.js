@@ -5,6 +5,7 @@ import verifyToken from '../controllers/auth.js';
 const prisma = new PrismaClient();
 const router = express.Router();
 
+// edit a message in a chat
 router.put('/edit-message/:chatId/:messageId', verifyToken, async (req, res) => {
   try {
     const { chatId, messageId } = req.params;
