@@ -7,7 +7,7 @@ const TextTranslator = ({
   onSubmit,
   loading = false,
   initialSource = 'English',
-  initialTarget = 'Spanish',
+  initialTarget = 'Czech',
 }) => {
   const [sourceLanguage, setSourceLanguage] = useState(initialSource);
   const [targetLanguage, setTargetLanguage] = useState(initialTarget);

@@ -72,7 +72,7 @@ const Translate = ({ data, setPendingMessage, setIsAiLoading, inputRef }) => {
           onSubmit={handleTranslate}
           loading={loading}
           initialSource={data?.sourceLanguage || 'English'}
-          initialTarget={data?.targetLanguage || 'Spanish'}
+          initialTarget={data?.targetLanguage || 'Czech'}
         />
       </div>
     </div>

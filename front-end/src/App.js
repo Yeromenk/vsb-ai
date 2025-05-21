@@ -20,6 +20,7 @@ import ConfirmEmail from './pages/Confirm-email/ConfirmEmail';
 import ForgotPassword from './pages/Forgot-password/ForgotPassword';
 import VerifyResetCode from './pages/VerifyResetCode/VerifyResetCode';
 import ResetPassword from './pages/ResetPassword/ResetPassword';
+import SharedChatPage from './pages/SharedChatPage/SharedChatPage';
 
 const App = () => {
   return (
@@ -130,6 +131,10 @@ const router = createBrowserRouter([
           {
             path: '/custom/chat/:id',
             element: <Custom />,
+          },
+          {
+            path: '/shared-chat/:shareCode',
+            element: <SharedChatPage />,
           },
         ],
       },

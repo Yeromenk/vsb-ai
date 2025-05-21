@@ -5,7 +5,7 @@ import './LanguageSelector.css';
 const LanguageSelector = ({
   selectedLanguage,
   onChange,
-  languages = ['English', 'Spanish', 'Italian', 'Russian'],
+  languages = ['English', 'Czech', 'Ukrainian', 'Russian'],
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 

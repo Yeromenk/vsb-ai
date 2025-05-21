@@ -6,10 +6,11 @@ import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import DeleteModal from '../../components/common/Modal/DeleteModal';
+import DeleteModal from '../../components/common/DeleteModal/DeleteModal';
 import SearchBar from '../../components/common/SearchBar/SearchBar';
 import ChatListContent from '../../components/common/ChatListContent/ChatListContent';
 import UtilityLinks from '../../components/common/UtilityLinks/UtilityLinks';
+import ShareModal from '../../components/common/ShareModal/ShareModal';
 
 const ChatList = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -21,6 +22,8 @@ const ChatList = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchAttempted, setSearchAttempted] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [shareChat, setShareChat] = useState(null);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -84,6 +87,18 @@ const ChatList = () => {
   const closeDeleteModel = () => {
     setIsModalOpen(false);
     setSelectedChat(null);
+  };
+
+  // Handler to open share modal
+  const openShareModal = chat => {
+    setShareChat(chat);
+    setIsShareModalOpen(true);
+  };
+
+  // Handler to close share modal
+  const closeShareModal = () => {
+    setIsShareModalOpen(false);
+    setShareChat(null);
   };
 
   const handleEdit = async (chatId, newTitle) => {
@@ -194,6 +209,8 @@ const ChatList = () => {
         onClose={closeDeleteModel}
       />
 
+      <ShareModal isOpen={isShareModalOpen} onClose={closeShareModal} chatId={shareChat?.id} />
+
       <button className="menu-button" onClick={toggleSidebar}>
         <Menu />
       </button>
@@ -240,6 +257,7 @@ const ChatList = () => {
             handleEdit={handleEdit}
             startEditing={startEditing}
             openDeleteModel={openDeleteModel}
+            openShareModal={openShareModal}
           />
         </div>
       </div>

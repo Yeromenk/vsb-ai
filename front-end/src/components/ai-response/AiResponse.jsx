@@ -152,6 +152,7 @@ const AiResponse = ({ text, onEdit, showEditButton = false, showEmailButton = fa
             rehypePlugins={[rehypeRaw, rehypeHighlight]}
             remarkPlugins={[remarkGfm]}
             components={{
+              p: ({ node, ...props }) => <div {...props} />,
               h1: ({ node, ...props }) => <h1 className="ai-heading ai-h1" {...props} />,
               h2: ({ node, ...props }) => <h2 className="ai-heading ai-h2" {...props} />,
               h3: ({ node, ...props }) => <h3 className="ai-heading ai-h3" {...props} />,

@@ -17,6 +17,7 @@ const ChatListContent = ({
   handleEdit,
   startEditing,
   openDeleteModel,
+  openShareModal,
 }) => {
   if (isPending) {
     return (
@@ -91,6 +92,7 @@ const ChatListContent = ({
                 handleEdit={handleEdit}
                 startEditing={startEditing}
                 openDeleteModel={openDeleteModel}
+                openShareModal={openShareModal}
               />
             ))}
         </div>

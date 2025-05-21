@@ -34,19 +34,23 @@ model UserChats {
 }
 
 model Chat {
-  id           String     @id @default(cuid())
-  userId       String
-  title        String
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  userChatsId  Int?
-  type         String
-  description  String?
-  instructions String?
-  embeddings   Float[]
-  UserChats    UserChats? @relation(fields: [userChatsId], references: [id])
-  files        File[]
-  history      Message[]
+  id              String     @id @default(cuid())
+  userId          String
+  title           String
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  userChatsId     Int?
+  type            String
+  description     String?
+  instructions    String?
+  embeddings      Float[]
+  UserChats       UserChats? @relation(fields: [userChatsId], references: [id])
+  files           File[]
+  history         Message[]
+  isShared        Boolean    @default(false)
+  sharedCode      String?    @unique
+  sharedWith      String[]   @default([])
+  sharePermission String     @default("view")
 }
 
 model Message {
