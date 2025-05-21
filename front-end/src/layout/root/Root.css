@@ -65,6 +65,38 @@
   stroke-width: 2;
 }
 
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 15px;
+  font-weight: 500;
+  background-color: transparent;
+  color: var(--primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.profile-button:hover {
+  background-color: rgba(62, 146, 204, 0.1);
+  color: var(--accent);
+}
+
+.profile-button .icon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
+}
+
 @media (max-width: 768px) {
   .header {
     padding: 16px;
@@ -74,7 +106,12 @@
     font-size: 20px;
   }
 
-  .logout-button {
+  .user-actions {
+    gap: 5px;
+  }
+
+  .profile-button, .logout-button {
     padding: 8px 12px;
+    font-size: 14px;
   }
 }

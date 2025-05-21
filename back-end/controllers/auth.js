@@ -206,6 +206,7 @@ passport.use(
               username: profile.username || profile.displayName,
               password: bcrypt.hashSync(Math.random().toString(36).slice(-8), 10), // Random password
               githubId: profile.id,
+              isEmailVerified: true,
             },
           });
         }
@@ -213,7 +214,10 @@ passport.use(
         else if (!user.githubId) {
           user = await prisma.user.update({
             where: { id: user.id },
-            data: { githubId: profile.id },
+            data: {
+              githubId: profile.id,
+              isEmailVerified: true,
+            },
           });
         }
 
@@ -279,6 +283,7 @@ passport.use(
               username: profile.displayName || `user-${profile.id}`,
               password: bcrypt.hashSync(Math.random().toString(36).slice(-8), 10), // Random password
               googleId: profile.id,
+              isEmailVerified: true,
             },
           });
         }
@@ -286,7 +291,10 @@ passport.use(
         else if (!user.googleId) {
           user = await prisma.user.update({
             where: { id: user.id },
-            data: { googleId: profile.id },
+            data: {
+              googleId: profile.id,
+              isEmailVerified: true,
+            },
           });
         }
 

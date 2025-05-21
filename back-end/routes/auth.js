@@ -8,7 +8,9 @@ import verifyToken, {
   vsbCallback,
 } from '../controllers/auth.js';
 import passport from 'passport';
+import { PrismaClient } from '@prisma/client';
 
+const prisma = new PrismaClient();
 const router = express.Router();
 
 router.post('/register', register);
@@ -58,6 +60,55 @@ router.post('/vsb/login', (req, res, next) => {
       return vsbCallback(req, res);
     });
   })(req, res, next);
+});
+
+// profile info
+router.get('/profile', verifyToken, async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        createdAt: true,
+        isEmailVerified: true,
+        githubId: true,
+        googleId: true,
+        vsbId: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.toString() });
+  }
+});
+
+// account deletion
+router.delete('/delete-account', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Delete all user's chats and related data
+    await prisma.chat.deleteMany({
+      where: { userId },
+    });
+
+    // Delete user
+    await prisma.user.delete({
+      where: { id: userId },
+    });
+
+    res.status(200).json({ message: 'Account deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting account:', error);
+    res.status(500).json({ error: 'Failed to delete account' });
+  }
 });
 
 export default router;

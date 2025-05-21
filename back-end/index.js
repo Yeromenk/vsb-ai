@@ -5,7 +5,7 @@ import express from 'express';
 import session from 'express-session';
 import passport from 'passport';
 import authRoutes from './routes/auth.js';
-import formatAI from './routes/chats.js';
+import chatsAi from './routes/chats.js';
 import translateRoutes from './routes/translate.js';
 import fileRoutes from './routes/file.js';
 import summarizeRoutes from './routes/format.js';
@@ -64,7 +64,7 @@ passport.deserializeUser(async (id, done) => {
 
 // 4. Routes
 app.use('/auth', authRoutes);
-app.use('/ai', formatAI);
+app.use('/ai', chatsAi);
 app.use('/ai', translateRoutes);
 app.use('/ai', fileRoutes);
 app.use('/ai', summarizeRoutes);

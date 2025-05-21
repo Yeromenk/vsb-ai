@@ -34,6 +34,8 @@ The application leverages the power of modern AI (OpenAI API) to provide a user-
 - 🔒 Secure API endpoints with authentication
 - Email verification and password reset functionality
 - Searching chat history
+- Deleting account and all chats
+- Changing password functionality
 
 
 ---
@@ -84,6 +86,6 @@ cd ../frontend && npm install && npm run dev
 ```
 cd ../backend && npm install && npm run dev
 ```
-4. To `.env` file in back-end directory, add your OpenAI API key, PostgreSQL connection string, JWT secret, Google and GitHub ID and SECRET, and email credentials for nodemailer.
+4. To `.env` file in back-end directory, add your `OPENAI_API_KEY`, `DATABASE_URL` (POSTGRESQL) connection string, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` for Google and GitHub, email credentials `EMAIL_USER` and `EMAIL_PASSWORD` for nodemailer, `SESSION_SECRET` key and for VSB you need to add `LDAP_URL`. 
 5. After that, you can use the application. Enjoy!
 

@@ -273,4 +273,40 @@ router.delete('/chat/:id', verifyToken, async (req, res) => {
   }
 });
 
+// delete all chats
+router.delete('/delete-all-chats', verifyToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // First get all the user's chat IDs
+    const userChats = await prisma.chat.findMany({
+      where: { userId },
+      select: { id: true },
+    });
+
+    const chatIds = userChats.map(chat => chat.id);
+
+    // Use a transaction to delete all related records in the correct order
+    await prisma.$transaction([
+      // First, delete all messages associated with these chats
+      prisma.message.deleteMany({
+        where: { chatId: { in: chatIds } },
+      }),
+      // Then delete any files associated with these chats
+      prisma.file.deleteMany({
+        where: { chatId: { in: chatIds } },
+      }),
+      // Finally, delete the chats themselves
+      prisma.chat.deleteMany({
+        where: { userId },
+      }),
+    ]);
+
+    res.status(200).json({ message: 'All chats deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting chats:', error);
+    res.status(500).json({ error: 'Failed to delete chats' });
+  }
+});
+
 export default router;

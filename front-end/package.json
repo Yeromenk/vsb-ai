@@ -29,7 +29,7 @@
     "remark-gfm": "^4.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=3001 react-scripts start",
     "format": "prettier --write \"**/*.{js,jsx,json,css,md}\""
   },
   "eslintConfig": {

@@ -41,7 +41,8 @@
     "passport-ldapauth": "^3.0.1",
     "pdf-extract": "^1.0.11",
     "pdf-lib": "^1.17.1",
-    "pdf-parse": "^1.1.1"
+    "pdf-parse": "^1.1.1",
+    "read-excel-file": "^5.8.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.24.0",

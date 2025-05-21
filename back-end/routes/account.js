@@ -266,4 +266,73 @@ router.post('/reset-password', async (req, res) => {
   }
 });
 
+// change password
+router.post('/change-password', verifyToken, async (req, res) => {
+  const userId = req.user.id;
+  const { currentPassword, newPassword } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if the user is from OAuth (Google, GitHub, VSB)
+    if (user.googleId || user.githubId || user.vsbId) {
+      return res.status(403).json({
+        message:
+          'Password change is not available for accounts created through Google, GitHub or VSB',
+        isOAuthUser: true,
+      });
+    }
+
+    // Verify the current password
+    const isPasswordCorrect = bcrypt.compareSync(currentPassword, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ message: 'Current password is incorrect' });
+    }
+
+    // Validate new password
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+    if (!passwordRegex.test(newPassword)) {
+      return res.status(400).json({
+        message:
+          'Password must contain at least 8 characters including an uppercase letter, lowercase letter, number, and special character',
+      });
+    }
+
+    // Update user password
+    const hashedPassword = bcrypt.hashSync(newPassword, 10);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    });
+
+    // Send notification email
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: user.email,
+      subject: 'Your Password Has Been Changed',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2 style="color: #3a5bc7;">Password Changed Successfully</h2>
+          <p>Dear ${user.username},</p>
+          <p>Your password has been successfully changed. If you did not make this change, please contact us immediately.</p>
+          <p style="color: #666; font-size: 12px; margin-top: 20px;">
+            This is an automated message from the VSB AI Assistant. Please do not reply to this email.
+          </p>
+        </div>
+      `,
+    });
+
+    res.status(200).json({ message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Error changing password:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 export default router;

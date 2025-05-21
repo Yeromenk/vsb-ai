@@ -1,13 +1,15 @@
 import './Root.css';
-import { LogOut } from 'lucide-react';
+import { LogOut, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext.js';
 import toast from 'react-hot-toast';
+import ProfileModal from '../../pages/ProfileModal/ProfileModal.jsx';
 
 const Root = () => {
   const { currentUser, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -23,10 +25,24 @@ const Root = () => {
         </Link>
 
         {currentUser && (
-          <button onClick={handleLogout} className="logout-button">
-            <LogOut className="icon" />
-            Logout
-          </button>
+          <div className="user-actions">
+            <button onClick={() => setIsProfileModalOpen(true)} className="profile-button">
+              <User className="icon" />
+              Profile
+            </button>
+            <button onClick={handleLogout} className="logout-button">
+              <LogOut className="icon" />
+              Logout
+            </button>
+
+            {isProfileModalOpen && (
+              <ProfileModal
+                isOpen={isProfileModalOpen}
+                onClose={() => setIsProfileModalOpen(false)}
+                user={currentUser}
+              />
+            )}
+          </div>
         )}
       </div>
     </div>
