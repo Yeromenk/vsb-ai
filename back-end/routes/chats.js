@@ -50,22 +50,17 @@ router.post('/chats', upload.single('file'), async (req, res) => {
     chatType = 'format';
   } else if (file && action) {
     try {
-      const extractedText = await extractTextFromFile(file.path);
+      const extractedText = await extractTextFromFile(file.path, file.originalname);
 
-      if (!extractedText || extractedText.length === 0) {
-        return res.status(400).json({ error: 'File is empty or contains unreadable text' });
+      // Check if the response starts with [Error or [PDF file detected
+      if (extractedText.startsWith('[Error') || extractedText.startsWith('[PDF file')) {
+        return res.status(400).json({ error: extractedText });
       }
 
       responseText = await getFile(extractedText, action);
-
-      // Ensure the responseText is properly formatted
-      if (!responseText) {
-        responseText = ['Error processing file'];
-      }
-
       chatType = 'file';
     } catch (error) {
-      return res.status(500).json({ error: 'Error processing the file' });
+      return res.status(500).json({ error: `Error processing the file: ${error.message}` });
     }
   } else if (name && description && instructions) {
     responseText = await getNewPrompt(instructions);

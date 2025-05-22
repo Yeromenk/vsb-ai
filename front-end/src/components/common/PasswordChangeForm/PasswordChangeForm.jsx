@@ -91,7 +91,9 @@ const PasswordChangeForm = ({ onSuccess }) => {
             value={currentPassword}
             onChange={e => setCurrentPassword(e.target.value)}
           />
-          {errors.currentPassword && <div className="error-message">{errors.currentPassword}</div>}
+          {errors.currentPassword && (
+            <div className="error-message-modal">{errors.currentPassword}</div>
+          )}
         </div>
 
         <div className="form-group">
@@ -102,7 +104,7 @@ const PasswordChangeForm = ({ onSuccess }) => {
             value={newPassword}
             onChange={e => setNewPassword(e.target.value)}
           />
-          {errors.newPassword && <div className="error-message">{errors.newPassword}</div>}
+          {errors.newPassword && <div className="error-message-modal">{errors.newPassword}</div>}
         </div>
 
         <div className="form-group">
@@ -113,7 +115,9 @@ const PasswordChangeForm = ({ onSuccess }) => {
             value={confirmPassword}
             onChange={e => setConfirmPassword(e.target.value)}
           />
-          {errors.confirmPassword && <div className="error-message">{errors.confirmPassword}</div>}
+          {errors.confirmPassword && (
+            <div className="error-message-modal">{errors.confirmPassword}</div>
+          )}
         </div>
 
         <div className="form-actions">

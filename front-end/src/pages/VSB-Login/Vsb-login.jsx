@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { Lock, LogIn, Eye, EyeOff, User } from 'lucide-react';
+import { Lock, LogIn, Eye, EyeOff, User, AlertCircle } from 'lucide-react';
 import axios from 'axios';
 import './Vsb-login.css';
 import { AuthContext } from '../../context/AuthContext';
@@ -11,6 +11,7 @@ const VsbLogin = () => {
     username: '',
     password: '',
   });
+  const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { refreshUser } = useContext(AuthContext);
@@ -26,14 +27,45 @@ const VsbLogin = () => {
       ...prev,
       [name]: value,
     }));
+
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: '',
+      }));
+    }
+  };
+
+  const validateInputs = () => {
+    const newErrors = {};
+
+    // Check username format
+    if (inputs.username.includes('@vsb.cz')) {
+      newErrors.username = 'Please enter only your VSB username without @vsb.cz';
+    } else if (inputs.username.includes('@')) {
+      newErrors.username = 'Please enter your VSB username, not an email address';
+    }
+
+    // Check password
+    if (inputs.password.length < 1) {
+      newErrors.password = 'Password is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async e => {
     e.preventDefault();
     if (loading) return;
 
+    // Validate inputs before submission
+    if (!validateInputs()) {
+      return;
+    }
+
     setLoading(true);
-    console.log('Starting VSB login via POST request');
 
     try {
       const response = await axios.post('http://localhost:3000/auth/vsb/login', inputs, {
@@ -43,7 +75,6 @@ const VsbLogin = () => {
         },
       });
 
-      console.log('Login response received:', response.status);
       if (response.status === 200) {
         toast.success('VSB login successful');
 
@@ -52,17 +83,23 @@ const VsbLogin = () => {
         if (userCookie) {
           const userData = JSON.parse(decodeURIComponent(userCookie.split('=')[1]));
           localStorage.setItem('user', JSON.stringify(userData));
-
-          refreshUser();
         }
 
         setTimeout(() => {
+          refreshUser();
           navigate('/home');
-        }, 500);
+        }, 1000);
       }
     } catch (error) {
       console.error('VSB login error:', error);
-      toast.error(error.response?.data?.message || 'Authentication failed');
+      if (error.response?.status === 401) {
+        toast.error('Invalid VSB credentials. Please check your username and password.');
+      } else if (error.response?.status === 500 && error.response?.data?.message) {
+        toast.error(error.response.data.message);
+        console.log(error.response.data.message);
+      } else {
+        toast.error('Authentication failed. Please try again later.');
+      }
     } finally {
       setLoading(false);
     }
@@ -81,9 +118,16 @@ const VsbLogin = () => {
               name="username"
               value={inputs.username}
               onChange={handleChange}
+              className={errors.username ? 'input-error' : ''}
               required
             />
           </div>
+          {errors.username && (
+            <div className="error-message-login">
+              <AlertCircle size={16} />
+              {errors.username}
+            </div>
+          )}
 
           <div className="input-container">
             <Lock size={20} className="icon" />
@@ -93,12 +137,19 @@ const VsbLogin = () => {
               name="password"
               value={inputs.password}
               onChange={handleChange}
+              className={errors.password ? 'input-error' : ''}
               required
             />
             <div className="password-toggle" onClick={togglePasswordVisibility}>
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </div>
           </div>
+          {errors.password && (
+            <div className="error-message-login">
+              <AlertCircle size={16} />
+              {errors.password}
+            </div>
+          )}
 
           <button type="submit" className="primary-button" disabled={loading}>
             {loading ? (

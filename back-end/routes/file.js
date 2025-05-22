@@ -34,7 +34,12 @@ router.put('/file/chat/:id', verifyToken, upload.single('file'), async (req, res
       });
     }
 
-    const extractedText = await extractTextFromFile(file.path);
+    const extractedText = await extractTextFromFile(file.path, file.originalname);
+
+    // Check if the response starts with [Error or [PDF file detected
+    if (extractedText.startsWith('[Error') || extractedText.startsWith('[PDF file')) {
+      return res.status(400).json({ error: extractedText });
+    }
 
     if (!extractedText || extractedText.length === 0) {
       return res.status(400).json({ error: 'File is empty or contains unreadable text' });

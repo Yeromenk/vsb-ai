@@ -195,7 +195,7 @@
     box-shadow: 0 0 0 3px rgba(62, 146, 204, 0.1);
 }
 
-.error-message {
+.error-message-modal {
     margin-top: 4px;
     color: #ef4444;
     font-size: 12px;

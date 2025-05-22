@@ -64,6 +64,16 @@
   box-shadow: var(--shadow);
 }
 
+.error-message-login {
+  color: #e53935;
+  font-size: 14px;
+  margin-top: -8px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 @media (max-width: 768px) {
   .vsb-login-page {
     flex-direction: column;
