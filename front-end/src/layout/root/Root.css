@@ -110,7 +110,8 @@
     gap: 5px;
   }
 
-  .profile-button, .logout-button {
+  .profile-button,
+  .logout-button {
     padding: 8px 12px;
     font-size: 14px;
   }

@@ -1,13 +1,13 @@
 .shared-permission-badge {
-    background-color: #f0f0f0;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 14px;
-    color: #666;
-    display: inline-flex;
-    align-items: center;
-    margin: 10px 20px 0;
-    font-weight: 500;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    align-self: center;
+  background-color: #f0f0f0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #666;
+  display: inline-flex;
+  align-items: center;
+  margin: 10px 20px 0;
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  align-self: center;
 }
