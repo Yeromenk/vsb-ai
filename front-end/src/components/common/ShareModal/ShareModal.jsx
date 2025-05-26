@@ -165,7 +165,7 @@ const ShareModal = ({ isOpen, onClose, chatId }) => {
             </button>
           ) : (
             <>
-              {/* Show update permission button when link already exists */}
+              {/* Show update permission button when a link already exists */}
               <button
                 className="share-button update-permission"
                 onClick={handleUpdatePermission}
@@ -193,7 +193,6 @@ const ShareModal = ({ isOpen, onClose, chatId }) => {
                   </button>
                 </div>
                 <div className="permission-note">
-                  <Link2 size={14} />
                   <span>
                     People with this link can{' '}
                     {permission === 'view' ? 'only view' : 'view and edit'} this chat

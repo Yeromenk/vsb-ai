@@ -66,7 +66,7 @@ const NewPrompt = () => {
           <h1>Configure your own chat</h1>
         </div>
         <p className="prompt-description">
-          <Info size={18} className="info-icon" />
+          <Info size={18} className="info-icon-prompt" />
           Create a custom chat with specific instructions for how the AI should respond to your
           needs.
         </p>

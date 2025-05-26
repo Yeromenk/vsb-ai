@@ -58,17 +58,10 @@
   margin: 0;
   font-size: 1.3rem;
   font-weight: 600;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.share-modal-header .modal-link-icon {
-  background: rgba(255, 255, 255, 0.13);
-  border-radius: 50%;
-  padding: 7px;
-  margin-right: 6px;
 }
 
 .close-button {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FilePlus2, FileText, Send } from 'lucide-react';
+import { FilePlus2, FileChartColumn, Send, FileCheck } from 'lucide-react';
 
 const FileProcessing = ({ onSubmit, loading = false }) => {
   const [file, setFile] = useState(null);
@@ -44,7 +44,7 @@ const FileProcessing = ({ onSubmit, loading = false }) => {
             name="action"
             value="summarize"
           >
-            <FileText size={18} />
+            <FileCheck size={18} />
             Summarize
           </button>
           <button
@@ -54,7 +54,7 @@ const FileProcessing = ({ onSubmit, loading = false }) => {
             name="action"
             value="describe"
           >
-            <FileText size={18} />
+            <FileChartColumn size={18} />
             Analyze
           </button>
         </div>
