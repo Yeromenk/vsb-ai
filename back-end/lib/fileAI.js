@@ -3,13 +3,16 @@ import mammoth from 'mammoth';
 import fs from 'fs-extra';
 import readExcelFile from 'read-excel-file/node';
 import path from 'path';
+import { getUserModelConfig } from './modelConfig.js';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export async function getFile(file, action) {
+export async function getFile(file, action, userId = null) {
   try {
+    const config = await getUserModelConfig(userId, 1000);
+
     const systemPrompt = `You are a document analysis assistant.
     
     Format your responses using proper markdown:
@@ -21,19 +24,14 @@ export async function getFile(file, action) {
     const userPrompt = `Please ${action} the following document content:\n\n${file}`;
 
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      ...config,
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
       ],
-      temperature: 0.7,
-      max_tokens: 800,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0,
     });
 
-    console.log('File analysis generated with markdown formatting');
+    console.log(`File analysis generated using model: ${config.model}`);
     return completion.choices[0].message.content;
   } catch (error) {
     console.error('Error fetching completion(file):', error);

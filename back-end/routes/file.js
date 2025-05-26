@@ -45,7 +45,7 @@ router.put('/file/chat/:id', verifyToken, upload.single('file'), async (req, res
       return res.status(400).json({ error: 'File is empty or contains unreadable text' });
     }
 
-    const modelResponse = await getFile(extractedText, action);
+    const modelResponse = await getFile(extractedText, action, userId);
 
     if (!modelResponse || modelResponse.length === 0) {
       return res.status(400).json({ error: 'Model response is empty' });
@@ -85,8 +85,10 @@ router.put('/file/chat/:id', verifyToken, upload.single('file'), async (req, res
 // upload a file
 router.post('/file', async (req, res) => {
   const { file, action } = req.body;
+  const userId = req.user?.id;
+
   try {
-    const fileAction = await getFile(file, action);
+    const fileAction = await getFile(file, action, userId);
     res.status(200).json({ response: fileAction });
   } catch (error) {
     console.error('Error in /file:', error);

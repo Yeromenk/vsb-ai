@@ -11,7 +11,7 @@ router.put('/format/chat/:id', verifyToken, async (req, res) => {
   const userId = req.user.id;
   const chatId = req.params.id;
   const { message, style, tone } = req.body;
-  const formattedText = await ReformateText(message, style, tone);
+  const formattedText = await ReformateText(message, style, tone, userId);
 
   try {
     const chat = await prisma.chat.findFirst({
@@ -62,8 +62,10 @@ router.put('/format/chat/:id', verifyToken, async (req, res) => {
 // get a chat format
 router.post('/format', async (req, res) => {
   const { message, style, tone } = req.body;
+  const userId = req.user?.id;
+
   try {
-    const completion = await ReformateText(message, style, tone);
+    const completion = await ReformateText(message, style, tone, userId);
     res.status(200).json({ response: completion });
   } catch (error) {
     console.error('Error in /format:', error);

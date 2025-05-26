@@ -43,10 +43,10 @@ router.post('/chats', upload.single('file'), async (req, res) => {
   }
 
   if (sourceLanguage && targetLanguage) {
-    responseText = await getTranslation(message, sourceLanguage, targetLanguage);
+    responseText = await getTranslation(message, sourceLanguage, targetLanguage, userId);
     chatType = 'translate';
   } else if (style && tone) {
-    responseText = await ReformateText(message, style, tone);
+    responseText = await ReformateText(message, style, tone, userId);
     chatType = 'format';
   } else if (file && action) {
     try {
@@ -57,13 +57,13 @@ router.post('/chats', upload.single('file'), async (req, res) => {
         return res.status(400).json({ error: extractedText });
       }
 
-      responseText = await getFile(extractedText, action);
+      responseText = await getFile(extractedText, action, userId);
       chatType = 'file';
     } catch (error) {
       return res.status(500).json({ error: `Error processing the file: ${error.message}` });
     }
   } else if (name && description && instructions) {
-    responseText = await getNewPrompt(instructions);
+    responseText = await getNewPrompt(instructions, userId);
     chatType = 'custom';
   } else {
     return res.status(400).json({ error: 'Invalid request' });

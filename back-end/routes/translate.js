@@ -11,7 +11,7 @@ router.put('/translate/chat/:id', verifyToken, async (req, res) => {
   const userId = req.user.id;
   const chatId = req.params.id;
   const { message, sourceLanguage, targetLanguage } = req.body;
-  const translatedText = await getTranslation(message, sourceLanguage, targetLanguage);
+  const translatedText = await getTranslation(message, sourceLanguage, targetLanguage, userId);
 
   try {
     const chat = await prisma.chat.findFirst({
@@ -62,8 +62,10 @@ router.put('/translate/chat/:id', verifyToken, async (req, res) => {
 // Translate a message
 router.post('/translate', async (req, res) => {
   const { message, sourceLanguage, targetLanguage } = req.body;
+  const userId = req.user?.id;
+
   try {
-    const translatedText = await getTranslation(message, sourceLanguage, targetLanguage);
+    const translatedText = await getTranslation(message, sourceLanguage, targetLanguage, userId);
     res.status(200).json({ translatedText });
   } catch (error) {
     console.error('Error in /translate:', error);

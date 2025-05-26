@@ -8,21 +8,22 @@ datasource db {
 }
 
 model User {
-  id                      String    @id @default(cuid())
-  email                   String    @unique
+  id                      String           @id @default(cuid())
+  email                   String           @unique
   username                String
   password                String
-  createdAt               DateTime  @default(now())
-  githubId                String?   @unique
-  googleId                String?   @unique
-  vsbId                   String?   @unique
-  isEmailVerified         Boolean   @default(false)
-  verificationToken       String?   @unique
+  createdAt               DateTime         @default(now())
+  githubId                String?          @unique
+  googleId                String?          @unique
+  vsbId                   String?          @unique
+  isEmailVerified         Boolean          @default(false)
+  verificationToken       String?          @unique
   verificationTokenExpiry DateTime?
   resetCode               String?
   resetCodeExpiry         DateTime?
-  resetToken              String?   @unique
+  resetToken              String?          @unique
   resetTokenExpiry        DateTime?
+  preferences             UserPreferences?
 }
 
 model UserChats {
@@ -70,6 +71,15 @@ model File {
   createdAt DateTime @default(now())
   fileName  String
   chat      Chat     @relation(fields: [chatId], references: [id])
+}
+
+model UserPreferences {
+  id          String @id @default(cuid())
+  userId      String @unique
+  modelId     String @default("gpt-4o-mini")
+  temperature Float  @default(0.7)
+  maxTokens   Int    @default(1000)
+  user        User   @relation(fields: [userId], references: [id])
 }
 
 enum Role {

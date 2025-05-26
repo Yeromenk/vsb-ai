@@ -1,11 +1,14 @@
 import OpenAI from 'openai';
+import { getUserModelConfig } from './modelConfig.js';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export async function getNewPrompt(instructions, message) {
+export async function getNewPrompt(instructions, message, userId = null) {
   try {
+    const config = await getUserModelConfig(userId, 1000);
+
     const systemPrompt = `${instructions || 'You are a helpful assistant.'}
     
     Format your responses using proper markdown:
@@ -22,25 +25,14 @@ export async function getNewPrompt(instructions, message) {
     const prompt = message || 'Hello';
 
     const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      ...config,
       messages: [
-        {
-          role: 'system',
-          content: systemPrompt,
-        },
-        {
-          role: 'user',
-          content: prompt,
-        },
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: prompt },
       ],
-      temperature: 0.7,
-      max_tokens: 1000,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0,
     });
 
-    console.log('AI response generated with markdown formatting');
+    console.log(`AI response generated using model: ${config.model}`);
     return completion.choices[0].message.content;
   } catch (error) {
     console.error('Error generating prompt:', error);

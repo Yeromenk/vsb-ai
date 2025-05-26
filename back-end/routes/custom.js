@@ -67,7 +67,7 @@ router.post('/chats/custom-conversation', verifyToken, async (req, res) => {
     }
 
     // Get AI response based on template instructions and user message
-    const aiResponse = await getNewPrompt(template.instructions, message);
+    const aiResponse = await getNewPrompt(template.instructions, message, userId);
 
     // Create a new conversation chat
     const newConversation = await prisma.chat.create({
@@ -139,7 +139,7 @@ router.put('/chats/custom-conversation/:id', verifyToken, async (req, res) => {
     }
 
     // Generate AI response based on the chat instructions and new message
-    const aiResponse = await getNewPrompt(chat.instructions, message);
+    const aiResponse = await getNewPrompt(chat.instructions, message, userId);
 
     // Add new messages to the chat
     await prisma.chat.update({
@@ -178,8 +178,10 @@ router.put('/chats/custom-conversation/:id', verifyToken, async (req, res) => {
 // post a custom chat
 router.post('/custom', async (req, res) => {
   const { message } = req.body;
+  const userId = req.user?.id;
+
   try {
-    const custom = await getNewPrompt(message);
+    const custom = await getNewPrompt(message, userId);
     res.status(200).json({ response: custom });
   } catch (error) {
     console.error('Error in /custom:', error);

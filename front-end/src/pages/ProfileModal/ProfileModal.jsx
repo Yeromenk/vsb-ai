@@ -5,6 +5,7 @@ import { User, X, Key, RotateCw } from 'lucide-react';
 import PasswordChangeForm from '../../components/common/PasswordChangeForm/PasswordChangeForm';
 import UserInfo from '../../components/common/UserInfo/UserInfo';
 import DangerZone from '../../components/common/DangerZone/DangerZone';
+import ModelSettings from '../../components/common/ModelSettings/ModelSetting';
 
 const ProfileModal = ({ isOpen, onClose }) => {
   const [profileData, setProfileData] = useState(null);
@@ -71,6 +72,8 @@ const ProfileModal = ({ isOpen, onClose }) => {
         ) : (
           <>
             <UserInfo profileData={profileData} formatDate={formatDate} />
+
+            <ModelSettings />
 
             {canChangePassword() && (
               <div className="profile-actions">

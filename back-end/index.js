@@ -15,6 +15,7 @@ import editMessageRoutes from './routes/edit-message.js';
 import searchChats from './routes/search.js';
 import accountRoutes from './routes/account.js';
 import shareRoutes from './routes/shareChat.js';
+import aiModelRoutes from './routes/aiModels.js';
 import { connectToDatabase, prisma } from './prisma/db.js';
 
 const app = express();
@@ -74,6 +75,7 @@ app.use('/ai', editMessageRoutes);
 app.use('/ai', searchChats);
 app.use('/ai', shareRoutes);
 app.use('/account', accountRoutes);
+app.use('/ai', aiModelRoutes);
 
 connectToDatabase();
 
