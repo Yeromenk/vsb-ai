@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import 'react-loading-skeleton/dist/skeleton.css';
 import toast from 'react-hot-toast';
 import TextTranslator from '../../components/common/TextTranslator/TextTranslator';
 import './Translate.css';

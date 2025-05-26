@@ -3,7 +3,7 @@ import { useContext, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext.js';
 import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
-import { Mail, Lock, LogIn, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, LogIn, Eye, EyeOff, RefreshCw } from 'lucide-react';
 import './Login.css';
 
 const Login = () => {
@@ -16,6 +16,7 @@ const Login = () => {
     password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
@@ -79,6 +80,7 @@ const Login = () => {
       return;
     }
 
+    setIsSubmitting(true);
     try {
       await login(inputs);
       toast.success('Login successful');
@@ -90,6 +92,8 @@ const Login = () => {
         toast.error('Network error occurred. Please try again.');
         console.error('Network error or other error occurred', e);
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -125,9 +129,18 @@ const Login = () => {
           </div>
           {errors.password && <div className="error-message-login">{errors.password}</div>}
 
-          <button type="submit" className="primary-button">
-            <LogIn size={18} />
-            Login
+          <button type="submit" className="primary-button" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <RefreshCw size={18} className="icon-spin" />
+                <span>Logging in...</span>
+              </>
+            ) : (
+              <>
+                <LogIn size={18} />
+                <span>Login</span>
+              </>
+            )}
           </button>
 
           <div className="forgot-password">

@@ -41,7 +41,7 @@ const ConfirmEmail = () => {
 
   const verifyEmail = async token => {
     try {
-      const response = await axios.get(`http://localhost:3000/auth/verify-email/${token}`);
+      await axios.get(`http://localhost:3000/account/verify-email/${token}`);
       setVerificationStatus('success');
       toast.success('Email verified successfully!');
 
@@ -51,7 +51,7 @@ const ConfirmEmail = () => {
     } catch (error) {
       console.error('Verification error:', error);
       setVerificationStatus('error');
-      toast.error(error.response?.data?.message || 'Verification failed');
+      toast.error('Verification failed!');
     }
   };
 
@@ -67,7 +67,7 @@ const ConfirmEmail = () => {
 
     setIsResending(true);
     try {
-      await axios.post('http://localhost:3000/auth/resend-verification', { email });
+      await axios.post('http://localhost:3000/account/resend-verification', { email });
       toast.success('Verification email sent successfully');
       setCooldown(60); // Start a 60-second cooldown
     } catch (error) {

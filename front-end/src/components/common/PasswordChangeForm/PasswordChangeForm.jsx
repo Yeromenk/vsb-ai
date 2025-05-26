@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { RotateCw } from 'lucide-react';
+import { Eye, EyeOff, RefreshCw } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const PasswordChangeForm = ({ onSuccess }) => {
@@ -9,6 +9,9 @@ const PasswordChangeForm = ({ onSuccess }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const validateForm = () => {
     const newErrors = {};
@@ -85,12 +88,20 @@ const PasswordChangeForm = ({ onSuccess }) => {
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="currentPassword">Current Password</label>
-          <input
-            type="password"
-            id="currentPassword"
-            value={currentPassword}
-            onChange={e => setCurrentPassword(e.target.value)}
-          />
+          <div className="password-input-container">
+            <input
+              type={showCurrentPassword ? 'text' : 'password'}
+              id="currentPassword"
+              value={currentPassword}
+              onChange={e => setCurrentPassword(e.target.value)}
+            />
+            <div
+              className="password-toggle"
+              onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+            >
+              {showCurrentPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </div>
+          </div>
           {errors.currentPassword && (
             <div className="error-message-modal">{errors.currentPassword}</div>
           )}
@@ -98,23 +109,36 @@ const PasswordChangeForm = ({ onSuccess }) => {
 
         <div className="form-group">
           <label htmlFor="newPassword">New Password</label>
-          <input
-            type="password"
-            id="newPassword"
-            value={newPassword}
-            onChange={e => setNewPassword(e.target.value)}
-          />
+          <div className="password-input-container">
+            <input
+              type={showNewPassword ? 'text' : 'password'}
+              id="newPassword"
+              value={newPassword}
+              onChange={e => setNewPassword(e.target.value)}
+            />
+            <div className="password-toggle" onClick={() => setShowNewPassword(!showNewPassword)}>
+              {showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </div>
+          </div>
           {errors.newPassword && <div className="error-message-modal">{errors.newPassword}</div>}
         </div>
 
         <div className="form-group">
           <label htmlFor="confirmPassword">Confirm New Password</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={e => setConfirmPassword(e.target.value)}
-          />
+          <div className="password-input-container">
+            <input
+              type={showConfirmPassword ? 'text' : 'password'}
+              id="confirmPassword"
+              value={confirmPassword}
+              onChange={e => setConfirmPassword(e.target.value)}
+            />
+            <div
+              className="password-toggle"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            >
+              {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </div>
+          </div>
           {errors.confirmPassword && (
             <div className="error-message-modal">{errors.confirmPassword}</div>
           )}
@@ -124,8 +148,8 @@ const PasswordChangeForm = ({ onSuccess }) => {
           <button type="submit" className="submit-button" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
-                <RotateCw size={16} className="animate-spin" />
-                Updating...
+                <RefreshCw size={18} className="icon-spin" />
+                <span>Updating...</span>
               </>
             ) : (
               'Update Password'

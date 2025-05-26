@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Lock, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Lock, Eye, EyeOff, RefreshCw, Send } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
@@ -54,7 +54,7 @@ const ResetPassword = () => {
 
     setIsSubmitting(true);
     try {
-      await axios.post('http://localhost:3000/auth/reset-password', {
+      await axios.post('http://localhost:3000/account/reset-password', {
         resetToken,
         newPassword: password,
       });
@@ -113,7 +113,17 @@ const ResetPassword = () => {
           {error && <div className="error-message-forgot">{error}</div>}
 
           <button type="submit" className="primary-button-forgot" disabled={isSubmitting}>
-            {isSubmitting ? 'Resetting...' : 'Reset Password'}
+            {isSubmitting ? (
+              <>
+                <RefreshCw size={40} className="icon-spin" />
+                Resetting...
+              </>
+            ) : (
+              <>
+                <Send size={18} />
+                Reset Password
+              </>
+            )}
           </button>
 
           <div className="back-to-login">

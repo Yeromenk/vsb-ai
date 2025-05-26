@@ -58,7 +58,7 @@ const VerifyResetCode = () => {
   const handleResendCode = async () => {
     setIsResending(true);
     try {
-      await axios.post('http://localhost:3000/auth/forgot-password', { email });
+      await axios.post('http://localhost:3000/account/forgot-password', { email });
       toast.success('New verification code sent');
       setResendTimeLeft(60); // Reset the resend timer to 1 minute
       setTimeLeft(30 * 60); // Reset the main timer to 30 minutes
@@ -80,7 +80,7 @@ const VerifyResetCode = () => {
 
     setIsSubmitting(true);
     try {
-      const response = await axios.post('http://localhost:3000/auth/verify-reset-code', {
+      const response = await axios.post('http://localhost:3000/account/verify-reset-code', {
         email,
         code,
       });

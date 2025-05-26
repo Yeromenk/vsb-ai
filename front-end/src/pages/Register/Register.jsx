@@ -3,7 +3,7 @@ import { useState, useContext } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { AuthContext } from '../../context/AuthContext.js';
-import { Mail, Lock, User, UserPlus, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, LogIn, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import '../Login/Login.css';
 
@@ -25,6 +25,7 @@ const Register = () => {
   const { login } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleGitHubLogin = async () => {
     window.location.href = 'http://localhost:3000/auth/github';
@@ -118,6 +119,7 @@ const Register = () => {
       return;
     }
 
+    setIsSubmitting(true);
     try {
       const response = await axios.post('http://localhost:3000/auth/register', inputs);
       localStorage.setItem('token', response.data.token);
@@ -131,6 +133,8 @@ const Register = () => {
         toast.error('Network error occurred. Please try again.');
         console.error('Network error or other error occurred', e);
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -195,9 +199,18 @@ const Register = () => {
             <div className="error-message-login">{errors.confirmPassword}</div>
           )}
 
-          <button type="submit">
-            <UserPlus size={18} />
-            Register
+          <button type="submit" className="primary-button" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <RefreshCw size={18} className="icon-spin" />
+                <span>Registering...</span>
+              </>
+            ) : (
+              <>
+                <LogIn size={18} />
+                <span>Register</span>
+              </>
+            )}
           </button>
 
           <div className="social-login">

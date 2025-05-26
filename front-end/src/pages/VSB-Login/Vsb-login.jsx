@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { Lock, LogIn, Eye, EyeOff, User, AlertCircle } from 'lucide-react';
+import { Lock, LogIn, Eye, EyeOff, User, AlertCircle, RefreshCw } from 'lucide-react';
 import axios from 'axios';
 import './Vsb-login.css';
 import { AuthContext } from '../../context/AuthContext';
@@ -93,7 +93,7 @@ const VsbLogin = () => {
     } catch (error) {
       console.error('VSB login error:', error);
       if (error.response?.status === 401) {
-        toast.error('Invalid VSB credentials. Please check your username and password.');
+        toast.error('Invalid VSB credentials');
       } else if (error.response?.status === 500 && error.response?.data?.message) {
         toast.error(error.response.data.message);
         console.log(error.response.data.message);
@@ -153,7 +153,10 @@ const VsbLogin = () => {
 
           <button type="submit" className="primary-button" disabled={loading}>
             {loading ? (
-              'Authenticating...'
+              <>
+                <RefreshCw size={18} className="icon-spin" />
+                Authenticating...
+              </>
             ) : (
               <>
                 <LogIn size={18} />

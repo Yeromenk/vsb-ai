@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, ArrowLeft, Send } from 'lucide-react';
+import { Mail, ArrowLeft, Send, RefreshCw } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import './ForgotPassword.css';
 import axios from 'axios';
@@ -34,7 +34,7 @@ const ForgotPassword = () => {
 
     setIsSubmitting(true);
     try {
-      await axios.post('http://localhost:3000/auth/forgot-password', { email });
+      await axios.post('http://localhost:3000/account/forgot-password', { email });
       toast.success('Password reset code sent to your email');
       navigate('/verify-reset-code', { state: { email } });
     } catch (err) {
@@ -62,8 +62,17 @@ const ForgotPassword = () => {
           {error && <div className="error-message-forgot">{error}</div>}
 
           <button type="submit" className="primary-button-forgot" disabled={isSubmitting}>
-            <Send size={18} />
-            {isSubmitting ? 'Sending...' : 'Send Code'}
+            {isSubmitting ? (
+              <>
+                <RefreshCw size={40} className="icon-spin" />
+                Sending...
+              </>
+            ) : (
+              <>
+                <Send size={18} />
+                Send Code
+              </>
+            )}
           </button>
 
           <div className="back-to-login">

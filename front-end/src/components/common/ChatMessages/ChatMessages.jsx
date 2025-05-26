@@ -1,5 +1,4 @@
 import React from 'react';
-import LoadingState from '../LoadingState/LoadingState';
 import AiResponse from '../../ai-response/AiResponse';
 import Skeleton from 'react-loading-skeleton';
 
@@ -18,7 +17,36 @@ const ChatMessages = ({
 }) => {
   const firstLetter = currentUser?.username.charAt(0).toUpperCase();
 
-  if (isLoading) return <LoadingState message="Loading..." />;
+  if (isLoading) {
+    return (
+      <div className="message-content-wrapper">
+        {[1, 2, 3].map(item => (
+          <React.Fragment key={item}>
+            {/* User message skeleton */}
+            <div className="message-container">
+              <div className="user-message skeleton-message">
+                <Skeleton count={1} height={20} style={{ marginBottom: '10px', width: '70%' }} />
+              </div>
+              <div className="avatar user-avatar skeleton-avatar">
+                <Skeleton circle width={40} height={40} />
+              </div>
+            </div>
+
+            {/* AI response skeleton */}
+            <div className="message-container">
+              <div className="avatar model-avatar">
+                <Skeleton circle width={40} height={40} />
+              </div>
+              <div className="model-message skeleton-message">
+                <Skeleton count={3} height={20} style={{ marginBottom: '10px' }} />
+                <Skeleton width="80%" height={20} />
+              </div>
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
+    );
+  }
 
   if (error && !unauthorized) {
     return <div className="error-state">An error occurred</div>;

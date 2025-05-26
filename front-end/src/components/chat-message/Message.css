@@ -207,6 +207,20 @@
   object-fit: cover;
 }
 
+.skeleton-message {
+  border-radius: 12px;
+  padding: 8px;
+  background-color: #f3f4f6;
+}
+
+.skeleton-avatar {
+  background-color: transparent;
+}
+
+.message-content-wrapper .react-loading-skeleton {
+  border-radius: 6px;
+}
+
 @media (max-width: 1200px) {
   .message-content-wrapper {
     width: 80%;

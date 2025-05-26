@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './ProfileModal.css';
 import axios from 'axios';
-import { User, X, Key, RotateCw } from 'lucide-react';
+import { User, X, Key } from 'lucide-react';
 import PasswordChangeForm from '../../components/common/PasswordChangeForm/PasswordChangeForm';
 import UserInfo from '../../components/common/UserInfo/UserInfo';
 import DangerZone from '../../components/common/DangerZone/DangerZone';
 import ModelSettings from '../../components/common/ModelSettings/ModelSetting';
+import LoadingState from '../../components/common/LoadingState/LoadingState';
 
 const ProfileModal = ({ isOpen, onClose }) => {
   const [profileData, setProfileData] = useState(null);
@@ -66,8 +67,7 @@ const ProfileModal = ({ isOpen, onClose }) => {
 
         {loading ? (
           <div className="loading">
-            <RotateCw size={24} className="animate-spin" />
-            <p>Loading profile data...</p>
+            <LoadingState message={'Loading profile data...'} />
           </div>
         ) : (
           <>

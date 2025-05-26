@@ -1,97 +1,145 @@
 .model-settings-container {
-    padding: 16px;
-    background-color: #f9fafb;
-    border-radius: 8px;
-    border: 1px solid #e5e7eb;
-    margin: 20px 0;
+  padding: 16px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  margin: 20px 0;
 }
 
 .settings-header h3 {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 18px;
-    color: var(--primary);
-    margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  color: var(--primary);
+  margin: 0 0 16px 0;
 }
 
 .settings-header .field-icon {
-    color: var(--primary);
+  color: var(--primary);
 }
 
 .model-select {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 14px;
-    margin-top: 5px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-top: 5px;
 }
 
 .model-select:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(62, 146, 204, 0.1);
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(62, 146, 204, 0.1);
 }
 
 .setting-sliders {
-    margin-top: 16px;
+  margin-top: 16px;
 }
 
 .slider-group {
-    margin-bottom: 16px;
+  margin-bottom: 16px;
 }
 
 .slider-group label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-bottom: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #4b5563;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4b5563;
 }
 
 .tooltip-icon {
-    color: var(--secondary);
-    cursor: help;
+  color: var(--secondary);
+  cursor: help;
 }
 
 .slider-input {
-    width: 100%;
-    height: 6px;
-    background-color: #e5e7eb;
-    outline: none;
-    border-radius: 3px;
-    -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  background-color: #e5e7eb;
+  outline: none;
+  border-radius: 3px;
+  -webkit-appearance: none;
 }
 
 .slider-input::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--primary);
-    cursor: pointer;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
 }
 
 .slider-input::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--primary);
-    cursor: pointer;
-    border: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+  border: none;
 }
 
 .range-labels {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 5px;
-    font-size: 12px;
-    color: #6b7280;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-size: 12px;
+  color: #6b7280;
 }
 
 .model-settings-container .submit-button {
-    margin-top: 8px;
+  margin-top: 8px;
+}
+
+.model-settings-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.model-select-skeleton {
+  border-radius: 4px;
+  width: 100%;
+}
+
+.button-skeleton {
+  border-radius: 4px;
+}
+
+.icon-spin {
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+.model-dropdown {
+  width: 100%;
+}
+
+.model-dropdown .dropdown-menu {
+  width: 100%;
+  max-width: 400px;
+}
+
+.model-dropdown .dropdown-option {
+  white-space: normal;
+  line-height: 1.4;
+}
+
+.setting-group label {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
