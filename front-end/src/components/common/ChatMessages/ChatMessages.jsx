@@ -1,6 +1,7 @@
 import React from 'react';
 import AiResponse from '../../ai-response/AiResponse';
 import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const ChatMessages = ({
   chat,
@@ -15,7 +16,7 @@ const ChatMessages = ({
   showEditButton,
   showEmailButton,
 }) => {
-  const firstLetter = currentUser?.username.charAt(0).toUpperCase();
+  const firstLetter = currentUser?.username?.charAt(0).toUpperCase() || '?';
 
   if (isLoading) {
     return (
@@ -25,7 +26,14 @@ const ChatMessages = ({
             {/* User message skeleton */}
             <div className="message-container">
               <div className="user-message skeleton-message">
-                <Skeleton count={1} height={20} style={{ marginBottom: '10px', width: '70%' }} />
+                <Skeleton
+                  count={1}
+                  height={20}
+                  style={{
+                    marginBottom: '10px',
+                    width: '70%',
+                  }}
+                />
               </div>
               <div className="avatar user-avatar skeleton-avatar">
                 <Skeleton circle width={40} height={40} />
@@ -54,32 +62,34 @@ const ChatMessages = ({
 
   return (
     <div className="message-content-wrapper">
-      {chat?.history?.map((message, index) => (
-        <div key={index} className="message-container">
-          {message.role === 'user' ? (
-            <>
-              <div className="user-message">{message.text}</div>
-              <div className="avatar user-avatar">{firstLetter}</div>
-            </>
-          ) : (
-            <>
-              <div className="avatar model-avatar">
-                <img src="/vsb-logo.jpg" alt="vsb-logo" />
-              </div>
-              <div className="model-message">
-                <AiResponse
-                  text={message.text}
-                  showEditButton={showEditButton}
-                  showEmailButton={showEmailButton}
-                  onEdit={editedText =>
-                    onEditAiResponse && onEditAiResponse(index, message.id, editedText)
-                  }
-                />
-              </div>
-            </>
-          )}
-        </div>
-      ))}
+      {chat?.history
+        ?.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+        .map((message, index) => (
+          <div key={message.id || index} className="message-container">
+            {message.role === 'user' ? (
+              <>
+                <div className="user-message">{message.text}</div>
+                <div className="avatar user-avatar">{firstLetter}</div>
+              </>
+            ) : (
+              <>
+                <div className="avatar model-avatar">
+                  <img src="/vsb-logo.jpg" alt="vsb-logo" />
+                </div>
+                <div className="model-message">
+                  <AiResponse
+                    text={message.text}
+                    showEditButton={showEditButton}
+                    showEmailButton={showEmailButton}
+                    onEdit={editedText =>
+                      onEditAiResponse && onEditAiResponse(index, message.id, editedText)
+                    }
+                  />
+                </div>
+              </>
+            )}
+          </div>
+        ))}
 
       {/* Show a pending user message */}
       {pendingMessage && (
@@ -96,7 +106,11 @@ const ChatMessages = ({
             <img src="/vsb-logo.jpg" alt="vsb-logo" />
           </div>
           <div className="model-message">
-            <Skeleton width="10rem" />
+            <div className="typing-indicator">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
           </div>
         </div>
       )}

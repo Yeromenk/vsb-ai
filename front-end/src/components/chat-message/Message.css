@@ -207,6 +207,45 @@
   object-fit: cover;
 }
 
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.typing-indicator {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+}
+
+.typing-indicator span {
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+  background: #3B82F6;
+  display: block;
+  margin-right: 5px;
+  animation: typing 1s infinite;
+}
+
+.typing-indicator span:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.5s;
+  margin-right: 0;
+}
+
+@keyframes typing {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0); }
+}
+
 .skeleton-message {
   border-radius: 12px;
   padding: 8px;

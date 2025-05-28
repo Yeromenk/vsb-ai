@@ -4,25 +4,23 @@ import rehypeRaw from 'rehype-raw';
 import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
 import { Copy, CheckCircle, Mail, Edit, X, Save } from 'lucide-react';
-import axios from 'axios';
-import { toast } from 'react-hot-toast';
+import EmailModal from '../common/EmailModal/EmailModal';
 import 'highlight.js/styles/github.css';
 import './AiResponse.css';
 
 const AiResponse = ({ text, onEdit, showEditButton = false, showEmailButton = false }) => {
   const [copied, setCopied] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
-  const [recipient, setRecipient] = useState('');
-  const [subject, setSubject] = useState('AI Assistant Response');
-  const [sendingEmail, setSendingEmail] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedText, setEditedText] = useState(text);
+  const [isCopying, setIsCopying] = useState(false);
 
   useEffect(() => {
     setEditedText(text);
   }, [text]);
 
   const handleCopy = () => {
+    setIsCopying(true);
     navigator.clipboard
       .writeText(text)
       .then(() => {
@@ -33,6 +31,9 @@ const AiResponse = ({ text, onEdit, showEditButton = false, showEmailButton = fa
       })
       .catch(err => {
         console.error('Failed to copy text: ', err);
+      })
+      .finally(() => {
+        setIsCopying(false);
       });
   };
 
@@ -53,34 +54,6 @@ const AiResponse = ({ text, onEdit, showEditButton = false, showEmailButton = fa
     setIsEditing(false);
   };
 
-  const handleSendEmail = async () => {
-    if (!recipient) {
-      toast.error('Please enter a recipient email');
-      return;
-    }
-
-    setSendingEmail(true);
-    try {
-      await axios.post(
-        'http://localhost:3000/ai/send-email',
-        {
-          to: recipient,
-          subject: subject,
-          content: text,
-        },
-        { withCredentials: true }
-      );
-
-      toast.success('Email sent successfully');
-      setShowEmailModal(false);
-    } catch (error) {
-      toast.error('Failed to send email: ' + (error.response?.data?.message || error.message));
-      console.error('Email error:', error);
-    } finally {
-      setSendingEmail(false);
-    }
-  };
-
   return (
     <div className={`ai-response-container ${isEditing ? 'editing' : ''}`}>
       <div className="ai-response-actions">
@@ -88,6 +61,7 @@ const AiResponse = ({ text, onEdit, showEditButton = false, showEmailButton = fa
           className="ai-action-button copy-button"
           onClick={handleCopy}
           aria-label="Copy text"
+          disabled={isCopying}
         >
           {copied ? <CheckCircle size={16} /> : <Copy size={16} />}
           <span className="tooltip-text">{copied ? 'Copied!' : 'Copy text'}</span>
@@ -196,56 +170,7 @@ const AiResponse = ({ text, onEdit, showEditButton = false, showEmailButton = fa
       </div>
 
       {showEmailModal && (
-        <div className="email-modal-overlay">
-          <div className="email-modal">
-            <h2>Send as Email</h2>
-            <div className="email-form">
-              <div className="email-form-group">
-                <label>To:</label>
-                <input
-                  type="email"
-                  value={recipient}
-                  onChange={e => setRecipient(e.target.value)}
-                  placeholder="recipient@example.com"
-                  required
-                />
-              </div>
-              <div className="email-form-group">
-                <label>Subject:</label>
-                <input
-                  type="text"
-                  value={subject}
-                  onChange={e => setSubject(e.target.value)}
-                  placeholder="Email subject"
-                />
-              </div>
-              <div className="email-preview">
-                <h3>Content Preview:</h3>
-                <div className="email-content-preview">
-                  <div className="plain-text-preview">
-                    {text.length > 1000 ? text.substring(0, 1000) + '...' : text}
-                  </div>
-                </div>
-              </div>
-              <div className="email-modal-actions">
-                <button
-                  className="cancel-button"
-                  onClick={() => setShowEmailModal(false)}
-                  disabled={sendingEmail}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="send-button-email"
-                  onClick={handleSendEmail}
-                  disabled={sendingEmail || !recipient}
-                >
-                  {sendingEmail ? 'Sending...' : 'Send Email'}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <EmailModal text={text} isOpen={showEmailModal} onClose={() => setShowEmailModal(false)} />
       )}
     </div>
   );
