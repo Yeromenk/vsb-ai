@@ -16,6 +16,9 @@ import searchChats from './routes/search.js';
 import accountRoutes from './routes/account.js';
 import shareRoutes from './routes/shareChat.js';
 import aiModelRoutes from './routes/aiModels.js';
+import apiKeyRoutes from './routes/apiKey.js';
+import adminRoutes from './routes/admin.js';
+import verifyToken from './controllers/auth.js';
 import { connectToDatabase, prisma } from './prisma/db.js';
 
 const app = express();
@@ -76,6 +79,8 @@ app.use('/ai', searchChats);
 app.use('/ai', shareRoutes);
 app.use('/account', accountRoutes);
 app.use('/ai', aiModelRoutes);
+app.use('/ai', apiKeyRoutes);
+app.use('/admin', verifyToken, adminRoutes);
 
 connectToDatabase();
 

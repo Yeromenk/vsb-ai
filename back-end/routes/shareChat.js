@@ -113,7 +113,7 @@ router.post('/shared/:sharedCode/message', async (req, res) => {
       return res.status(403).json({ error: 'This chat is view-only' });
     }
 
-    // Create user message
+    // Create a user message
     const userMessage = await prisma.message.create({
       data: {
         chatId: chat.id,
@@ -122,7 +122,7 @@ router.post('/shared/:sharedCode/message', async (req, res) => {
       },
     });
 
-    // Get AI response based on chat type
+    // Get AI response based on a chat type
     let aiResponse;
 
     if (chat.type === 'translate' && sourceLanguage && targetLanguage) {
@@ -148,7 +148,7 @@ router.post('/shared/:sharedCode/message', async (req, res) => {
       aiResponse = await getNewPrompt(message);
     }
 
-    // Create AI message
+    // Create an AI message
     const modelMessage = await prisma.message.create({
       data: {
         chatId: chat.id,

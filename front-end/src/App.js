@@ -21,6 +21,7 @@ import ForgotPassword from './pages/Forgot-password/ForgotPassword';
 import VerifyResetCode from './pages/VerifyResetCode/VerifyResetCode';
 import ResetPassword from './pages/ResetPassword/ResetPassword';
 import SharedChatPage from './pages/SharedChatPage/SharedChatPage';
+import Admin from './pages/Admin/Admin';
 
 const App = () => {
   return (
@@ -84,6 +85,20 @@ const router = createBrowserRouter([
         element: <ResetPassword />,
       },
       {
+        path: '/admin',
+        element: (
+          <ProtectedRoute isAdmin={true}>
+            <Dashboard />
+          </ProtectedRoute>
+        ),
+        children: [
+          {
+            path: '',
+            element: <Admin />,
+          },
+        ],
+      },
+      {
         element: (
           <ProtectedRoute>
             <Dashboard />
@@ -96,45 +111,85 @@ const router = createBrowserRouter([
           },
           {
             path: '/summarize',
-            element: <FileUploader />,
+            element: (
+              <ProtectedRoute requireApiKey={true}>
+                <FileUploader />
+              </ProtectedRoute>
+            ),
           },
           {
             path: '/format',
-            element: <FormatInput />,
+            element: (
+              <ProtectedRoute requireApiKey={true}>
+                <FormatInput />
+              </ProtectedRoute>
+            ),
           },
           {
             path: '/translate',
-            element: <TranslateInput />,
+            element: (
+              <ProtectedRoute requireApiKey={true}>
+                <TranslateInput />
+              </ProtectedRoute>
+            ),
           },
           {
             path: '/translate/chat/:id',
-            element: <Message type="translate" />,
+            element: (
+              <ProtectedRoute requireApiKey={true}>
+                <Message type="translate" />
+              </ProtectedRoute>
+            ),
           },
           {
             path: '/format/chat/:id',
-            element: <Message type="format" />,
+            element: (
+              <ProtectedRoute requireApiKey={true}>
+                <Message type="format" />
+              </ProtectedRoute>
+            ),
           },
           {
             path: '/file/chat/:id',
-            element: <Message type="file" />,
+            element: (
+              <ProtectedRoute requireApiKey={true}>
+                <Message type="file" />
+              </ProtectedRoute>
+            ),
           },
           {
             path: '/new-prompt',
-            element: <NewPrompt />,
+            element: (
+              <ProtectedRoute requireApiKey={true}>
+                <NewPrompt />
+              </ProtectedRoute>
+            ),
           },
           // Route for the template view
           {
             path: '/template/:id',
-            element: <CustomInput />,
+            element: (
+              <ProtectedRoute requireApiKey={true}>
+                <CustomInput />
+              </ProtectedRoute>
+            ),
           },
           // Route for conversation based on template
           {
             path: '/custom/chat/:id',
-            element: <Custom />,
+            element: (
+              <ProtectedRoute requireApiKey={true}>
+                <Custom />
+              </ProtectedRoute>
+            ),
           },
           {
             path: '/shared-chat/:shareCode',
-            element: <SharedChatPage />,
+            element: (
+              <ProtectedRoute requireApiKey={true}>
+                <SharedChatPage />
+              </ProtectedRoute>
+            ),
           },
         ],
       },

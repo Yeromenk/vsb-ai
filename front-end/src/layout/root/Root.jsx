@@ -1,5 +1,5 @@
 import './Root.css';
-import { LogOut, User } from 'lucide-react';
+import { LogOut, User, Shield } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext.js';
@@ -26,10 +26,24 @@ const Root = () => {
 
         {currentUser && (
           <div className="user-actions">
-            <button onClick={() => setIsProfileModalOpen(true)} className="profile-button">
-              <User className="icon" />
-              Profile
-            </button>
+            {currentUser?.isAdmin ? (
+              <>
+                <Link to="/admin" className="admin-button">
+                  <Shield className="icon" />
+                  Admin Panel
+                </Link>
+                <button onClick={() => setIsProfileModalOpen(true)} className="profile-button">
+                  <User className="icon" />
+                  Profile
+                </button>
+              </>
+            ) : (
+              <button onClick={() => setIsProfileModalOpen(true)} className="profile-button">
+                <User className="icon" />
+                Profile
+              </button>
+            )}
+
             <button onClick={handleLogout} className="logout-button">
               <LogOut className="icon" />
               Logout

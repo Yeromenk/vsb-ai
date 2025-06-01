@@ -7,6 +7,7 @@ import UserInfo from '../../components/common/UserInfo/UserInfo';
 import DangerZone from '../../components/common/DangerZone/DangerZone';
 import ModelSettings from '../../components/common/ModelSettings/ModelSetting';
 import LoadingState from '../../components/common/LoadingState/LoadingState';
+import ApiKeySetup from '../../components/common/ApiKey/ApiKeySetup';
 
 const ProfileModal = ({ isOpen, onClose }) => {
   const [profileData, setProfileData] = useState(null);
@@ -49,6 +50,10 @@ const ProfileModal = ({ isOpen, onClose }) => {
     });
   };
 
+  const handleApiKeyUpdate = () => {
+    fetchProfileData(); // Refresh profile data after API key update
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -74,6 +79,8 @@ const ProfileModal = ({ isOpen, onClose }) => {
             <UserInfo profileData={profileData} formatDate={formatDate} />
 
             <ModelSettings />
+
+            <ApiKeySetup existingApiKey={profileData?.apiKey || ''} onUpdate={handleApiKeyUpdate} />
 
             {canChangePassword() && (
               <div className="profile-actions">

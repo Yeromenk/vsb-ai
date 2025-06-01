@@ -6,12 +6,35 @@ export const AuthContext = createContext(undefined);
 export const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user')) || null);
   const [loading, setLoading] = useState(true);
+  const [hasApiKey, setHasApiKey] = useState(null);
+  const [checkingApiKey, setCheckingApiKey] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // refresh function to allow manual context updates
-  const refreshUser = () => {
+  const refreshUser = async () => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
     if (storedUser) {
       setCurrentUser(storedUser);
+
+      await checkApiKeyStatus();
+    }
+  };
+
+  const checkApiKeyStatus = async () => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    if (!storedUser) return;
+
+    setCheckingApiKey(true);
+    try {
+      const response = await axios.get('http://localhost:3000/ai/check-api-key', {
+        withCredentials: true,
+      });
+      setHasApiKey(response.data.hasApiKey);
+    } catch (error) {
+      console.error('Error checking API key:', error);
+      setHasApiKey(false);
+    } finally {
+      setCheckingApiKey(false);
     }
   };
 
@@ -23,16 +46,19 @@ export const AuthContextProvider = ({ children }) => {
       if (storedUser) {
         try {
           // Make a request to validate a session
-          await axios.get('http://localhost:3000/auth/validate-session', {
+          const response = await axios.get('http://localhost:3000/auth/validate-session', {
             withCredentials: true,
           });
           // If successful, session is valid
           setCurrentUser(storedUser);
+          setIsAdmin(response.data.isAdmin || false);
+          await checkApiKeyStatus();
         } catch (error) {
           // If a session is invalid, clear local storage
           console.log('Session expired:', error);
           localStorage.removeItem('user');
           setCurrentUser(null);
+          setIsAdmin(false);
         }
       }
 
@@ -93,11 +119,23 @@ export const AuthContextProvider = ({ children }) => {
   useEffect(() => {
     if (currentUser) {
       localStorage.setItem('user', JSON.stringify(currentUser));
+      checkApiKeyStatus();
     }
   }, [currentUser]);
 
   return (
-    <AuthContext.Provider value={{ currentUser, login, logout, loading, refreshUser }}>
+    <AuthContext.Provider
+      value={{
+        currentUser,
+        login,
+        logout,
+        hasApiKey,
+        checkingApiKey,
+        refreshUser,
+        loading,
+        isAdmin,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

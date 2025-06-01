@@ -76,6 +76,8 @@ router.get('/profile', verifyToken, async (req, res) => {
         githubId: true,
         googleId: true,
         vsbId: true,
+        apiKey: true,
+        isAdmin: true,
       },
     });
 

@@ -63,6 +63,27 @@
   font-size: 20px;
 }
 
+.warning-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+  border-radius: 8px;
+  padding: 18px 20px;
+  font-size: 25px;
+  gap: 12px;
+  margin: 0 auto;
+  max-width: 500px;
+  box-shadow: 0 2px 8px rgba(255, 243, 205, 0.2);
+}
+
+.warning-icon {
+  font-size: 38px;
+  margin-right: 10px;
+}
+
 @media (max-width: 768px) {
   .choose-task {
     flex-direction: column;

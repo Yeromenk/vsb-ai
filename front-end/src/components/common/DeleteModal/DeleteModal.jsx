@@ -1,8 +1,15 @@
+// front-end/src/components/common/DeleteModal/DeleteModal.jsx
 import React, { useEffect } from 'react';
 import './DeleteModal.css';
 import { AlertTriangle } from 'lucide-react';
 
-function DeleteModal({ isOpen, onClose, onConfirm }) {
+function DeleteModal({
+  isOpen,
+  onClose,
+  onConfirm,
+  title = 'Delete',
+  message = 'Are you sure you want to delete this item?',
+}) {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -38,7 +45,8 @@ function DeleteModal({ isOpen, onClose, onConfirm }) {
     <div className="modal" onClick={handleOverlayClick}>
       <div className="modal-content">
         <AlertTriangle className="shield-icon" />
-        <h2>Are you sure you want to delete this chat?</h2>
+        <h2>{title}</h2>
+        <p>{message}</p>
         <div className="button-group">
           <button onClick={onClose} className="cancel">
             Cancel

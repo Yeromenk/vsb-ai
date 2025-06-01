@@ -207,6 +207,8 @@ const ChatList = () => {
         isOpen={isModalOpen}
         onConfirm={() => handleDelete(selectedChat)}
         onClose={closeDeleteModel}
+        title="Delete chat"
+        message="Are you sure you want to delete this chat?"
       />
 
       <ShareModal isOpen={isShareModalOpen} onClose={closeShareModal} chatId={shareChat?.id} />
