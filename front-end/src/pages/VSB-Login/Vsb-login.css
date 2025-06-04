@@ -1,53 +1,129 @@
-.vsb-login-page {
+.login {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 80px;
+  gap: var(--spacing-xl);
   height: calc(100vh - 80px);
   background-color: white;
   padding: 5% 8%;
 }
 
-.vsb-form-container {
+.form-login {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 24px;
+  gap: var(--spacing-lg);
   text-align: center;
 }
 
-.vsb-form-container h1 {
+.form-login h1 {
   font-size: 36px;
   font-weight: 700;
-  color: var(--primary);
-  margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: var(--spacing-md);
 }
 
-.vsb-form-container form {
+.form-login form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--spacing-md);
   width: 100%;
   max-width: 400px;
+}
+
+.input-container input {
+  flex: 1;
+  border: none;
+  background-color: transparent;
+  padding: var(--spacing-md);
+  font-size: 16px;
+  color: var(--text);
+  outline: none;
+  font-family: 'Inter', sans-serif;
+}
+
+.input-container input::placeholder {
+  color: #a99e8e;
+}
+
+.input-error {
+  border-color: var(--error) !important;
+}
+
+.icon {
+  color: var(--text-secondary);
+  margin-right: var(--spacing-xs);
+}
+
+.password-toggle {
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.password-toggle:hover {
+  color: var(--accent);
+}
+
+.primary-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.primary-button:hover {
+  background-color: var(--accent-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.primary-button:disabled {
+  background-color: #d1c7ba;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.icon-spin {
+  color: var(--light);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .login-links {
   display: flex;
   justify-content: space-between;
-  margin-top: 16px;
+  margin-top: var(--spacing-md);
 }
 
 .login-links a {
   color: var(--accent);
   text-decoration: none;
   font-size: 14px;
-  transition: color 0.2s;
+  transition: var(--transition);
 }
 
 .login-links a:hover {
-  color: var(--primary);
+  color: var(--accent-light);
   text-decoration: underline;
 }
 
@@ -60,34 +136,56 @@
 
 .vsb-logo img {
   max-width: 450px;
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
+  transition: var(--transition);
 }
 
 .error-message-login {
-  color: #e53935;
+  color: var(--error);
   font-size: 14px;
-  margin-top: -8px;
-  margin-bottom: 8px;
+  margin-top: calc(-1 * var(--spacing-sm));
+  margin-bottom: var(--spacing-sm);
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--spacing-xs);
 }
 
 @media (max-width: 768px) {
-  .vsb-login-page {
+  .login {
     flex-direction: column;
     height: auto;
-    gap: 40px;
+    gap: var(--spacing-lg);
     padding: 5%;
   }
 
-  .vsb-form-container h1 {
-    font-size: 32px;
+  .form-login h1 {
+    font-size: 28px;
   }
 
   .vsb-logo img {
     max-width: 300px;
+    max-height: 270px;
     display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .login {
+    padding: 10% 5%;
+  }
+
+  .form-login form {
+    gap: var(--spacing-sm);
+  }
+
+  .primary-button {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 15px;
+  }
+
+  .vsb-logo img {
+    max-width: 250px;
+    max-height: 220px;
   }
 }

@@ -14,7 +14,7 @@
   align-items: center;
   justify-content: center;
   flex: 1;
-  padding: 0 20px;
+  padding: 0 var(--spacing-lg);
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
@@ -23,16 +23,18 @@
 .user-prompt h1 {
   font-size: 52px;
   font-weight: 700;
-  color: #333;
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .description {
   max-width: 600px;
-  margin: 20px auto;
+  margin: var(--spacing-lg) auto;
   text-align: center;
   line-height: 1.5;
   font-size: 18px;
-  color: #555;
+  color: var(--text-secondary);
 }
 
 .document-input-prompt {
@@ -40,11 +42,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px 0;
+  padding: var(--spacing-sm) 0;
 }
 
 .document-input-prompt button:disabled {
-  background-color: #cfd8dc;
+  background-color: #d1c7ba;
   cursor: not-allowed;
 }
 
@@ -55,17 +57,17 @@
 
 .input-icon {
   position: absolute;
-  left: 10px;
+  left: var(--spacing-sm);
   top: 20px;
-  color: #8c959e;
+  color: var(--text-secondary);
 }
 
 .document-input-prompt textarea {
   width: 100%;
-  padding: 14px 50px 14px 16px;
+  padding: var(--spacing-md) var(--spacing-xl) var(--spacing-md) var(--spacing-md);
   font-size: 16px;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   resize: none;
   overflow-y: auto;
   max-height: 120px;
@@ -78,7 +80,7 @@
 
 .document-input-prompt button {
   position: absolute;
-  right: 10px;
+  right: var(--spacing-sm);
   top: 50%;
   transform: translateY(-50%);
   display: flex;
@@ -87,66 +89,66 @@
   width: 32px;
   height: 32px;
   border: none;
-  border-radius: 6px;
-  background-color: #10a37f;
+  border-radius: var(--radius-sm);
+  background-color: var(--accent);
   color: white;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: var(--transition);
 }
 
 .document-input button:hover {
-  background-color: #0056b3;
+  background-color: var(--accent-light);
 }
 
 @media (max-width: 768px) {
   .user-prompt-container {
-    padding: 12px;
+    padding: var(--spacing-sm);
   }
 
   .user-prompt {
-    padding: 0 12px;
+    padding: 0 var(--spacing-sm);
   }
 
   .document-input-prompt form {
     width: 100%;
-    padding: 0 12px;
+    padding: 0 var(--spacing-sm);
   }
 }
 
 @media (max-width: 480px) {
   .user-prompt-container {
-    padding: 10px 8px;
+    padding: var(--spacing-xs) var(--spacing-sm);
   }
 
   .user-prompt {
-    padding: 0 8px;
+    padding: 0 var(--spacing-sm);
   }
 
   .description {
-    margin: 12px auto;
+    margin: var(--spacing-sm) auto;
   }
 
   .document-input-prompt {
-    padding: 8px 0;
+    padding: var(--spacing-sm) 0;
   }
 
   .document-input-prompt form {
-    padding: 0 8px;
+    padding: 0 var(--spacing-sm);
   }
 
   .custom-input-container {
-    padding: 8px;
+    padding: var(--spacing-sm);
   }
 
   .document-input-prompt textarea {
-    padding: 10px 40px 10px 12px;
+    padding: var(--spacing-sm) 40px var(--spacing-sm) var(--spacing-sm);
     font-size: 15px;
   }
 
   .document-input-prompt button {
     width: 28px;
     height: 28px;
-    right: 8px;
+    right: var(--spacing-sm);
   }
 
   .send-button {

@@ -1,107 +1,110 @@
 .root {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    background-color: var(--light);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background-color: white;
+  border-bottom: 1px solid #e6dccf;
+  box-shadow: 0 2px 8px rgba(60, 45, 30, 0.04);
 }
 
 .link-home {
-    text-decoration: none;
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    transition: color 0.2s ease;
+  text-decoration: none;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  transition: var(--transition);
 }
 
 .link-home:hover {
-    color: var(--accent);
+  color: var(--accent);
 }
 
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    max-width: 1200px;
-    padding: 20px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  padding: var(--spacing-md) var(--spacing-xl);
 }
 
 .header h1 {
-    margin: 0;
-    font-size: 24px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    color: var(--primary);
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--primary);
 }
-
 
 .user-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
 }
 
-.profile-button, .logout-button, .admin-button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    border-radius: 6px;
-    border: none;
-    font-size: 15px;
-    font-weight: 500;
-    background-color: transparent;
-    color: var(--primary);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-decoration: none;
+.profile-button,
+.logout-button,
+.admin-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: none;
+  font-size: 15px;
+  font-weight: 500;
+  background-color: transparent;
+  color: var(--primary);
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
 }
 
 .logout-button:hover {
-    background-color: rgba(62, 146, 204, 0.1);
-    color: var(--accent);
+  background-color: rgba(230, 126, 34, 0.1);
+  color: var(--accent);
 }
 
 .logout-button .icon {
-    width: 18px;
-    height: 18px;
-    stroke-width: 2;
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
 }
 
-.profile-button:hover, .admin-button:hover {
-    background-color: rgba(62, 146, 204, 0.1);
-    color: var(--accent);
+.profile-button:hover,
+.admin-button:hover {
+  background-color: rgba(230, 126, 34, 0.1);
+  color: var(--accent);
 }
 
-.profile-button .icon, .admin-button .icon {
-    width: 18px;
-    height: 18px;
-    stroke-width: 2;
+.profile-button .icon,
+.admin-button .icon {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
 }
-
 
 @media (max-width: 768px) {
-    .header {
-        padding: 16px;
-    }
+  .header {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
 
-    .header h1 {
-        font-size: 20px;
-    }
+  .header h1 {
+    font-size: 20px;
+  }
 
-    .user-actions {
-        gap: 5px;
-    }
+  .user-actions {
+    gap: var(--spacing-xs);
+  }
 
-    .profile-button,
-    .logout-button,
-    .admin-button {
-        padding: 8px 12px;
-        font-size: 14px;
-    }
+  .profile-button,
+  .logout-button,
+  .admin-button {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 14px;
+  }
 }

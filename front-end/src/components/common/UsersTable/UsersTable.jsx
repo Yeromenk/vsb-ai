@@ -59,7 +59,11 @@ const UsersTable = ({ filteredUsers, handleEdit, confirmDelete, formatDate }) =>
                     <button className="btn edit-btn" onClick={() => handleEdit(user)}>
                       <Edit size={18} />
                     </button>
-                    <button className="btn delete-btn" onClick={() => confirmDelete(user.id)}>
+                    <button
+                      className="btn delete-btn"
+                      onClick={() => confirmDelete(user.id)}
+                      type="button"
+                    >
                       <Trash2 size={18} />
                     </button>
                   </div>

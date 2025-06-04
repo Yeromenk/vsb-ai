@@ -1,9 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 :root {
-  --primary: #0a2342; /* Deep blue */
-  --secondary: #2b2d42; /* Dark slate */
-  --accent: #3e92cc; /* Medium blue */
-  --light: #f7f9fb; /* Off-white */
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  /* New warm color palette */
+  --primary: #34312d; /* Dark brown */
+  --secondary: #655a52; /* Medium brown */
+  --accent: #e67e22; /* Orange */
+  --accent-light: #f5b041; /* Light orange */
+  --light: #f8f5f1; /* Beige/off-white */
+  --light-accent: #f0e6d9; /* Light beige for subtle backgrounds */
+  --text: #2d2a28; /* Dark text */
+  --text-secondary: #635e59; /* Secondary text */
+  --success: #27ae60; /* green */
+  --error: #e74c3c; /* Red */
+  --warning: #f39c12; /* Amber */
+  --shadow: 0 4px 12px rgba(60, 45, 30, 0.08);
+  --shadow-hover: 0 6px 16px rgba(60, 45, 30, 0.12);
+
+  /* Common spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Transitions */
+  --transition: all 0.2s ease;
 }
 
 * {
@@ -14,9 +40,196 @@
 
 body {
   background-color: var(--light);
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  line-height: 1.55;
 }
 
+/* Common Element Styles */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: var(--spacing-sm);
+  line-height: 1.3;
+}
+
+p {
+  margin-bottom: var(--spacing-md);
+  color: var(--text-secondary);
+}
+
+/* Common Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.btn-primary {
+  background-color: var(--accent);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-light);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+}
+
+.btn-secondary {
+  background-color: var(--light-accent);
+  color: var(--text);
+}
+
+.btn-secondary:hover {
+  background-color: #e6dccf;
+}
+
+.btn-outline {
+  border: 1px solid var(--secondary);
+  background: transparent;
+  color: var(--secondary);
+}
+
+.btn-outline:hover {
+  background-color: var(--light-accent);
+}
+
+.btn-sm {
+  padding: 0.5rem 0.85rem;
+  font-size: 0.85rem;
+}
+
+.btn-lg {
+  padding: 0.85rem 1.5rem;
+  font-size: 1.05rem;
+}
+
+/* Common Form Styles */
+.input,
+.select,
+.textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  border: 1px solid #d1c7ba;
+  border-radius: var(--radius-md);
+  background-color: white;
+  transition: var(--transition);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(230, 126, 34, 0.15);
+  outline: none;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: #a99e8e;
+}
+
+.textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Common Card Styles */
+.card {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: var(--spacing-lg);
+  transition: var(--transition);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+/* Common Alert Styles */
+.alert {
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.alert-error {
+  background-color: #fdecea;
+  border-left: 3px solid var(--error);
+  color: #c0392b;
+}
+
+.alert-success {
+  background-color: #edf7ee;
+  border-left: 3px solid var(--success);
+  color: #2c7a51;
+}
+
+.alert-warning {
+  background-color: #fef5e9;
+  border-left: 3px solid var(--warning);
+  color: #b5750c;
+}
+
+/* Utility Classes */
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
+.text-left {
+  text-align: left;
+}
+.fw-normal {
+  font-weight: normal;
+}
+.fw-bold {
+  font-weight: 600;
+}
+.fw-light {
+  font-weight: 300;
+}
+
+.mb-sm {
+  margin-bottom: var(--spacing-sm);
+}
+.mb-md {
+  margin-bottom: var(--spacing-md);
+}
+.mb-lg {
+  margin-bottom: var(--spacing-lg);
+}
+.mt-sm {
+  margin-top: var(--spacing-sm);
+}
+.mt-md {
+  margin-top: var(--spacing-md);
+}
+.mt-lg {
+  margin-top: var(--spacing-lg);
+}
+
+/* Scrollbar Styling */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -26,10 +239,40 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
+  background: #d1c7ba;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
+  background: #b5a89a;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+  .btn {
+    padding: 0.7rem 1.1rem;
+    font-size: 0.9rem;
+  }
+
+  .input,
+  .select,
+  .textarea {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.9rem;
+  }
+
+  .card {
+    padding: var(--spacing-md);
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 95%;
+  }
+
+  .btn {
+    padding: 0.65rem 1rem;
+    font-size: 0.85rem;
+  }
 }

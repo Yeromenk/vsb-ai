@@ -1,7 +1,7 @@
 .welcome {
   display: flex;
   align-items: center;
-  gap: 80px;
+  gap: var(--spacing-xl);
   height: calc(100vh - 80px);
   background-color: white;
   padding: 5% 8%;
@@ -13,16 +13,19 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  gap: 24px;
+  gap: var(--spacing-lg);
   text-align: left;
 }
 
 .content h1 {
   font-size: 52px;
   font-weight: 700;
-  color: var(--primary);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   line-height: 1.2;
   letter-spacing: -0.5px;
+  margin-bottom: 0;
 }
 
 .content p {
@@ -30,28 +33,26 @@
   font-weight: 400;
   line-height: 1.6;
   max-width: 540px;
-  color: var(--secondary);
-  margin-bottom: 8px;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-sm);
 }
 
 .content button {
-  padding: 16px 32px;
+  padding: var(--spacing-md) var(--spacing-xl);
   font-size: 18px;
   font-weight: 600;
   background-color: var(--accent);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
+  transition: var(--transition);
 }
 
 .content button:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow);
-  background-color: #3685bb;
+  box-shadow: var(--shadow-hover);
+  background-color: var(--accent-light);
 }
 
 .logo {
@@ -63,15 +64,21 @@
 
 .logo img {
   max-width: 450px;
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.logo img:hover {
+  box-shadow: var(--shadow-hover);
+  transform: scale(1.02);
 }
 
 @media (max-width: 768px) {
   .welcome {
     flex-direction: column;
     height: auto;
-    gap: 20px;
+    gap: var(--spacing-lg);
     padding: 15% 5%;
     text-align: center;
   }
@@ -79,7 +86,7 @@
   .content {
     align-items: center;
     text-align: center;
-    gap: 16px;
+    gap: var(--spacing-md);
   }
 
   .content h1 {
@@ -92,7 +99,7 @@
   }
 
   .content button {
-    padding: 14px 28px;
+    padding: var(--spacing-sm) var(--spacing-xl);
     font-size: 16px;
   }
 
@@ -100,5 +107,35 @@
     max-width: 300px;
     max-height: 270px;
     display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome {
+    padding: 10% 5%;
+    gap: var(--spacing-md);
+  }
+
+  .content {
+    gap: var(--spacing-sm);
+  }
+
+  .content h1 {
+    font-size: 28px;
+  }
+
+  .content p {
+    font-size: 16px;
+  }
+
+  .content button {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: 15px;
+    width: 100%;
+  }
+
+  .logo img {
+    max-width: 250px;
+    max-height: 220px;
   }
 }

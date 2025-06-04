@@ -9,7 +9,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: var(--spacing-lg);
   background-color: white;
   align-items: center;
 }
@@ -19,16 +19,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: var(--spacing-md);
   margin-top: auto;
-  margin-bottom: 48px;
+  margin-bottom: var(--spacing-xl);
   text-align: center;
 }
 
 .format-header__title {
   font-size: 52px;
   font-weight: 700;
-  background: linear-gradient(135deg, #307bd1, #2c5ea5);
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin: 0;
@@ -36,7 +36,7 @@
 
 .format-header__subtitle {
   font-size: 20px;
-  color: #555;
+  color: var(--text-secondary);
   max-width: 500px;
   margin: 0;
 }
@@ -44,25 +44,25 @@
 .format-panel {
   width: 100%;
   max-width: 800px;
-  background-color: #f8fbff;
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  background-color: var(--light-accent);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  transition: all 0.3s ease;
-  border: 1px solid #e0e7ff;
+  gap: var(--spacing-lg);
+  transition: var(--transition);
+  border: 1px solid #e6dccf;
   margin-top: auto;
 }
 
 .format-controls {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--spacing-sm);
   flex-wrap: wrap;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #eaeeff;
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid #e6dccf;
 }
 
 .format-dropdown {
@@ -71,14 +71,14 @@
 
 .dropdown-button {
   background-color: #ffffff;
-  border: 1px solid #d1d1d1;
-  padding: 10px 15px;
-  border-radius: 8px;
+  border: 1px solid #d1c7ba;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
   cursor: pointer;
   font-size: 16px;
-  color: #333;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  color: var(--text);
+  transition: var(--transition);
+  box-shadow: 0 2px 4px rgba(60, 45, 30, 0.05);
   display: flex;
   align-items: center;
   gap: 5px;
@@ -86,13 +86,13 @@
 }
 
 .dropdown-button:hover {
-  background-color: #f0f7ff;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #f8f5f1;
+  box-shadow: var(--shadow);
 }
 
 .dropdown-button b {
   margin-right: 4px;
-  color: #555;
+  color: var(--text-secondary);
 }
 
 .dropdown-menu {
@@ -100,10 +100,10 @@
   top: calc(100% + 6px);
   left: 0;
   background-color: #ffffff;
-  border: 1px solid #e0e7ff;
-  border-radius: 10px;
+  border: 1px solid #e6dccf;
+  border-radius: var(--radius-md);
   width: 200px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-hover);
   z-index: 100;
   overflow: hidden;
   animation: dropdownFadeIn 0.2s ease;
@@ -121,14 +121,14 @@
 }
 
 .dropdown-section {
-  padding: 12px 0;
+  padding: var(--spacing-sm) 0;
 }
 
 .dropdown-section-header {
-  padding: 0 16px 8px;
+  padding: 0 var(--spacing-md) var(--spacing-sm);
   font-size: 14px;
   font-weight: 600;
-  color: #4f86ff;
+  color: var(--accent);
 }
 
 .dropdown-option-list {
@@ -138,18 +138,18 @@
 }
 
 .dropdown-option {
-  padding: 10px 16px;
+  padding: var(--spacing-sm) var(--spacing-md);
   cursor: pointer;
   transition:
     background 0.2s,
     color 0.2s;
   font-size: 15px;
-  color: #333;
+  color: var(--text);
 }
 
 .dropdown-option:hover {
-  background-color: #f0f7ff;
-  color: #4f86ff;
+  background-color: var(--light-accent);
+  color: var(--accent);
 }
 
 .format-input-container {
@@ -160,50 +160,50 @@
 .format-textarea {
   width: 100%;
   height: 150px;
-  padding: 16px;
+  padding: var(--spacing-md);
   font-size: 16px;
   line-height: 1.5;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  border: 1px solid #d1c7ba;
+  border-radius: var(--radius-md);
   background-color: #ffffff;
-  color: #333;
+  color: var(--text);
   resize: none;
-  transition: all 0.2s ease;
-  font-family: inherit;
+  transition: var(--transition);
+  font-family: 'Inter', sans-serif;
 }
 
 .format-textarea:focus {
   outline: none;
-  border-color: #4f86ff;
-  box-shadow: 0 0 0 3px rgba(79, 134, 255, 0.1);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
 }
 
 .format-textarea::placeholder {
-  color: #9ca3af;
+  color: #a99e8e;
 }
 
 .format-submit-button {
   margin-left: auto;
-  background-color: #4f86ff;
+  background-color: var(--accent);
   color: white;
-  padding: 10px 20px;
+  padding: var(--spacing-sm) var(--spacing-lg);
   font-size: 15px;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--spacing-sm);
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: var(--transition);
   font-weight: 500;
   height: 44px;
 }
 
 .format-submit-button:hover {
-  background-color: #3b7dff;
+  background-color: var(--accent-light);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(79, 134, 255, 0.2);
+  box-shadow: var(--shadow-hover);
 }
 
 .format-submit-button:active {
@@ -211,8 +211,8 @@
 }
 
 .format-submit-button:disabled {
-  background-color: #d1d5db;
-  color: #9ca3af;
+  background-color: #d1c7ba;
+  color: #a99e8e;
   box-shadow: none;
   transform: none;
   cursor: not-allowed;
@@ -228,7 +228,7 @@
   bottom: 8px;
   right: 12px;
   font-size: 12px;
-  color: #9ca3af;
+  color: #a99e8e;
   background-color: rgba(255, 255, 255, 0.8);
   padding: 2px 6px;
   border-radius: 4px;
@@ -240,7 +240,7 @@
   }
 
   .format-panel {
-    padding: 16px;
+    padding: var(--spacing-md);
   }
 
   .format-controls {
@@ -260,7 +260,7 @@
 
   .format-submit-button {
     width: 100%;
-    margin-top: 12px;
+    margin-top: var(--spacing-sm);
   }
 
   .format-header__title {

@@ -17,9 +17,9 @@
 }
 
 .message-input__header h1 {
-  font-size: 52px;
+  font-size: 48px;
   font-weight: 700;
-  color: #333;
+  color: var(--primary);
   margin-bottom: 20px;
 }
 
@@ -29,7 +29,7 @@
   text-align: center;
   line-height: 1.5;
   font-size: 18px;
-  color: #555;
+  color: var(--secondary);
 }
 
 .document-input-prompt {
@@ -38,22 +38,18 @@
   padding: 10px 0;
 }
 
-.custom-input-container-message {
+.custom-input-container {
   position: relative;
   width: 100%;
-  border-radius: 12px;
-  background-color: #f0f2f5;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-lg);
+  background-color: white;
+  box-shadow: var(--shadow);
   transition:
     box-shadow 0.3s ease,
     transform 0.2s ease;
   margin: 0 auto;
   max-width: 800px;
-}
-
-.custom-input-container-message:focus-within {
-  box-shadow: 0 6px 16px rgba(16, 163, 127, 0.15);
-  transform: translateY(-1px);
+  border: 1px solid #e6dccf;
 }
 
 .document-input-prompt textarea {
@@ -61,12 +57,12 @@
   padding: 16px 50px 16px 20px;
   font-size: 16px;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   resize: none;
   overflow-y: auto;
   max-height: 120px;
   background-color: transparent;
-  color: #333;
+  color: var(--text);
   font-family: inherit;
   line-height: 1.5;
 }
@@ -86,20 +82,20 @@
   width: 36px;
   height: 36px;
   border: none;
-  border-radius: 8px;
-  background-color: #10a37f;
+  border-radius: var(--radius-md);
+  background-color: var(--accent);
   color: white;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .document-input-prompt button:hover:not(:disabled) {
-  background-color: #0c8c6c;
+  background-color: var(--accent-light);
   transform: translateY(-50%) scale(1.05);
 }
 
 .document-input-prompt button:disabled {
-  background-color: #cfd8dc;
+  background-color: #d1c7ba;
   cursor: not-allowed;
   opacity: 0.7;
 }

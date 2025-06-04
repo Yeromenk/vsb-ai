@@ -37,7 +37,7 @@ const TranslateInput = () => {
         <div className="overview">
           <h1 className="translate-page__title">Translate Text</h1>
           <p className="translate-page__subtitle">
-            Here you can translate a text and get an overview
+            Translate content between languages with AI precision
           </p>
         </div>
 

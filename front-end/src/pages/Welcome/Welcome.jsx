@@ -10,7 +10,11 @@ const Welcome = () => {
     <div className="welcome">
       <div className="content">
         <h1>Welcome to VSB AI</h1>
-        <p>This is a platform where you can translate, summarize and create alternative text</p>
+        <p>
+          This is an AI-powered platform where you can translate between languages, summarize
+          documents, format text in different styles, send emails, and create custom chat agents for
+          specific tasks.
+        </p>
         {currentUser ? (
           <Link to="/home">
             <button>Continue</button>

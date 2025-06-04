@@ -1,4 +1,3 @@
-// front-end/src/components/common/DeleteModal/DeleteModal.jsx
 import React, { useEffect } from 'react';
 import './DeleteModal.css';
 import { AlertTriangle } from 'lucide-react';

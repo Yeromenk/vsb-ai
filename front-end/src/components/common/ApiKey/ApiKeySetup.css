@@ -1,71 +1,166 @@
 .api-key-section {
-    margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  background-color: white;
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
 }
 
-.api-key-edit {
-    margin-top: 10px;
-}
-
-.api-key-edit .input-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-    background-color: #f1f3f5;
-    border-radius: 4px;
-    padding: 0 10px;
-    overflow-x: auto;
-}
-
-.api-key-edit .input-container .icon {
-    color: #666;
-    margin-right: 10px;
-}
-
-.api-key-edit .input-container input {
-    flex: 1;
-    border: none;
-    background: transparent;
-    padding: 12px 0;
-    outline: none;
-    font-size: 1rem;
-    font-family: monospace;
-    min-width: 0;
-}
-
-.toggle-visibility {
-    cursor: pointer;
-    color: #666;
-}
-
-.error-message-api {
-    color: #e74c3c;
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-    text-align: left;
+.api-key-section h3 {
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
 }
 
 .key-instructions {
-    font-size: 0.85rem;
-    color: #666;
-    margin-bottom: 1rem;
-    text-align: left;
-    line-height: 1.5;
-}
-
-.icon-api {
-    width: 24px;
-    height: 24px;
-    margin-right: 0.5rem;
+  margin-bottom: 1.25rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 .key-instructions a {
-    color: #6c63ff;
-    text-decoration: none;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.key-instructions a:hover {
+  text-decoration: underline;
+  color: var(--accent-light);
+}
+
+.api-key-edit {
+  margin-top: 1rem;
+}
+
+.api-key-edit .input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  background-color: var(--light);
+  border: 1px solid #d1c7ba;
+  border-radius: var(--radius-md);
+  padding: 0 12px;
+  overflow-x: auto;
+  transition: all 0.2s;
+}
+
+.api-key-edit .input-container:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(230, 126, 34, 0.15);
+}
+
+.api-key-edit .input-container .icon-api {
+  color: var(--secondary);
+  margin-right: 12px;
+}
+
+.api-key-edit .input-container input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 14px 0;
+  outline: none;
+  font-size: 0.95rem;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  color: var(--text);
+  min-width: 0;
+}
+
+.toggle-visibility {
+  cursor: pointer;
+  color: var(--secondary);
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.toggle-visibility:hover {
+  background-color: var(--light-accent);
+  color: var(--primary);
+}
+
+.error-message-api {
+  color: var(--error);
+  font-size: 0.9rem;
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.error-message-api::before {
+  content: '⚠';
+  font-size: 1rem;
 }
 
 .api-key-actions {
-    display: flex;
-    justify-content: flex-start;
-    gap: 10px;
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-top: 0.75rem;
+}
+
+.submit-button {
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.submit-button:hover {
+  background-color: var(--accent-light);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+.submit-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.icon-spin {
+  color: var(--light);
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .api-key-section {
+    padding: 1.25rem;
+  }
+
+  .api-key-edit .input-container input {
+    padding: 12px 0;
+    font-size: 0.9rem;
+  }
+
+  .submit-button {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+  }
 }

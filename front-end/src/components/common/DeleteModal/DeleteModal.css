@@ -4,7 +4,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(10, 35, 66, 0.4);
+  background: rgba(52, 49, 45, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,8 +15,8 @@
 
 .modal-content {
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(10, 35, 66, 0.18);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-hover);
   max-width: 400px;
   width: 90%;
   padding: 32px 24px;
@@ -48,7 +48,7 @@
   margin-bottom: 1.5rem;
   font-size: 1.125rem;
   font-weight: 500;
-  color: var(--secondary);
+  color: var(--primary);
   line-height: 1.5;
 }
 
@@ -58,7 +58,7 @@
   margin-bottom: 1.5rem;
   height: 4rem;
   width: 4rem;
-  color: #e74c3c;
+  color: var(--error);
   animation: pulse 2s infinite;
 }
 
@@ -89,7 +89,7 @@
   font-size: 16px;
   font-weight: 600;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition:
     transform 0.2s,
@@ -100,16 +100,16 @@
 .modal-content button.cancel {
   background-color: var(--light);
   color: var(--secondary);
-  border: 1px solid #e0e0e0;
+  border: 1px solid #d1c7ba;
 }
 
 .modal-content button.cancel:hover {
-  background-color: #f0f0f0;
+  background-color: #e8e2d9;
   transform: translateY(-2px);
 }
 
 .modal-content button.confirm {
-  background-color: #e74c3c;
+  background-color: var(--error);
   color: white;
 }
 

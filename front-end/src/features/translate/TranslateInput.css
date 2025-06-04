@@ -10,7 +10,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: var(--spacing-lg);
   background-color: white;
   align-items: center;
   justify-content: flex-start;
@@ -21,16 +21,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: var(--spacing-md);
   margin-top: auto;
-  margin-bottom: 48px;
+  margin-bottom: var(--spacing-xl);
   text-align: center;
 }
 
 .translate-page__title {
   font-size: 52px;
   font-weight: 700;
-  background: linear-gradient(135deg, #307bd1, #2c5ea5);
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin: 0;
@@ -38,7 +38,7 @@
 
 .translate-page__subtitle {
   font-size: 20px;
-  color: #555;
+  color: var(--text-secondary);
   max-width: 500px;
   margin: 0;
 }
@@ -47,29 +47,41 @@
   width: 100%;
   max-width: 800px;
   height: 230px;
-  background-color: aliceblue;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: var(--light-accent);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  transition: all 0.3s ease;
+  gap: var(--spacing-lg);
+  transition: var(--transition);
   margin-top: auto;
+}
+
+.container:hover {
+  box-shadow: var(--shadow-hover);
 }
 
 @media (max-width: 768px) {
   .translate-text {
-    padding: 10px;
+    padding: var(--spacing-sm);
     height: 90vh;
   }
 
   .translate-container {
-    padding: 12px;
+    padding: var(--spacing-sm);
   }
 
   .overview {
-    margin-bottom: 24px;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .translate-page__title {
+    font-size: 36px;
+  }
+
+  .translate-page__subtitle {
+    font-size: 16px;
   }
 }
 
@@ -80,11 +92,19 @@
   }
 
   .translate-container {
-    padding: 10px;
+    padding: var(--spacing-xs);
   }
 
   .overview {
-    margin-bottom: 20px;
-    gap: 12px;
+    margin-bottom: var(--spacing-md);
+    gap: var(--spacing-sm);
+  }
+
+  .translate-page__title {
+    font-size: 28px;
+  }
+
+  .translate-page__subtitle {
+    font-size: 14px;
   }
 }
