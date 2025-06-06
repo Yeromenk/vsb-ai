@@ -8,7 +8,7 @@ async function connectToDatabase() {
     console.log('Connected to the database (PostgreSQL)');
     return prisma;
   } catch (error) {
-    console.error('Error connecting to the database', error);
+    console.error('error connecting to the database', error);
     process.exit(1);
   }
 }

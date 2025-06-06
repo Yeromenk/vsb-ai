@@ -4,7 +4,7 @@ import rehypeRaw from 'rehype-raw';
 import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
 import { Copy, CheckCircle, Mail, Edit, X, Save } from 'lucide-react';
-import EmailModal from '../common/EmailModal/EmailModal';
+import EmailModal from '../email-modal/EmailModal';
 import 'highlight.js/styles/github.css';
 import './AiResponse.css';
 

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
-import TextTranslator from '../../components/common/TextTranslator/TextTranslator';
+import TextTranslator from '../../components/text-translator/TextTranslator';
 import './TranslateInput.css';
 
 const TranslateInput = () => {
@@ -27,7 +27,7 @@ const TranslateInput = () => {
       navigate(`/translate/chat/${newChat.id}`);
     },
     onError: error => {
-      console.error('Error in handleSend:', error);
+      console.error('error in handleSend:', error);
     },
   });
 

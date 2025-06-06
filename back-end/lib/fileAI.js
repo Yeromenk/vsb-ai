@@ -34,7 +34,7 @@ export async function getFile(file, action, userId = null) {
     console.log(`File analysis generated using model: ${config.model}`);
     return completion.choices[0].message.content;
   } catch (error) {
-    console.error('Error fetching completion(file):', error);
+    console.error('error fetching completion(file):', error);
     throw error;
   }
 }
@@ -92,7 +92,7 @@ async function extractTextFromDocx(filePath) {
     }
     return result.value;
   } catch (e) {
-    console.error('Error in extractTextFromDocx:', e);
+    console.error('error in extractTextFromDocx:', e);
     return `[Error processing DOCX file: ${e.message}]`;
   }
 }
@@ -106,7 +106,7 @@ async function extractTextFromExcel(filePath) {
     }
     return textContent;
   } catch (e) {
-    console.error('Error in extractTextFromExcel:', e);
+    console.error('error in extractTextFromExcel:', e);
     return `[Error processing Excel file: ${e.message}]`;
   }
 }
@@ -119,7 +119,7 @@ async function extractTextFromTxt(filePath) {
     }
     return textContent;
   } catch (e) {
-    console.error('Error in extractTextFromTxt:', e);
+    console.error('error in extractTextFromTxt:', e);
     return `[Error processing text file: ${e.message}]`;
   }
 }

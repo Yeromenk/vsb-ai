@@ -54,8 +54,8 @@ router.put('/format/chat/:id', verifyToken, async (req, res) => {
 
     res.status(200).json({ response: updatedChat });
   } catch (error) {
-    console.error('Error in chats:', error);
-    res.status(500).json({ error: 'Error adding chat' });
+    console.error('error in chats:', error);
+    res.status(500).json({ error: 'error adding chat' });
   }
 });
 
@@ -68,8 +68,8 @@ router.post('/format', async (req, res) => {
     const completion = await ReformateText(message, style, tone, userId);
     res.status(200).json({ response: completion });
   } catch (error) {
-    console.error('Error in /format:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('error in /format:', error);
+    res.status(500).json({ error: 'Internal Server error' });
   }
 });
 

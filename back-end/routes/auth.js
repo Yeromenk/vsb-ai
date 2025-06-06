@@ -108,7 +108,7 @@ router.delete('/delete-account', verifyToken, async (req, res) => {
 
     res.status(200).json({ message: 'Account deleted successfully' });
   } catch (error) {
-    console.error('Error deleting account:', error);
+    console.error('error deleting account:', error);
     res.status(500).json({ error: 'Failed to delete account' });
   }
 });

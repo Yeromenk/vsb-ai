@@ -11,7 +11,7 @@ router.get('/models', async (req, res) => {
   try {
     res.status(200).json({ models: availableModels });
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching models' });
+    res.status(500).json({ error: 'error fetching models' });
   }
 });
 
@@ -38,7 +38,7 @@ router.post('/models/preferences', verifyToken, async (req, res) => {
 
     res.status(200).json({ preferences });
   } catch (error) {
-    res.status(500).json({ error: 'Error saving preferences' });
+    res.status(500).json({ error: 'error saving preferences' });
   }
 });
 
@@ -53,7 +53,7 @@ router.get('/models/preferences', verifyToken, async (req, res) => {
 
     res.status(200).json({ preferences });
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching preferences' });
+    res.status(500).json({ error: 'error fetching preferences' });
   }
 });
 

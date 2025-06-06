@@ -53,7 +53,7 @@ export const useChat = (chatId, type) => {
       setPendingMessage(null);
     },
     onError: error => {
-      console.error('Error sending message:', error);
+      console.error('error sending message:', error);
       setPendingMessage(null);
     },
     onSettled: () => {

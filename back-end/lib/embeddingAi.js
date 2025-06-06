@@ -13,7 +13,7 @@ export async function generateEmbeddings(text) {
     });
     return response.data[0].embedding;
   } catch (error) {
-    console.error('Error generating embeddings:', error);
+    console.error('error generating embeddings:', error);
     throw error;
   }
 }
@@ -51,7 +51,7 @@ export async function updateChatEmbeddings(chatId) {
       data: { embeddings },
     });
   } catch (error) {
-    console.error('Error updating chat embeddings:', error);
+    console.error('error updating chat embeddings:', error);
     throw error;
   }
 }
@@ -129,7 +129,7 @@ export async function searchChatsByEmbeddings(userId, query) {
       matchExcerpts: item.excerpts,
     }));
   } catch (error) {
-    console.error('Error searching chats by embeddings:', error);
+    console.error('error searching chats by embeddings:', error);
     throw error;
   }
 }

@@ -19,7 +19,7 @@ export async function getTranslation(message, sourceLanguage, targetLanguage, us
     console.log(`Translation generated using model: ${config.model}`);
     return completion.choices[0].message.content;
   } catch (error) {
-    console.error('Error fetching completion(translate):', error);
+    console.error('error fetching completion(translate):', error);
     throw error;
   }
 }

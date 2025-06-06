@@ -46,8 +46,8 @@ router.post('/chats/custom-template', verifyToken, async (req, res) => {
 
     res.status(201).json({ response: newCustomTemplate });
   } catch (error) {
-    console.error('Error creating custom template:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('error creating custom template:', error);
+    res.status(500).json({ error: 'Internal Server error' });
   }
 });
 
@@ -116,8 +116,8 @@ router.post('/chats/custom-conversation', verifyToken, async (req, res) => {
 
     res.status(201).json({ response: newConversation });
   } catch (error) {
-    console.error('Error creating custom conversation:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('error creating custom conversation:', error);
+    res.status(500).json({ error: 'Internal Server error' });
   }
 });
 
@@ -170,8 +170,8 @@ router.put('/chats/custom-conversation/:id', verifyToken, async (req, res) => {
 
     res.status(200).json({ response: updatedChat });
   } catch (error) {
-    console.error('Error updating custom conversation:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('error updating custom conversation:', error);
+    res.status(500).json({ error: 'Internal Server error' });
   }
 });
 
@@ -184,8 +184,8 @@ router.post('/custom', async (req, res) => {
     const custom = await getNewPrompt(message, userId);
     res.status(200).json({ response: custom });
   } catch (error) {
-    console.error('Error in /custom:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('error in /custom:', error);
+    res.status(500).json({ error: 'Internal Server error' });
   }
 });
 
@@ -212,7 +212,7 @@ router.get('/template/:id', verifyToken, async (req, res) => {
 
     res.status(200).json({ response: template });
   } catch (error) {
-    console.error('Error fetching template:', error);
+    console.error('error fetching template:', error);
     res.status(403).json({
       message: 'Failed to access template',
       unauthorized: true,

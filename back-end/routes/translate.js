@@ -54,12 +54,12 @@ router.put('/translate/chat/:id', verifyToken, async (req, res) => {
 
     res.status(200).json({ response: updatedChat });
   } catch (error) {
-    console.error('Error in chats:', error);
-    res.status(500).json({ error: 'Error adding chat' });
+    console.error('error in chats:', error);
+    res.status(500).json({ error: 'error adding chat' });
   }
 });
 
-// Translate a message
+// translate a message
 router.post('/translate', async (req, res) => {
   const { message, sourceLanguage, targetLanguage } = req.body;
   const userId = req.user?.id;
@@ -68,8 +68,8 @@ router.post('/translate', async (req, res) => {
     const translatedText = await getTranslation(message, sourceLanguage, targetLanguage, userId);
     res.status(200).json({ translatedText });
   } catch (error) {
-    console.error('Error in /translate:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('error in /translate:', error);
+    res.status(500).json({ error: 'Internal Server error' });
   }
 });
 

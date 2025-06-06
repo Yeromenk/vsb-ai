@@ -16,8 +16,8 @@ router.get('/semantic-search', verifyToken, async (req, res) => {
     const results = await searchChatsByEmbeddings(userId, query);
     res.status(200).json({ response: results });
   } catch (error) {
-    console.error('Error in semantic search:', error);
-    res.status(500).json({ error: 'Error searching chats' });
+    console.error('error in semantic search:', error);
+    res.status(500).json({ error: 'error searching chats' });
   }
 });
 

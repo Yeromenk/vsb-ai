@@ -3,8 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
-import LoadingState from '../../components/common/LoadingState/LoadingState';
-import MessageInput from '../../components/common/MessageInput/MessageInput';
+import LoadingState from '../../components/loading-state/LoadingState';
+import MessageInput from '../../components/message-input/MessageInput';
 import './CustomInput.css';
 
 const CustomInput = () => {
@@ -58,7 +58,7 @@ const CustomInput = () => {
       navigate(`/custom/chat/${newChat.id}`);
     },
     onError: error => {
-      console.error('Error creating conversation:', error);
+      console.error('error creating conversation:', error);
       toast.error('Failed to create conversation. Please try again.');
     },
     onSettled: () => {
@@ -82,7 +82,7 @@ const CustomInput = () => {
           <MessageInput
             onSubmit={handleSubmit}
             loading={loading}
-            title={template?.title || 'Custom Chat'}
+            title={template?.title || 'custom Chat'}
             description={template?.description}
             placeholder="Start a new conversation..."
           />

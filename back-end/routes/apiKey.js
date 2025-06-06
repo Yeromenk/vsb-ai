@@ -36,7 +36,7 @@ router.post('/api-key', verifyToken, async (req, res) => {
 
     res.status(200).json({ message: 'API Key saved successfully' });
   } catch (error) {
-    console.error('Error saving API Key:', error);
+    console.error('error saving API Key:', error);
     res.status(500).json({ message: 'An error occurred while saving the API Key' });
   }
 });
@@ -55,7 +55,7 @@ router.get('/check-api-key', verifyToken, async (req, res) => {
 
     res.status(200).json({ hasApiKey });
   } catch (error) {
-    console.error('Error checking API Key:', error);
+    console.error('error checking API Key:', error);
     res.status(500).json({
       message: 'An error occurred while checking the API Key',
       hasApiKey: false,

@@ -67,7 +67,7 @@ export const register = async (req, res) => {
     });
 
     if (!newUser) {
-      return res.json({ message: 'Error creating user' });
+      return res.json({ message: 'error creating user' });
     }
 
     // Send verification email
@@ -92,7 +92,7 @@ export const register = async (req, res) => {
         `,
       });
     } catch (emailError) {
-      console.error('Error sending verification email:', emailError);
+      console.error('error sending verification email:', emailError);
     }
 
     const token = jwt.sign({ id: newUser.id }, 'jwtkey');

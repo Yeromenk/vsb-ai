@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import FileProcessing from '../../components/common/FileProcessing/FileProcessing';
+import FileProcessing from '../../components/file-processing/FileProcessing';
 import './FileUploader.css';
 
 const FileUploader = () => {
@@ -31,7 +31,7 @@ const FileUploader = () => {
       navigate(`/file/chat/${newChat.id}`);
     },
     onError: error => {
-      console.error('Error in handleSend:', error);
+      console.error('error in handleSend:', error);
     },
   });
 

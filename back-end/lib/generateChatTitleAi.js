@@ -25,7 +25,7 @@ export async function generateChatTitle(messageContent) {
     title = title.replace(/^["'](.*)["']$/, '$1'); // Remove quotes if present
     return title.substring(0, 40);
   } catch (error) {
-    console.error('Error generating chat title:', error);
+    console.error('error generating chat title:', error);
     // Fallback to original method if generation fails
     return messageContent.substring(0, 40);
   }

@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext.js';
 import toast from 'react-hot-toast';
-import ProfileModal from '../../pages/ProfileModal/ProfileModal.jsx';
+import ProfileModal from '../../pages/profile-modal/ProfileModal.jsx';
 
 const Root = () => {
   const { currentUser, logout } = useContext(AuthContext);

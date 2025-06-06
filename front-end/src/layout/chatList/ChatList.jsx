@@ -6,11 +6,11 @@ import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import DeleteModal from '../../components/common/DeleteModal/DeleteModal';
-import SearchBar from '../../components/common/SearchBar/SearchBar';
-import ChatListContent from '../../components/common/ChatListContent/ChatListContent';
-import UtilityLinks from '../../components/common/UtilityLinks/UtilityLinks';
-import ShareModal from '../../components/common/ShareModal/ShareModal';
+import DeleteModal from '../../components/delete-modal/DeleteModal';
+import SearchBar from '../../components/search-bar/SearchBar';
+import ChatListContent from '../../components/chat-list-content/ChatListContent';
+import UtilityLinks from '../../components/utility-links/UtilityLinks';
+import ShareModal from '../../components/share-modal/ShareModal';
 
 const ChatList = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -112,8 +112,8 @@ const ChatList = () => {
         toast.success('Chat title updated successfully');
         await queryClient.invalidateQueries(['ChatList']);
       } catch (e) {
-        console.error('Error updating chat', e);
-        toast.error('Error updating chat', e);
+        console.error('error updating chat', e);
+        toast.error('error updating chat', e);
       }
     }
     setEditingChatId(null);
@@ -133,7 +133,7 @@ const ChatList = () => {
       toast.success('Chat deleted successfully');
       await queryClient.invalidateQueries(['ChatList']);
     } catch (e) {
-      console.error('Error deleting chat', e);
+      console.error('error deleting chat', e);
       toast.error(`Error deleting chat: ${e.response?.data?.error || e.message}`);
     }
   };
@@ -149,7 +149,7 @@ const ChatList = () => {
       });
       setSearchResults(response.data.response);
     } catch (error) {
-      console.error('Error searching chats:', error);
+      console.error('error searching chats:', error);
       toast.error('Search failed');
       setSearchResults([]);
     } finally {

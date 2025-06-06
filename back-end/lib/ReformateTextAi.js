@@ -19,7 +19,7 @@ export async function ReformateText(message, style, tone, userId = null) {
     console.log(`Text reformatted using model: ${config.model}`);
     return completion.choices[0].message.content;
   } catch (error) {
-    console.error('Error fetching completion(formating):', error);
+    console.error('error fetching completion(formating):', error);
     throw error;
   }
 }

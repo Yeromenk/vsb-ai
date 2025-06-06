@@ -36,8 +36,8 @@ router.put('/file/chat/:id', verifyToken, upload.single('file'), async (req, res
 
     const extractedText = await extractTextFromFile(file.path, file.originalname);
 
-    // Check if the response starts with [Error or [PDF file detected
-    if (extractedText.startsWith('[Error') || extractedText.startsWith('[PDF file')) {
+    // Check if the response starts with [error or [PDF file detected
+    if (extractedText.startsWith('[error') || extractedText.startsWith('[PDF file')) {
       return res.status(400).json({ error: extractedText });
     }
 
@@ -77,8 +77,8 @@ router.put('/file/chat/:id', verifyToken, upload.single('file'), async (req, res
 
     res.status(200).json({ response: updatedChat });
   } catch (error) {
-    console.error('Error in chats:', error);
-    res.status(500).json({ error: 'Error adding chat' });
+    console.error('error in chats:', error);
+    res.status(500).json({ error: 'error adding chat' });
   }
 });
 
@@ -91,8 +91,8 @@ router.post('/file', async (req, res) => {
     const fileAction = await getFile(file, action, userId);
     res.status(200).json({ response: fileAction });
   } catch (error) {
-    console.error('Error in /file:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('error in /file:', error);
+    res.status(500).json({ error: 'Internal Server error' });
   }
 });
 

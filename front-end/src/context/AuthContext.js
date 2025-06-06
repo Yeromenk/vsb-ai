@@ -31,7 +31,7 @@ export const AuthContextProvider = ({ children }) => {
       });
       setHasApiKey(response.data.hasApiKey);
     } catch (error) {
-      console.error('Error checking API key:', error);
+      console.error('error checking API key:', error);
       setHasApiKey(false);
     } finally {
       setCheckingApiKey(false);
@@ -84,7 +84,7 @@ export const AuthContextProvider = ({ children }) => {
         document.cookie = 'user_data=; max-age=0; path=/;';
       }
     } catch (error) {
-      console.error('Error parsing GitHub auth cookie:', error);
+      console.error('error parsing GitHub auth cookie:', error);
     }
   };
 

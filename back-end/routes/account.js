@@ -132,7 +132,7 @@ router.get('/check-verification', verifyToken, async (req, res) => {
 
     res.status(200).json({ isVerified: user.isEmailVerified });
   } catch (error) {
-    console.error('Error checking verification:', error);
+    console.error('error checking verification:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -330,7 +330,7 @@ router.post('/change-password', verifyToken, async (req, res) => {
 
     res.status(200).json({ message: 'Password changed successfully' });
   } catch (error) {
-    console.error('Error changing password:', error);
+    console.error('error changing password:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

@@ -162,7 +162,7 @@ router.post('/shared/:sharedCode/message', async (req, res) => {
       newMessages: [userMessage, modelMessage],
     });
   } catch (error) {
-    console.error('Error in shared chat message:', error);
+    console.error('error in shared chat message:', error);
     res.status(500).json({ error: error.message });
   }
 });

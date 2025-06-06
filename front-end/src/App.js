@@ -1,27 +1,29 @@
 import Root from './layout/root/Root.jsx';
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
-import Welcome from './pages/Welcome/Welcome.jsx';
-import Login from './pages/Login/Login.jsx';
-import Register from './pages/Register/Register.jsx';
-import Home from './pages/Home/Home.jsx';
+import Welcome from './pages/welcome/Welcome.jsx';
+import Login from './pages/login/Login.jsx';
+import Register from './pages/register/Register.jsx';
+import Home from './pages/home/Home.jsx';
 import Dashboard from './layout/dashboard/Dashboard.jsx';
-import Error from './pages/Error/Error.jsx';
+import Error from './pages/error/Error.jsx';
 import { Toaster } from 'react-hot-toast';
-import Message from './components/chat-message/Message';
+import Message from './components/message/Message';
 import TranslateInput from './features/translate/TranslateInput';
-import NewPrompt from './pages/NewPrompt/NewPrompt';
+import NewPrompt from './pages/new-prompt/NewPrompt';
 import FormatInput from './features/format/FormatInput';
 import FileUploader from './features/summarize/FileUploader';
 import CustomInput from './features/custom/CustomInput';
-import Custom from './pages/Custom/Custom.jsx';
-import ProtectedRoute from './components/common/ProtectedRoute/ProtectedRoute';
-import VsbLoginForm from './pages/VSB-Login/Vsb-login';
-import ConfirmEmail from './pages/Confirm-email/ConfirmEmail';
-import ForgotPassword from './pages/Forgot-password/ForgotPassword';
-import VerifyResetCode from './pages/VerifyResetCode/VerifyResetCode';
-import ResetPassword from './pages/ResetPassword/ResetPassword';
-import SharedChatPage from './pages/SharedChatPage/SharedChatPage';
-import Admin from './pages/Admin/Admin';
+import Custom from './pages/custom/Custom.jsx';
+import ProtectedRoute from './components/protected-route/ProtectedRoute';
+import VsbLoginForm from './pages/vsb-login/Vsb-login';
+import ConfirmEmail from './pages/confirm-email/ConfirmEmail';
+import ForgotPassword from './pages/forgot-password/ForgotPassword';
+import VerifyResetCode from './pages/verify-reset-code/VerifyResetCode';
+import ResetPassword from './pages/reset-password/ResetPassword';
+import SharedChatPage from './pages/shared-chat-page/SharedChatPage';
+import Admin from './pages/admin/Admin';
+import EmailAssistant from './components/email-assistant/EmailAssistant';
+import EmailInput from './features/email/EmailInput';
 
 const App = () => {
   return (
@@ -134,6 +136,14 @@ const router = createBrowserRouter([
             ),
           },
           {
+            path: '/email',
+            element: (
+              <ProtectedRoute requireApiKey={true}>
+                <EmailInput />
+              </ProtectedRoute>
+            ),
+          },
+          {
             path: '/translate/chat/:id',
             element: (
               <ProtectedRoute requireApiKey={true}>
@@ -154,6 +164,14 @@ const router = createBrowserRouter([
             element: (
               <ProtectedRoute requireApiKey={true}>
                 <Message type="file" />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: '/email/chat/:id',
+            element: (
+              <ProtectedRoute requireApiKey={true}>
+                <Message type="email" />
               </ProtectedRoute>
             ),
           },

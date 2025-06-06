@@ -35,7 +35,7 @@ export async function getNewPrompt(instructions, message, userId = null) {
     console.log(`AI response generated using model: ${config.model}`);
     return completion.choices[0].message.content;
   } catch (error) {
-    console.error('Error generating prompt:', error);
+    console.error('error generating prompt:', error);
     throw error;
   }
 }

@@ -4,8 +4,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useContext } from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import FormatControls from '../../components/common/FormatControls/FormatControls';
+import FormatControls from '../../components/format-controls/FormatControls';
 import './FormatInput.css';
+import { toast } from 'react-hot-toast';
 
 const FormatInput = () => {
   const navigate = useNavigate();
@@ -28,7 +29,8 @@ const FormatInput = () => {
       navigate(`/format/chat/${newChat.id}`);
     },
     onError: error => {
-      console.error('Error in handleSend:', error);
+      console.error('error in handleSend:', error);
+      toast.error('Failed to format text. Please try again.');
     },
   });
 

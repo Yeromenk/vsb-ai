@@ -11,6 +11,7 @@ import { ReformateText } from '../lib/ReformateTextAi.js';
 import { extractTextFromFile, getFile } from '../lib/fileAI.js';
 import { getNewPrompt } from '../lib/newPromptAI.js';
 import { generateChatTitle } from '../lib/generateChatTitleAi.js';
+import { generateEmailResponse } from '../lib/emailAI.js';
 
 const prisma = new PrismaClient();
 
@@ -27,6 +28,7 @@ router.post('/chats', upload.single('file'), async (req, res) => {
     name,
     description,
     instructions,
+    prompt,
   } = req.body;
   const file = req.file;
 
@@ -52,8 +54,8 @@ router.post('/chats', upload.single('file'), async (req, res) => {
     try {
       const extractedText = await extractTextFromFile(file.path, file.originalname);
 
-      // Check if the response starts with [Error or [PDF file detected
-      if (extractedText.startsWith('[Error') || extractedText.startsWith('[PDF file')) {
+      // Check if the response starts with [error or [PDF file detected
+      if (extractedText.startsWith('[error') || extractedText.startsWith('[PDF file')) {
         return res.status(400).json({ error: extractedText });
       }
 
@@ -65,6 +67,9 @@ router.post('/chats', upload.single('file'), async (req, res) => {
   } else if (name && description && instructions) {
     responseText = await getNewPrompt(instructions, userId);
     chatType = 'custom';
+  } else if (prompt) {
+    responseText = await generateEmailResponse(prompt, userId);
+    chatType = 'email';
   } else {
     return res.status(400).json({ error: 'Invalid request' });
   }
@@ -139,8 +144,8 @@ router.post('/chats', upload.single('file'), async (req, res) => {
 
     res.status(201).send({ response: newChat });
   } catch (error) {
-    console.error('Error in /chats:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('error in /chats:', error);
+    res.status(500).json({ error: 'Internal Server error' });
   }
 });
 
@@ -164,8 +169,8 @@ router.get('/userChats', verifyToken, async (req, res) => {
 
     res.status(200).json({ response: userChats.chats });
   } catch (error) {
-    console.error('Error in /userChats:', error);
-    res.status(500).json({ error: 'Error in fetching /userChats' });
+    console.error('error in /userChats:', error);
+    res.status(500).json({ error: 'error in fetching /userChats' });
   }
 });
 
@@ -199,8 +204,8 @@ router.get('/chat/:id', verifyToken, async (req, res) => {
 
     res.status(200).json({ response: chat });
   } catch (error) {
-    console.error('Error in chats:', error);
-    res.status(500).json({ error: 'Error in fetching chats' });
+    console.error('error in chats:', error);
+    res.status(500).json({ error: 'error in fetching chats' });
   }
 });
 
@@ -223,8 +228,8 @@ router.put('/chat/:id', verifyToken, async (req, res) => {
 
     res.status(200).json({ response: updatedChat });
   } catch (error) {
-    console.error('Error in chats:', error);
-    res.status(500).json({ error: 'Error adding chat' });
+    console.error('error in chats:', error);
+    res.status(500).json({ error: 'error adding chat' });
   }
 });
 
@@ -247,7 +252,7 @@ router.delete('/chat/:id', verifyToken, async (req, res) => {
 
     // Delete all related records in a transaction
     await prisma.$transaction([
-      // Delete a chat-message first
+      // Delete a message first
       prisma.message.deleteMany({
         where: { chatId: chatId },
       }),
@@ -263,8 +268,8 @@ router.delete('/chat/:id', verifyToken, async (req, res) => {
 
     res.status(200).json({ response: 'Chat deleted' });
   } catch (error) {
-    console.error('Error in /chat:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error('error in /chat:', error);
+    res.status(500).json({ error: 'Internal Server error' });
   }
 });
 
@@ -299,7 +304,7 @@ router.delete('/delete-all-chats', verifyToken, async (req, res) => {
 
     res.status(200).json({ message: 'All chats deleted successfully' });
   } catch (error) {
-    console.error('Error deleting chats:', error);
+    console.error('error deleting chats:', error);
     res.status(500).json({ error: 'Failed to delete chats' });
   }
 });
