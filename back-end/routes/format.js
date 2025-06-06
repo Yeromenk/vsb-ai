@@ -11,9 +11,10 @@ router.put('/format/chat/:id', verifyToken, async (req, res) => {
   const userId = req.user.id;
   const chatId = req.params.id;
   const { message, style, tone } = req.body;
-  const formattedText = await ReformateText(message, style, tone, userId);
 
   try {
+    const response = await ReformateText(message, style, tone, userId);
+
     const chat = await prisma.chat.findFirst({
       where: {
         id: chatId,
@@ -27,6 +28,10 @@ router.put('/format/chat/:id', verifyToken, async (req, res) => {
         unauthorized: true,
       });
     }
+
+    // Extract content and metadata
+    const formattedContent = response.content || response;
+    const metadata = response.metadata || null;
 
     const updatedChat = await prisma.chat.update({
       where: {
@@ -42,7 +47,8 @@ router.put('/format/chat/:id', verifyToken, async (req, res) => {
             },
             {
               role: 'model',
-              text: formattedText,
+              text: formattedContent,
+              metadata: metadata,
             },
           ],
         },

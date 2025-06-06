@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { getUserModelConfig } from './modelConfig.js';
+import { createResponseWithMetadata } from './metadataHelper.js';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -32,8 +33,11 @@ export async function getNewPrompt(instructions, message, userId = null) {
       ],
     });
 
+    const content = completion.choices[0].message.content;
+    const tokensUsed = completion.usage.total_tokens;
+
     console.log(`AI response generated using model: ${config.model}`);
-    return completion.choices[0].message.content;
+    return createResponseWithMetadata(content, config.model, tokensUsed);
   } catch (error) {
     console.error('error generating prompt:', error);
     throw error;

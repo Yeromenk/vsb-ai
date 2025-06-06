@@ -84,6 +84,7 @@ const ChatMessages = ({
                     onEdit={editedText =>
                       onEditAiResponse && onEditAiResponse(index, message.id, editedText)
                     }
+                    metadata={message.metadata || {}}
                   />
                 </div>
               </>

@@ -123,37 +123,34 @@ router.post('/shared/:sharedCode/message', async (req, res) => {
     });
 
     // Get AI response based on a chat type
-    let aiResponse;
+    let response;
 
     if (chat.type === 'translate' && sourceLanguage && targetLanguage) {
-      // Import the translation function
       const { getTranslation } = await import('../lib/translateAI.js');
-      aiResponse = await getTranslation(message, sourceLanguage, targetLanguage);
+      response = await getTranslation(message, sourceLanguage, targetLanguage);
     } else if (chat.type === 'format' && style && tone) {
-      // Import the formatting function
       const { ReformateText } = await import('../lib/ReformateTextAi.js');
-      aiResponse = await ReformateText(message, style, tone);
+      response = await ReformateText(message, style, tone);
     } else if (chat.type === 'file') {
-      // For file chats - typically we'd need file handling logic
-      // In shared context, process the text directly
       const { getFile } = await import('../lib/fileAI.js');
-      aiResponse = await getFile(message, 'analyze');
+      response = await getFile(message, 'analyze');
     } else if (chat.type === 'custom') {
-      // For custom chats
       const { getNewPrompt } = await import('../lib/newPromptAI.js');
-      aiResponse = await getNewPrompt(message);
+      response = await getNewPrompt(message);
     } else {
-      // Default chat type - general conversation
       const { getNewPrompt } = await import('../lib/newPromptAI.js');
-      aiResponse = await getNewPrompt(message);
+      response = await getNewPrompt(message);
     }
 
-    // Create an AI message
+    const aiContent = response.content || response;
+    const metadata = response.metadata || null;
+
     const modelMessage = await prisma.message.create({
       data: {
         chatId: chat.id,
         role: 'model',
-        text: aiResponse,
+        text: aiContent,
+        metadata: metadata,
       },
     });
 

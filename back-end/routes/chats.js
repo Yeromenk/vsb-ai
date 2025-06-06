@@ -32,7 +32,7 @@ router.post('/chats', upload.single('file'), async (req, res) => {
   } = req.body;
   const file = req.file;
 
-  let responseText;
+  let response;
   let chatType;
   let chatTitle;
 
@@ -44,37 +44,42 @@ router.post('/chats', upload.single('file'), async (req, res) => {
     chatTitle = 'New Chat';
   }
 
-  if (sourceLanguage && targetLanguage) {
-    responseText = await getTranslation(message, sourceLanguage, targetLanguage, userId);
-    chatType = 'translate';
-  } else if (style && tone) {
-    responseText = await ReformateText(message, style, tone, userId);
-    chatType = 'format';
-  } else if (file && action) {
-    try {
-      const extractedText = await extractTextFromFile(file.path, file.originalname);
-
-      // Check if the response starts with [error or [PDF file detected
-      if (extractedText.startsWith('[error') || extractedText.startsWith('[PDF file')) {
-        return res.status(400).json({ error: extractedText });
-      }
-
-      responseText = await getFile(extractedText, action, userId);
-      chatType = 'file';
-    } catch (error) {
-      return res.status(500).json({ error: `Error processing the file: ${error.message}` });
-    }
-  } else if (name && description && instructions) {
-    responseText = await getNewPrompt(instructions, userId);
-    chatType = 'custom';
-  } else if (prompt) {
-    responseText = await generateEmailResponse(prompt, userId);
-    chatType = 'email';
-  } else {
-    return res.status(400).json({ error: 'Invalid request' });
-  }
-
   try {
+    // Get AI response based on chat type
+    if (sourceLanguage && targetLanguage) {
+      response = await getTranslation(message, sourceLanguage, targetLanguage, userId);
+      chatType = 'translate';
+    } else if (style && tone) {
+      response = await ReformateText(message, style, tone, userId);
+      chatType = 'format';
+    } else if (file && action) {
+      try {
+        const extractedText = await extractTextFromFile(file.path, file.originalname);
+
+        // Check if the response starts with [error or [PDF file detected
+        if (extractedText.startsWith('[error') || extractedText.startsWith('[PDF file')) {
+          return res.status(400).json({ error: extractedText });
+        }
+
+        response = await getFile(extractedText, action, userId);
+        chatType = 'file';
+      } catch (error) {
+        return res.status(500).json({ error: `Error processing the file: ${error.message}` });
+      }
+    } else if (name && description && instructions) {
+      response = await getNewPrompt(instructions, userId);
+      chatType = 'custom';
+    } else if (prompt) {
+      response = await generateEmailResponse(prompt, userId);
+      chatType = 'email';
+    } else {
+      return res.status(400).json({ error: 'Invalid request' });
+    }
+
+    // Extract content and metadata
+    const aiContent = response.content || response;
+    const metadata = response.metadata || null;
+
     const newChat = await prisma.chat.create({
       data: {
         userId: userId,
@@ -84,11 +89,12 @@ router.post('/chats', upload.single('file'), async (req, res) => {
           create: [
             {
               role: 'user',
-              text: message || file.originalname,
+              text: message || (file ? file.originalname : ''),
             },
             {
               role: 'model',
-              text: Array.isArray(responseText) ? responseText.join(' ') : responseText,
+              text: aiContent,
+              metadata: metadata,
             },
           ],
         },

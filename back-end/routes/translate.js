@@ -7,13 +7,15 @@ const router = express.Router();
 const prisma = new PrismaClient();
 
 // Update a chat translation
+// Fix for back-end/routes/translate.js
 router.put('/translate/chat/:id', verifyToken, async (req, res) => {
   const userId = req.user.id;
   const chatId = req.params.id;
   const { message, sourceLanguage, targetLanguage } = req.body;
-  const translatedText = await getTranslation(message, sourceLanguage, targetLanguage, userId);
 
   try {
+    const response = await getTranslation(message, sourceLanguage, targetLanguage, userId);
+
     const chat = await prisma.chat.findFirst({
       where: {
         id: chatId,
@@ -27,6 +29,9 @@ router.put('/translate/chat/:id', verifyToken, async (req, res) => {
         unauthorized: true,
       });
     }
+
+    const translatedContent = response.content;
+    const metadata = response.metadata;
 
     const updatedChat = await prisma.chat.update({
       where: {
@@ -42,7 +47,8 @@ router.put('/translate/chat/:id', verifyToken, async (req, res) => {
             },
             {
               role: 'model',
-              text: translatedText,
+              text: translatedContent,
+              metadata: metadata,
             },
           ],
         },
@@ -65,8 +71,8 @@ router.post('/translate', async (req, res) => {
   const userId = req.user?.id;
 
   try {
-    const translatedText = await getTranslation(message, sourceLanguage, targetLanguage, userId);
-    res.status(200).json({ translatedText });
+    const response = await getTranslation(message, sourceLanguage, targetLanguage, userId);
+    res.status(200).json({ response });
   } catch (error) {
     console.error('error in /translate:', error);
     res.status(500).json({ error: 'Internal Server error' });

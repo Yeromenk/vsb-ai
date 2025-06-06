@@ -129,7 +129,7 @@
 .ai-response-container {
   position: relative;
   width: 100%;
-  padding-top: 40px;
+  padding-top: 10px;
 }
 
 .copy-button-container {
@@ -186,18 +186,15 @@
 }
 
 .ai-response {
-  padding: 1em;
-  padding-right: 36px;
+  padding: 0.5em 1em;
 }
 
 .ai-response-actions {
-  position: absolute;
-  top: 0;
-  right: 0;
+  position: static;
   display: flex;
   gap: 8px;
   z-index: 10;
-  padding: 8px;
+  padding: 0;
 }
 
 .ai-action-button {
@@ -348,4 +345,40 @@
 .ai-action-button:hover .tooltip-text {
   visibility: visible;
   opacity: 1;
+}
+
+.ai-response-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  margin-top: 10px;
+  border-top: 1px solid var(--light-accent);
+  background-color: var(--light);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+.ai-response-metadata {
+  font-size: 12px;
+  color: var(--secondary);
+}
+
+.ai-model-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.ai-model-name {
+  font-weight: 600;
+  padding: 2px 6px;
+  background-color: var(--light-accent);
+  border-radius: var(--radius-sm);
+  color: var(--primary);
+}
+
+.ai-token-usage, .ai-cost-estimate {
+  color: var(--secondary);
+  white-space: nowrap;
 }

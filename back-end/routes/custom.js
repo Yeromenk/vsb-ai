@@ -128,7 +128,6 @@ router.put('/chats/custom-conversation/:id', verifyToken, async (req, res) => {
   const { message } = req.body;
 
   try {
-    // Get chat to ensure it exists and belongs to a user
     const chat = await prisma.chat.findUnique({
       where: { id: chatId },
       include: { history: true },
@@ -139,7 +138,11 @@ router.put('/chats/custom-conversation/:id', verifyToken, async (req, res) => {
     }
 
     // Generate AI response based on the chat instructions and new message
-    const aiResponse = await getNewPrompt(chat.instructions, message, userId);
+    const response = await getNewPrompt(chat.instructions, message, userId);
+
+    // Extract content and metadata
+    const aiContent = response.content || response;
+    const metadata = response.metadata || null;
 
     // Add new messages to the chat
     await prisma.chat.update({
@@ -154,7 +157,8 @@ router.put('/chats/custom-conversation/:id', verifyToken, async (req, res) => {
             },
             {
               role: 'model',
-              text: aiResponse,
+              text: aiContent,
+              metadata: metadata,
             },
           ],
         },

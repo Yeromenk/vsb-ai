@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { getUserModelConfig } from './modelConfig.js';
+import { createResponseWithMetadata } from './metadataHelper.js';
 
 const reformateTextAi = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -16,8 +17,11 @@ export async function ReformateText(message, style, tone, userId = null) {
       messages: [{ role: 'user', content: prompt }],
     });
 
+    const content = completion.choices[0].message.content;
+    const tokensUsed = completion.usage.total_tokens;
+
     console.log(`Text reformatted using model: ${config.model}`);
-    return completion.choices[0].message.content;
+    return createResponseWithMetadata(content, config.model, tokensUsed);
   } catch (error) {
     console.error('error fetching completion(formating):', error);
     throw error;

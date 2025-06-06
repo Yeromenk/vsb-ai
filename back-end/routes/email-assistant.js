@@ -11,9 +11,10 @@ router.put('/email/chat/:id', verifyToken, async (req, res) => {
   const userId = req.user.id;
   const chatId = req.params.id;
   const { prompt } = req.body;
-  const emailResponse = await generateEmailResponse(prompt, userId);
 
   try {
+    const emailResponse = await generateEmailResponse(prompt, userId);
+
     const chat = await prisma.chat.findFirst({
       where: {
         id: chatId,
@@ -27,6 +28,9 @@ router.put('/email/chat/:id', verifyToken, async (req, res) => {
         unauthorized: true,
       });
     }
+
+    const responseContent = emailResponse.content;
+    const metadata = emailResponse.metadata;
 
     const updatedChat = await prisma.chat.update({
       where: {
@@ -42,7 +46,8 @@ router.put('/email/chat/:id', verifyToken, async (req, res) => {
             },
             {
               role: 'model',
-              text: emailResponse,
+              text: responseContent,
+              metadata: metadata,
             },
           ],
         },

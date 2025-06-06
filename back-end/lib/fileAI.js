@@ -4,6 +4,7 @@ import fs from 'fs-extra';
 import readExcelFile from 'read-excel-file/node';
 import path from 'path';
 import { getUserModelConfig } from './modelConfig.js';
+import { createResponseWithMetadata } from './metadataHelper.js';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -31,8 +32,11 @@ export async function getFile(file, action, userId = null) {
       ],
     });
 
+    const content = completion.choices[0].message.content;
+    const tokensUsed = completion.usage.total_tokens;
+
     console.log(`File analysis generated using model: ${config.model}`);
-    return completion.choices[0].message.content;
+    return createResponseWithMetadata(content, config.model, tokensUsed);
   } catch (error) {
     console.error('error fetching completion(file):', error);
     throw error;

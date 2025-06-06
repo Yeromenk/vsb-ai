@@ -1,3 +1,4 @@
+// front-end/src/components/ai-response/AiResponse.jsx
 import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
@@ -8,7 +9,13 @@ import EmailModal from '../email-modal/EmailModal';
 import 'highlight.js/styles/github.css';
 import './AiResponse.css';
 
-const AiResponse = ({ text, onEdit, showEditButton = false, showEmailButton = false }) => {
+const AiResponse = ({
+  text,
+  onEdit,
+  showEditButton = false,
+  showEmailButton = false,
+  metadata = {},
+}) => {
   const [copied, setCopied] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -56,61 +63,6 @@ const AiResponse = ({ text, onEdit, showEditButton = false, showEmailButton = fa
 
   return (
     <div className={`ai-response-container ${isEditing ? 'editing' : ''}`}>
-      <div className="ai-response-actions">
-        <button
-          className="ai-action-button copy-button"
-          onClick={handleCopy}
-          aria-label="Copy text"
-          disabled={isCopying}
-        >
-          {copied ? <CheckCircle size={16} /> : <Copy size={16} />}
-          <span className="tooltip-text">{copied ? 'Copied!' : 'Copy text'}</span>
-        </button>
-
-        {showEditButton && !isEditing && (
-          <button
-            className="ai-action-button edit-button"
-            onClick={startEditing}
-            aria-label="Edit text"
-          >
-            <Edit size={16} />
-            <span className="tooltip-text">Edit response</span>
-          </button>
-        )}
-
-        {isEditing && (
-          <>
-            <button
-              className="ai-action-button save-button"
-              onClick={saveEdit}
-              aria-label="Save changes"
-            >
-              <Save size={16} />
-              <span className="tooltip-text">Save changes</span>
-            </button>
-            <button
-              className="ai-action-button cancel-button"
-              onClick={cancelEditing}
-              aria-label="Cancel editing"
-            >
-              <X size={16} />
-              <span className="tooltip-text">Cancel</span>
-            </button>
-          </>
-        )}
-
-        {showEmailButton && !isEditing && (
-          <button
-            className="ai-action-button email-button"
-            onClick={() => setShowEmailModal(true)}
-            aria-label="Send as email"
-          >
-            <Mail size={16} />
-            <span className="tooltip-text">Send as email</span>
-          </button>
-        )}
-      </div>
-
       <div className="ai-response">
         {isEditing ? (
           <div className="ai-response-editor">
@@ -167,6 +119,76 @@ const AiResponse = ({ text, onEdit, showEditButton = false, showEmailButton = fa
             {text}
           </ReactMarkdown>
         )}
+      </div>
+
+      {/* Response metadata and action buttons */}
+      <div className="ai-response-footer">
+        {metadata.model && (
+          <div className="ai-response-metadata">
+            <div className="ai-model-info">
+              <span className="ai-model-name">{metadata.model}</span>
+              {metadata.tokens && <span className="ai-token-usage">{metadata.tokens} tokens</span>}
+              {metadata.cost && (
+                <span className="ai-cost-estimate">${metadata.cost.toFixed(5)}</span>
+              )}
+            </div>
+          </div>
+        )}
+
+        <div className="ai-response-actions">
+          <button
+            className="ai-action-button copy-button"
+            onClick={handleCopy}
+            aria-label="Copy text"
+            disabled={isCopying}
+          >
+            {copied ? <CheckCircle size={16} /> : <Copy size={16} />}
+            <span className="tooltip-text">{copied ? 'Copied!' : 'Copy text'}</span>
+          </button>
+
+          {showEditButton && !isEditing && (
+            <button
+              className="ai-action-button edit-button"
+              onClick={startEditing}
+              aria-label="Edit text"
+            >
+              <Edit size={16} />
+              <span className="tooltip-text">Edit response</span>
+            </button>
+          )}
+
+          {isEditing && (
+            <>
+              <button
+                className="ai-action-button save-button"
+                onClick={saveEdit}
+                aria-label="Save changes"
+              >
+                <Save size={16} />
+                <span className="tooltip-text">Save changes</span>
+              </button>
+              <button
+                className="ai-action-button cancel-button"
+                onClick={cancelEditing}
+                aria-label="Cancel editing"
+              >
+                <X size={16} />
+                <span className="tooltip-text">Cancel</span>
+              </button>
+            </>
+          )}
+
+          {showEmailButton && !isEditing && (
+            <button
+              className="ai-action-button email-button"
+              onClick={() => setShowEmailModal(true)}
+              aria-label="Send as email"
+            >
+              <Mail size={16} />
+              <span className="tooltip-text">Send as email</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {showEmailModal && (

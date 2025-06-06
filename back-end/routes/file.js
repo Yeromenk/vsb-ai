@@ -45,11 +45,11 @@ router.put('/file/chat/:id', verifyToken, upload.single('file'), async (req, res
       return res.status(400).json({ error: 'File is empty or contains unreadable text' });
     }
 
-    const modelResponse = await getFile(extractedText, action, userId);
+    const response = await getFile(extractedText, action, userId);
 
-    if (!modelResponse || modelResponse.length === 0) {
-      return res.status(400).json({ error: 'Model response is empty' });
-    }
+    // Extract content and metadata
+    const aiContent = response.content || response;
+    const metadata = response.metadata || null;
 
     const updatedChat = await prisma.chat.update({
       where: {
@@ -65,7 +65,8 @@ router.put('/file/chat/:id', verifyToken, upload.single('file'), async (req, res
             },
             {
               role: 'model',
-              text: modelResponse,
+              text: aiContent,
+              metadata: metadata,
             },
           ],
         },
