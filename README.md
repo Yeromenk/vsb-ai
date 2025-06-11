@@ -26,21 +26,20 @@ The application leverages the power of modern AI (OpenAI API) to provide a user-
 
 ### Technical Features
 
-- ✅ User authentication with JWT, Google, and GitHub
+- ✅ User authentication with JWT, Google, GitHub and university authentication (VSB-TUO)
 - 💬 Real-time chat interface with auto-scrolling
 - 📱 Responsive UI for desktop and mobile
 - 📁 File upload and parsing support
-- 💾 Chat history and saved prompts
+- 💾 Chat history
 - ⚙️ Task management for AI queries
 - 🔒 Secure API endpoints with authentication
-- Email verification and password reset functionality
+- Email verification
 - Searching chat history
 - Deleting account and all chats
-- Changing password functionality
+- Changing and forgot password functionality
 - User profile management
 - Admin panel for managing users
-- AI model selection for different tasks
-- 
+- AI model selection for different tasks (different ChatGPT models)
 
 ---
 
@@ -52,8 +51,8 @@ The application leverages the power of modern AI (OpenAI API) to provide a user-
 - [Tanstack Query (React Query)](https://tanstack.com/query/latest)
 - [Axios](https://axios-http.com/)
 - CSS
-- [React Loading Skeleton](https://github.com/dvtng/react-loading-skeleton)
 - [React Hot Toast](https://react-hot-toast.com/)
+- [React skeleton](https://skeletonreact.com/) — UI components
 - [Lucide Icons](https://lucide.dev/)
 - [React Router](https://reactrouter.com/en/main)
 - React Markdown
@@ -68,11 +67,19 @@ The application leverages the power of modern AI (OpenAI API) to provide a user-
 - [JWT](https://jwt.io/) — authentication
 - [bcrypt](https://www.npmjs.com/package/bcrypt) — password hashing
 - [nodemailer](https://nodemailer.com/about/) — email sending
+- [cookie-parser](https://www.npmjs.com/package/cookie-parser) — cookie handling
+- [cors](https://www.npmjs.com/package/cors) — Cross-Origin Resource Sharing
+- [ldapjs](https://www.npmjs.com/package/ldapjs) — LDAP authentication for VSB-TUO
 
 ### Database
 
 - [PostgreSQL](https://www.postgresql.org/)
 - [Prisma](https://www.prisma.io/) — ORM for PostgreSQL
+
+
+### Code Quality Tools
+- [Prettier](https://prettier.io/) — code formatting
+- [Eslint](https://eslint.org/) — code linting
 
 ---
 
@@ -92,39 +99,6 @@ Follow these steps to set up the project locally:
 
 5. Access the application at the specified frontend URL.
 
----
 
-## 📂 Project Structure
 
-### Frontend
 
-- `src/`
-    - `components/` — Reusable UI components
-    - `pages/` — Application pages
-    - `context/` — Context API for global state management
-    - `utils/` — Helper functions
-    - `styles/` — Global and component-specific styles
-
-### Backend
-
-- `controllers/` — API logic
-- `routes/` — API endpoints
-- `models/` — Database models
-- `middleware/` — Authentication and validation logic
-- `config/` — Configuration files (e.g., passport strategies)
-
----
-
-## 🛠️ Development
-
-### Prerequisites
-
-- Node.js
-- PostgreSQL
-- npm
-
-### Commands
-
-- **Start Frontend**: `npm run dev` (in `frontend/`)
-- **Start Backend**: `npm run dev` (in `backend/`)
-- **Build Frontend**: `npm run build` (in `frontend/`)
