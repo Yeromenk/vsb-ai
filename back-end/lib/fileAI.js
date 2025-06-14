@@ -1,18 +1,16 @@
-import OpenAI from 'openai';
 import mammoth from 'mammoth';
 import fs from 'fs-extra';
 import readExcelFile from 'read-excel-file/node';
 import path from 'path';
 import { getUserModelConfig } from './modelConfig.js';
 import { createResponseWithMetadata } from './metadataHelper.js';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { getAIClient } from './aiConfig.js';
+import { formatProviderMessages, handleAIRequest } from './aiProviderHandler.js';
 
 export async function getFile(file, action, userId = null) {
   try {
     const config = await getUserModelConfig(userId, 1000);
+    const provider = getAIClient(config.model);
 
     const systemPrompt = `You are a document analysis assistant.
     
@@ -24,16 +22,11 @@ export async function getFile(file, action, userId = null) {
 
     const userPrompt = `Please ${action} the following document content:\n\n${file}`;
 
-    const completion = await openai.chat.completions.create({
-      ...config,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
-      ],
-    });
+    // Format messages for the specific provider
+    const messages = formatProviderMessages(provider, userPrompt, systemPrompt);
 
-    const content = completion.choices[0].message.content;
-    const tokensUsed = completion.usage.total_tokens;
+    // Make the request using the centralized handler
+    const { content, tokensUsed } = await handleAIRequest(config, provider, messages);
 
     console.log(`File analysis generated using model: ${config.model}`);
     return createResponseWithMetadata(content, config.model, tokensUsed);

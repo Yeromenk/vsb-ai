@@ -1,14 +1,12 @@
-import OpenAI from 'openai';
 import { getUserModelConfig } from './modelConfig.js';
 import { createResponseWithMetadata } from './metadataHelper.js';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { getAIClient } from './aiConfig.js';
+import { handleAIRequest, formatProviderMessages } from './aiProviderHandler.js';
 
 export async function generateEmailResponse(prompt, userId = null) {
   try {
     const config = await getUserModelConfig(userId, 1500);
+    const provider = getAIClient(config.model);
 
     const systemMessage = `You are an AI email assistant that drafts professional email responses based on the provided content.
 
@@ -34,16 +32,11 @@ Subject: [Insert Subject]
 
 "${prompt}"`;
 
-    const completion = await openai.chat.completions.create({
-      ...config,
-      messages: [
-        { role: 'system', content: systemMessage },
-        { role: 'user', content: userMessage },
-      ],
-    });
+    // Format messages for the specific provider
+    const messages = formatProviderMessages(provider, userMessage, systemMessage);
 
-    const content = completion.choices[0].message.content;
-    const tokensUsed = completion.usage.total_tokens;
+    // Make the request using the centralized handler
+    const { content, tokensUsed } = await handleAIRequest(config, provider, messages);
 
     console.log(`Email response generated using model: ${config.model}`);
     return createResponseWithMetadata(content, config.model, tokensUsed);

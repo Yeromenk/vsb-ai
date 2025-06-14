@@ -1,24 +1,20 @@
-import OpenAI from 'openai';
 import { getUserModelConfig } from './modelConfig.js';
 import { createResponseWithMetadata } from './metadataHelper.js';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { getAIClient } from './aiConfig.js';
+import { handleAIRequest, formatProviderMessages } from './aiProviderHandler.js';
 
 export async function getTranslation(message, sourceLanguage, targetLanguage, userId = null) {
   try {
     const config = await getUserModelConfig(userId, 1000);
+    const provider = getAIClient(config.model);
 
     const prompt = `Please translate the following text from ${sourceLanguage} to ${targetLanguage}:\n\n"${message}". Write only the translation, without the quotation marks`;
 
-    const completion = await openai.chat.completions.create({
-      ...config,
-      messages: [{ role: 'user', content: prompt }],
-    });
+    // Format messages for the specific provider
+    const messages = formatProviderMessages(provider, prompt);
 
-    const content = completion.choices[0].message.content;
-    const tokensUsed = completion.usage.total_tokens;
+    // Make the request using the centralized handler
+    const { content, tokensUsed } = await handleAIRequest(config, provider, messages);
 
     console.log(`Translation generated using model: ${config.model}`);
     return createResponseWithMetadata(content, config.model, tokensUsed);

@@ -1,24 +1,20 @@
-import OpenAI from 'openai';
 import { getUserModelConfig } from './modelConfig.js';
 import { createResponseWithMetadata } from './metadataHelper.js';
-
-const reformateTextAi = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { getAIClient } from './aiConfig.js';
+import { handleAIRequest, formatProviderMessages } from './aiProviderHandler.js';
 
 export async function ReformateText(message, style, tone, userId = null) {
   try {
     const config = await getUserModelConfig(userId, 1000);
+    const provider = getAIClient(config.model);
 
     const prompt = `Please rewrite the following text in a ${style} style and a ${tone} tone:\n\n"${message}"`;
 
-    const completion = await reformateTextAi.chat.completions.create({
-      ...config,
-      messages: [{ role: 'user', content: prompt }],
-    });
+    // Format messages for the specific provider
+    const messages = formatProviderMessages(provider, prompt);
 
-    const content = completion.choices[0].message.content;
-    const tokensUsed = completion.usage.total_tokens;
+    // Make the request using the centralized handler
+    const { content, tokensUsed } = await handleAIRequest(config, provider, messages);
 
     console.log(`Text reformatted using model: ${config.model}`);
     return createResponseWithMetadata(content, config.model, tokensUsed);

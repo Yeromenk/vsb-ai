@@ -5,6 +5,10 @@ import { Sliders, InfoIcon, Save, RefreshCw, ChevronDown } from 'lucide-react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import './ModelSettings.css';
+import ChatGPTIcon from '../../logos/chatgpt_logo.png';
+import GeminiIcon from '../../logos/gemini_icon.png';
+import ClaudeIcon from '../../logos/claude-logo.png';
+import DeepSeekIcon from '../../logos/deepseek_logo.png';
 
 const ModelSettings = () => {
   const [models, setModels] = useState([]);
@@ -15,6 +19,14 @@ const ModelSettings = () => {
   const [loading, setLoading] = useState(false);
   const [fetchingModels, setFetchingModels] = useState(true);
   const [isModelDropdownOpen, setIsModelDropdownOpen] = useState(false);
+
+  // Model provider icons
+  const providerIcons = {
+    openai: ChatGPTIcon,
+    google: GeminiIcon,
+    anthropic: ClaudeIcon,
+    deepseek: DeepSeekIcon,
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -89,6 +101,12 @@ const ModelSettings = () => {
     return () => document.removeEventListener('click', closeDropdowns);
   }, []);
 
+  // Get provider for selected model
+  const getSelectedModelProvider = () => {
+    const model = models.find(m => m.id === selectedModel);
+    return model ? model.provider : 'openai';
+  };
+
   return (
     <div className="model-settings-container">
       <div className="settings-header">
@@ -145,6 +163,13 @@ const ModelSettings = () => {
                       setIsModelDropdownOpen(!isModelDropdownOpen);
                     }}
                   >
+                    {selectedModel && (
+                      <img
+                        src={providerIcons[getSelectedModelProvider()]}
+                        alt={getSelectedModelProvider()}
+                        className="provider-icon"
+                      />
+                    )}
                     {selectedModelName || 'Select a model'} <ChevronDown size={16} />
                   </button>
                   {isModelDropdownOpen && (
@@ -158,7 +183,17 @@ const ModelSettings = () => {
                               className="dropdown-option"
                               onClick={() => handleModelChange(model.id, model.name)}
                             >
-                              {model.name} - {model.description}
+                              <div className="model-option-content">
+                                <img
+                                  src={providerIcons[model.provider]}
+                                  alt={model.provider}
+                                  className="provider-icon"
+                                />
+                                <div>
+                                  <div className="model-name">{model.name}</div>
+                                  <div className="model-description">{model.description}</div>
+                                </div>
+                              </div>
                             </li>
                           ))}
                         </ul>

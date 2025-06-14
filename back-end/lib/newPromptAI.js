@@ -1,17 +1,15 @@
-import OpenAI from 'openai';
 import { getUserModelConfig } from './modelConfig.js';
 import { createResponseWithMetadata } from './metadataHelper.js';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+import { getAIClient } from './aiConfig.js';
+import { handleAIRequest, formatProviderMessages } from './aiProviderHandler.js';
 
 export async function getNewPrompt(instructions, message, userId = null) {
   try {
     const config = await getUserModelConfig(userId, 1000);
+    const provider = getAIClient(config.model);
 
     const systemPrompt = `${instructions || 'You are a helpful assistant.'}
-    
+
     Format your responses using proper markdown:
     - Use headings (# ## ###) to organize your content
     - Use **bold** and *italic* for emphasis
@@ -25,16 +23,11 @@ export async function getNewPrompt(instructions, message, userId = null) {
 
     const prompt = message || 'Hello';
 
-    const completion = await openai.chat.completions.create({
-      ...config,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: prompt },
-      ],
-    });
+    // Format messages for the specific provider
+    const messages = formatProviderMessages(provider, prompt, systemPrompt);
 
-    const content = completion.choices[0].message.content;
-    const tokensUsed = completion.usage.total_tokens;
+    // Make the request using the centralized handler
+    const { content, tokensUsed } = await handleAIRequest(config, provider, messages);
 
     console.log(`AI response generated using model: ${config.model}`);
     return createResponseWithMetadata(content, config.model, tokensUsed);

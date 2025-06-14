@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* New warm color palette */
   --primary: #34312d; /* Dark brown */
   --secondary: #655a52; /* Medium brown */
   --accent: #e67e22; /* Orange */
