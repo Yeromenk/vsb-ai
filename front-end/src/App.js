@@ -22,8 +22,8 @@ import VerifyResetCode from './pages/verify-reset-code/VerifyResetCode';
 import ResetPassword from './pages/reset-password/ResetPassword';
 import SharedChatPage from './pages/shared-chat-page/SharedChatPage';
 import Admin from './pages/admin/Admin';
-import EmailAssistant from './components/email-assistant/EmailAssistant';
 import EmailInput from './features/email/EmailInput';
+import { useState } from 'react';
 
 const App = () => {
   return (
@@ -35,10 +35,16 @@ const App = () => {
 };
 
 const Layout = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <>
-      <Root />
-      <Outlet />
+      <Root toggleSidebar={toggleSidebar} />
+      <Outlet context={{ isSidebarOpen, setIsSidebarOpen }} />
     </>
   );
 };

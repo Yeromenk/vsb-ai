@@ -1,5 +1,17 @@
 import React from 'react';
-import { Edit, Trash2, Check, X, Key, Calendar, AlertCircle } from 'lucide-react';
+import {
+  Edit,
+  Trash2,
+  Check,
+  X,
+  Key,
+  Calendar,
+  AlertCircle,
+  Users,
+  Mail,
+  Lock,
+  Settings,
+} from 'lucide-react';
 
 const UsersTable = ({ filteredUsers, handleEdit, confirmDelete, formatDate }) => {
   return (
@@ -7,13 +19,27 @@ const UsersTable = ({ filteredUsers, handleEdit, confirmDelete, formatDate }) =>
       <table>
         <thead>
           <tr>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Status</th>
-            <th>Auth Method</th>
-            <th>API Key</th>
-            <th>Created</th>
-            <th>Actions</th>
+            <th>
+              <Users size={16} /> Username
+            </th>
+            <th>
+              <Mail size={16} /> Email
+            </th>
+            <th>
+              <AlertCircle size={16} /> Status
+            </th>
+            <th>
+              <Lock size={16} /> Auth Method
+            </th>
+            <th>
+              <Key size={16} /> API Key
+            </th>
+            <th>
+              <Calendar size={16} /> Created
+            </th>
+            <th>
+              <Settings size={16} /> Actions
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -56,11 +82,11 @@ const UsersTable = ({ filteredUsers, handleEdit, confirmDelete, formatDate }) =>
                 </td>
                 <td>
                   <div className="actions">
-                    <button className="btn edit-btn" onClick={() => handleEdit(user)}>
+                    <button className="button edit-btn" onClick={() => handleEdit(user)}>
                       <Edit size={18} />
                     </button>
                     <button
-                      className="btn delete-btn"
+                      className="button delete-btn"
                       onClick={() => confirmDelete(user.id)}
                       type="button"
                     >

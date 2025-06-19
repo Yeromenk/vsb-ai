@@ -154,7 +154,7 @@
 @media (max-width: 768px) {
   .login {
     flex-direction: column;
-    height: auto;
+    height: calc(100vh - 60px);
     gap: var(--spacing-lg);
     padding: 5%;
   }

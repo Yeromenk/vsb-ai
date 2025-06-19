@@ -281,7 +281,7 @@
 @media (max-width: 768px) {
   .login {
     flex-direction: column;
-    height: auto;
+    height: calc(100vh - 60px);
     gap: var(--spacing-xl);
     padding: 5%;
   }
@@ -309,6 +309,7 @@
   .login {
     padding: var(--spacing-sm);
     gap: var(--spacing-lg);
+    height: calc(100vh - 60px);
   }
 
   .form-login h1 {
@@ -325,7 +326,7 @@
   }
 
   .logo img {
-    max-width: 250px;
-    max-height: 220px;
+    max-width: 130px;
+    max-height: 120px;
   }
 }

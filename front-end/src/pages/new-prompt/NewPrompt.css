@@ -4,7 +4,7 @@
   align-items: flex-start;
   padding: 1.5rem;
   background-color: white;
-  min-height: calc(100vh - 80px);
+  height: calc(100vh - 80px);
   box-sizing: border-box;
 }
 
@@ -216,6 +216,7 @@
   .new-prompt {
     padding: 0.5rem;
   }
+
   .container-new-prompt {
     padding: 1rem;
     border-radius: var(--radius-sm);

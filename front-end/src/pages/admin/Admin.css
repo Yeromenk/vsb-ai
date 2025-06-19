@@ -81,12 +81,10 @@
   color: var(--accent);
 }
 
-/* Add pagination styles */
 .pagination {
   display: flex;
   justify-content: center;
   gap: var(--spacing-sm);
-  margin-top: var(--spacing-md);
   margin-bottom: var(--spacing-lg);
 }
 
@@ -181,10 +179,9 @@ tr:hover {
 .actions {
   display: flex;
   gap: var(--spacing-sm);
-  justify-content: flex-end;
 }
 
-.btn {
+.button {
   border: none;
   background: none;
   cursor: pointer;
@@ -483,14 +480,11 @@ tr:hover {
 @media (max-width: 480px) {
   .admin-container {
     padding: var(--spacing-sm);
+    height: calc(100vh - 90px);
   }
 
   .admin-container h1 {
     font-size: 24px;
-  }
-
-  .search-container-admin {
-    padding: var(--spacing-xs) var(--spacing-sm);
   }
 
   .modal-actions {

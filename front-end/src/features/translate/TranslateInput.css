@@ -64,8 +64,7 @@
 
 @media (max-width: 768px) {
   .translate-text {
-    padding: var(--spacing-sm);
-    height: 90vh;
+    height: calc(100vh - 70px);
   }
 
   .translate-container {
@@ -88,7 +87,7 @@
 @media (max-width: 480px) {
   .translate-text {
     justify-content: flex-start;
-    height: calc(100vh - 70px);
+    height: calc(100vh - 90px);
   }
 
   .translate-container {

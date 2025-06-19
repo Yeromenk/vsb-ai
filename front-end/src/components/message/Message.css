@@ -319,6 +319,10 @@
 }
 
 @media (max-width: 576px) {
+  .message {
+    height: calc(100vh - 90px);
+  }
+
   .message-content-wrapper {
     width: 100%;
   }

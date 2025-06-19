@@ -43,14 +43,46 @@
 
 @media (max-width: 768px) {
     .email-page {
+        height: calc(100vh - 90px);
+    }
+
+    .email-container {
         padding: var(--spacing-md);
     }
 
     .overview {
-        margin-bottom: var(--spacing-sm);
+        margin-top: var(--spacing-lg);
+        margin-bottom: var(--spacing-lg);
     }
 
     .email-page__title {
-        font-size: 1.5rem;
+        font-size: 32px;
+    }
+
+    .email-page__subtitle {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .email-page {
+        height: calc(100vh - 90px);
+    }
+
+    .email-container {
+        padding: var(--spacing-sm);
+    }
+
+    .overview {
+        margin-top: var(--spacing-md);
+        margin-bottom: var(--spacing-md);
+    }
+
+    .email-page__title {
+        font-size: 28px;
+    }
+
+    .email-page__subtitle {
+        font-size: 14px;
     }
 }

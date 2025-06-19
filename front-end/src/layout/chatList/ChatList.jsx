@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import './ChatList.css';
-import { Menu, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
@@ -12,8 +12,7 @@ import ChatListContent from '../../components/chat-list-content/ChatListContent'
 import UtilityLinks from '../../components/utility-links/UtilityLinks';
 import ShareModal from '../../components/share-modal/ShareModal';
 
-const ChatList = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+const ChatList = ({ isSidebarOpen, setIsSidebarOpen }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
   const [editingChatId, setEditingChatId] = useState(null);
@@ -70,9 +69,6 @@ const ChatList = () => {
     },
     enabled: !!currentUser?.id,
   });
-
-  // Event handlers
-  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   const startEditing = chat => {
     setEditingChatId(chat.id);
@@ -212,10 +208,6 @@ const ChatList = () => {
       />
 
       <ShareModal isOpen={isShareModalOpen} onClose={closeShareModal} chatId={shareChat?.id} />
-
-      <button className="menu-button" onClick={toggleSidebar}>
-        <Menu />
-      </button>
 
       <div
         className={`sidebar-overlay ${isSidebarOpen ? 'show' : ''}`}

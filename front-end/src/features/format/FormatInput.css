@@ -236,7 +236,7 @@
 
 @media (max-width: 768px) {
   .format-page {
-    height: 92vh;
+    height: calc(100vh - 90px);
   }
 
   .format-panel {
