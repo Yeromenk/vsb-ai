@@ -185,6 +185,46 @@ th {
   letter-spacing: 0.5px;
 }
 
+th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+th.sortable:hover {
+  background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+  color: var(--accent);
+}
+
+.sort-icon-inactive {
+  opacity: 0.3;
+  transition: opacity 0.2s ease;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+th.sortable:hover .sort-icon-inactive {
+  opacity: 0.6;
+}
+
+.sort-icon-active {
+  color: var(--accent);
+  margin-left: 4px;
+  vertical-align: middle;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 th:first-child {
   padding-left: var(--spacing-lg);
 }

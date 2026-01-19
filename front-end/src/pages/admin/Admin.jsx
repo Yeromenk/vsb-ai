@@ -22,6 +22,8 @@ const Admin = () => {
   const [userToDelete, setUserToDelete] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortField, setSortField] = useState(null);
+  const [sortDirection, setSortDirection] = useState('asc');
 
   useEffect(() => {
     fetchUsers();
@@ -159,18 +161,6 @@ const Admin = () => {
     }
   };
 
-  const filteredUsers = users.filter(
-    user =>
-      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  // Calculate pagination
-  const totalPages = Math.ceil(filteredUsers.length / USERS_PER_PAGE);
-  const indexOfLastUser = currentPage * USERS_PER_PAGE;
-  const indexOfFirstUser = indexOfLastUser - USERS_PER_PAGE;
-  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
-
   const formatDate = dateString => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -179,6 +169,67 @@ const Admin = () => {
       day: 'numeric',
     });
   };
+
+  const filteredUsers = users.filter(user => {
+    const search = searchTerm.toLowerCase();
+    const matchesUsername = user.username.toLowerCase().includes(search);
+    const matchesEmail = user.email.toLowerCase().includes(search);
+    return matchesUsername || matchesEmail;
+  });
+
+  // Function to handle sorting
+  const handleSort = field => {
+    if (sortField === field) {
+      // Toggle direction if clicking the same field
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // Set new field and default to ascending
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  // Apply sorting to filtered users
+  const sortedUsers = [...filteredUsers].sort((a, b) => {
+    if (!sortField) return 0;
+
+    let aValue, bValue;
+
+    switch (sortField) {
+      case 'status':
+        aValue = a.isEmailVerified ? 1 : 0;
+        bValue = b.isEmailVerified ? 1 : 0;
+        break;
+      case 'authMethod':
+        aValue = a.authMethod?.toLowerCase() || '';
+        bValue = b.authMethod?.toLowerCase() || '';
+        break;
+      case 'createdAt':
+        aValue = new Date(a.createdAt).getTime();
+        bValue = new Date(b.createdAt).getTime();
+        break;
+      case 'username':
+        aValue = a.username.toLowerCase();
+        bValue = b.username.toLowerCase();
+        break;
+      case 'email':
+        aValue = a.email.toLowerCase();
+        bValue = b.email.toLowerCase();
+        break;
+      default:
+        return 0;
+    }
+
+    if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+    if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  // Calculate pagination
+  const totalPages = Math.ceil(sortedUsers.length / USERS_PER_PAGE);
+  const indexOfLastUser = currentPage * USERS_PER_PAGE;
+  const indexOfFirstUser = indexOfLastUser - USERS_PER_PAGE;
+  const currentUsers = sortedUsers.slice(indexOfFirstUser, indexOfLastUser);
 
   const goToNextPage = () => {
     if (currentPage < totalPages) {
@@ -259,7 +310,7 @@ const Admin = () => {
           <Search size={20} className="search-icon" />
           <input
             type="text"
-            placeholder="Search users by name or email"
+            placeholder="Search users by name or email..."
             value={searchInput}
             onChange={handleSearchChange}
           />
@@ -284,6 +335,9 @@ const Admin = () => {
                   handleEdit={handleEdit}
                   confirmDelete={confirmDelete}
                   formatDate={formatDate}
+                  onSort={handleSort}
+                  sortField={sortField}
+                  sortDirection={sortDirection}
                 />
 
                 {filteredUsers.length > 0 && (

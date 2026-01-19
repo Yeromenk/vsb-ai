@@ -161,6 +161,7 @@ const ChatList = ({ isSidebarOpen, setIsSidebarOpen }) => {
   const clearSearch = () => {
     setSearchQuery('');
     setSearchResults([]);
+    setSearchAttempted(false);
   };
 
   useEffect(() => {

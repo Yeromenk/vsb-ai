@@ -11,31 +11,53 @@ import {
   Mail,
   Lock,
   Settings,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
 } from 'lucide-react';
 
-const UsersTable = ({ filteredUsers, handleEdit, confirmDelete, formatDate }) => {
+const UsersTable = ({
+  filteredUsers,
+  handleEdit,
+  confirmDelete,
+  formatDate,
+  onSort,
+  sortField,
+  sortDirection,
+}) => {
+  const getSortIcon = field => {
+    if (sortField !== field) {
+      return <ArrowUpDown size={14} className="sort-icon-inactive" />;
+    }
+    return sortDirection === 'asc' ? (
+      <ArrowUp size={14} className="sort-icon-active" />
+    ) : (
+      <ArrowDown size={14} className="sort-icon-active" />
+    );
+  };
+
   return (
     <div className="users-table">
       <table>
         <thead>
           <tr>
-            <th>
-              <Users size={16} /> Username
+            <th className="sortable" onClick={() => onSort('username')}>
+              <Users size={16} /> Username {getSortIcon('username')}
             </th>
-            <th>
-              <Mail size={16} /> Email
+            <th className="sortable" onClick={() => onSort('email')}>
+              <Mail size={16} /> Email {getSortIcon('email')}
             </th>
-            <th>
-              <AlertCircle size={16} /> Status
+            <th className="sortable" onClick={() => onSort('status')}>
+              <AlertCircle size={16} /> Status {getSortIcon('status')}
             </th>
-            <th>
-              <Lock size={16} /> Auth Method
+            <th className="sortable" onClick={() => onSort('authMethod')}>
+              <Lock size={16} /> Auth Method {getSortIcon('authMethod')}
             </th>
             <th>
               <Key size={16} /> API Key
             </th>
-            <th>
-              <Calendar size={16} /> Created
+            <th className="sortable" onClick={() => onSort('createdAt')}>
+              <Calendar size={16} /> Created {getSortIcon('createdAt')}
             </th>
             <th>
               <Settings size={16} /> Actions
