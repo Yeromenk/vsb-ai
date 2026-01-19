@@ -1,5 +1,5 @@
 import './Home.css';
-import { FileText, Languages, Text } from 'lucide-react';
+import { FileText, Languages, Text, Mail, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { useContext } from 'react';
@@ -23,16 +23,22 @@ const Home = () => {
           ) : (
             <>
               <h1>Hello, {formatedName}!</h1>
-              <p>How can I help you?</p>
+              <p>How can I help you today?</p>
               <div className="choose-task">
                 <Link to="/translate" className="task">
-                  <Languages /> Translate a text
+                  <Languages /> Translate text
                 </Link>
                 <Link to="/format" className="task">
-                  <Text /> Create an alternative text
+                  <Text /> Format & improve text
                 </Link>
                 <Link to="/summarize" className="task">
-                  <FileText /> Summarize a file
+                  <FileText /> Analyze documents
+                </Link>
+                <Link to="/email" className="task">
+                  <Mail /> Email assistant
+                </Link>
+                <Link to="/new-prompt" className="task task--featured">
+                  <Plus /> Create custom chat
                 </Link>
               </div>
             </>

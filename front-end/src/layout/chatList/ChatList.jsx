@@ -1,13 +1,12 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import './ChatList.css';
-import { X } from 'lucide-react';
+import { X, Search, Loader } from 'lucide-react';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import DeleteModal from '../../components/delete-modal/DeleteModal';
-import SearchBar from '../../components/search-bar/SearchBar';
 import ChatListContent from '../../components/chat-list-content/ChatListContent';
 import UtilityLinks from '../../components/utility-links/UtilityLinks';
 import ShareModal from '../../components/share-modal/ShareModal';
@@ -227,12 +226,21 @@ const ChatList = ({ isSidebarOpen, setIsSidebarOpen }) => {
 
         <h1>Chat List {searchResults.length > 0 && `- ${searchResults.length} results`}</h1>
 
-        <SearchBar
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          handleSearchInputChange={handleSearchInputChange}
-          clearSearch={clearSearch}
-        />
+        <div className="search-container-chatlist">
+          <Search size={20} className="search-icon" />
+          <input
+            type="text"
+            placeholder="Search chats..."
+            value={searchQuery}
+            onChange={handleSearchInputChange}
+          />
+          {isSearching && <Loader size={16} className="search-loading" />}
+          {searchQuery && !isSearching && (
+            <button className="clear-search-btn" onClick={clearSearch}>
+              <X size={18} />
+            </button>
+          )}
+        </div>
 
         <div className="list">
           <ChatListContent

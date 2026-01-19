@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import session from 'express-session';
+import connectPgSimple from 'connect-pg-simple';
 import passport from 'passport';
 import authRoutes from './routes/auth.js';
 import chatsAi from './routes/chats.js';
@@ -25,6 +26,9 @@ import { connectToDatabase, prisma } from './prisma/db.js';
 const app = express();
 const port = 3000;
 
+// Initialize PostgreSQL session store
+const PostgreSqlStore = connectPgSimple(session);
+
 // 1. CORS and basic middleware
 app.use(
   cors({
@@ -35,15 +39,22 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-// 2. Session and passport middleware
+// 2. Session and passport middleware with PostgreSQL store
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    store: new PostgreSqlStore({
+      conString: process.env.DATABASE_URL,
+      tableName: 'user_sessions', // Optional: customize table name
+      createTableIfMissing: true, // Automatically create the sessions table
+    }),
+    secret: process.env.SESSION_SECRET || 'fallback-secret-change-in-production',
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false,
+      secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     },
   })
 );

@@ -21,6 +21,88 @@
     border-left: 3px solid var(--accent) !important;
 }
 
+.search-container-chatlist {
+    position: relative;
+    margin: var(--spacing-md) 0;
+    width: 100%;
+}
+
+.search-container-chatlist .search-icon {
+    position: absolute;
+    left: var(--spacing-md);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    pointer-events: none;
+}
+
+.search-container-chatlist input {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-xl) var(--spacing-sm) calc(var(--spacing-xl) + 10px);
+    border: 1px solid #d1c7ba;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    background-color: white;
+    color: var(--text);
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.search-container-chatlist input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(236, 106, 17, 0.1);
+}
+
+.search-container-chatlist input::placeholder {
+    color: #a99e8e;
+}
+
+.search-container-chatlist .search-loading {
+    position: absolute;
+    right: var(--spacing-lg);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent);
+    animation: spin 1s linear infinite;
+}
+
+.search-container-chatlist .clear-search-btn {
+    position: absolute;
+    right: var(--spacing-md);
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-secondary);
+    padding: var(--spacing-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.search-container-chatlist .clear-search-btn:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--error);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.search-container-chatlist .clear-search-btn:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+@keyframes spin {
+    from {
+        transform: translateY(-50%) rotate(0deg);
+    }
+    to {
+        transform: translateY(-50%) rotate(360deg);
+    }
+}
+
 .search-container {
     position: relative;
     margin: 10px 0;

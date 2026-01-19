@@ -1,13 +1,13 @@
 .translator-container {
   width: 100%;
-  max-width: 800px;
-  background-color: var(--light-accent);
-  border-radius: var(--radius-lg);
+  max-width: 700px;
+  background-color: white;
+  border-radius: var(--radius-md);
   padding: var(--spacing-lg);
-  box-shadow: var(--shadow);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-md);
   transition: var(--transition);
   border: 1px solid #e6dccf;
   margin-top: auto;
@@ -18,20 +18,38 @@
   align-items: center;
   gap: var(--spacing-sm);
   flex-wrap: wrap;
-  padding-bottom: var(--spacing-md);
-  border-bottom: 1px solid #e6dccf;
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .language-controls {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   flex: 1;
 }
 
+.language-controls-center {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .arrow-icon {
-  color: var(--secondary);
+  color: var(--text-secondary);
   transition: color 0.2s;
+}
+
+.swap-languages-icon {
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 2px;
+  border-radius: 4px;
+}
+
+.swap-languages-icon:hover {
+  color: var(--accent);
 }
 
 .text-input-container {
@@ -41,23 +59,23 @@
 
 .text-input {
   width: 100%;
-  height: 150px;
-  padding: var(--spacing-md);
-  font-size: 16px;
+  height: 130px;
+  padding: var(--spacing-sm);
+  font-size: 0.9rem;
   line-height: 1.5;
   border: 1px solid #d1c7ba;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   background-color: #ffffff;
   color: var(--text);
-  resize: none;
-  transition: var(--transition);
+  resize: vertical;
+  transition: all 0.2s ease;
   font-family: 'Inter', sans-serif;
 }
 
 .text-input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+  box-shadow: 0 0 0 2px rgba(230, 126, 34, 0.1);
 }
 
 .text-input::placeholder {
@@ -66,11 +84,11 @@
 
 .char-counter {
   position: absolute;
-  bottom: 8px;
-  right: 12px;
-  font-size: 12px;
+  bottom: 6px;
+  right: 10px;
+  font-size: 0.75rem;
   color: #a99e8e;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.9);
   padding: 2px 6px;
   border-radius: 4px;
 }
@@ -79,24 +97,23 @@
   margin-left: auto;
   background-color: var(--accent);
   color: white;
-  padding: var(--spacing-sm) var(--spacing-lg);
-  font-size: 15px;
+  padding: 10px 16px;
+  font-size: 0.85rem;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 6px;
   justify-content: center;
-  transition: var(--transition);
+  transition: all 0.2s ease;
   font-weight: 500;
-  height: 44px;
+  min-height: 40px;
 }
 
 .submit-btn:hover {
   background-color: var(--accent-light);
   transform: translateY(-1px);
-  box-shadow: var(--shadow-hover);
 }
 
 .submit-btn:active {
@@ -106,7 +123,6 @@
 .submit-btn:disabled {
   background-color: #d1c7ba;
   color: #a99e8e;
-  box-shadow: none;
   transform: none;
   cursor: not-allowed;
 }
@@ -128,18 +144,15 @@
     width: 100%;
   }
 
-  .arrow-icon {
-    transform: rotate(90deg);
-  }
-
   .text-input {
-    font-size: 15px;
-    padding: var(--spacing-sm);
+    font-size: 0.85rem;
+    height: 110px;
   }
 
   .submit-btn {
     width: 100%;
-    margin-top: var(--spacing-sm);
+    margin-top: var(--spacing-xs);
+    margin-left: 0;
   }
 }
 
@@ -147,13 +160,13 @@
   .translator-container {
     padding: var(--spacing-sm);
     border-radius: var(--radius-sm);
-    gap: 16px;
+    gap: var(--spacing-sm);
   }
 
   .language-controls {
     flex-direction: column;
     align-items: stretch;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-xs);
   }
 
   .text-input {

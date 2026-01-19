@@ -5,6 +5,7 @@ import { Lock, LogIn, Eye, EyeOff, User, AlertCircle, RefreshCw } from 'lucide-r
 import axios from 'axios';
 import './Vsb-login.css';
 import { AuthContext } from '../../context/AuthContext';
+import AnimatedBackground from '../../components/animated-background/AnimatedBackground';
 
 const VsbLogin = () => {
   const [inputs, setInputs] = useState({
@@ -107,73 +108,87 @@ const VsbLogin = () => {
 
   return (
     <div className="login">
-      <div className="form-login">
-        <h1>VSB University Login</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="input-container">
-            <User size={20} className="icon" />
-            <input
-              type="text"
-              placeholder="VSB Username"
-              name="username"
-              value={inputs.username}
-              onChange={handleChange}
-              className={errors.username ? 'input-error' : ''}
-              required
-            />
-          </div>
-          {errors.username && (
-            <div className="error-message-login">
-              <AlertCircle size={16} />
-              {errors.username}
+      <AnimatedBackground />
+      <div className="auth-container">
+        <div className="auth-card">
+          <div className="auth-left">
+            <h1>VSB University Login</h1>
+            <div className="info-box">
+              <p>
+                <strong>VSB-TUO Students & Staff Only</strong>
+                <br />
+                Enter your university username (without @vsb.cz) and password.
+              </p>
             </div>
-          )}
+            <form onSubmit={handleSubmit}>
+              <div className="input-container">
+                <User size={20} className="icon" />
+                <input
+                  type="text"
+                  placeholder="VSB Username"
+                  name="username"
+                  value={inputs.username}
+                  onChange={handleChange}
+                  className={errors.username ? 'input-error' : ''}
+                  required
+                />
+              </div>
+              {errors.username && (
+                <div className="error-message-login">
+                  <AlertCircle size={16} />
+                  {errors.username}
+                </div>
+              )}
 
-          <div className="input-container">
-            <Lock size={20} className="icon" />
-            <input
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Password"
-              name="password"
-              value={inputs.password}
-              onChange={handleChange}
-              className={errors.password ? 'input-error' : ''}
-              required
-            />
-            <div className="password-toggle" onClick={togglePasswordVisibility}>
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </div>
+              <div className="input-container">
+                <Lock size={20} className="icon" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Password"
+                  name="password"
+                  value={inputs.password}
+                  onChange={handleChange}
+                  className={errors.password ? 'input-error' : ''}
+                  required
+                />
+                <div className="password-toggle" onClick={togglePasswordVisibility}>
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </div>
+              </div>
+              {errors.password && (
+                <div className="error-message-login">
+                  <AlertCircle size={16} />
+                  {errors.password}
+                </div>
+              )}
+
+              <button type="submit" className="primary-button" disabled={loading}>
+                {loading ? (
+                  <>
+                    <RefreshCw size={18} className="icon-spin" />
+                    Authenticating...
+                  </>
+                ) : (
+                  <>
+                    <LogIn size={18} />
+                    Login with VSB Credentials
+                  </>
+                )}
+              </button>
+
+              <p style={{ marginTop: '12px' }}>
+                Not a VSB student? <Link to="/login">Regular Login</Link>
+              </p>
+              <p style={{ marginTop: '8px' }}>
+                Don't have an account? <Link to="/register">Sign up</Link>
+              </p>
+            </form>
           </div>
-          {errors.password && (
-            <div className="error-message-login">
-              <AlertCircle size={16} />
-              {errors.password}
-            </div>
-          )}
 
-          <button type="submit" className="primary-button" disabled={loading}>
-            {loading ? (
-              <>
-                <RefreshCw size={18} className="icon-spin" />
-                Authenticating...
-              </>
-            ) : (
-              <>
-                <LogIn size={18} />
-                Login with VSB Credentials
-              </>
-            )}
-          </button>
-
-          <div className="login-links">
-            <Link to="/login">Use regular login</Link>
-            <Link to="/register">Create an account</Link>
+          <div className="auth-right">
+            <img src="/vsb-img.png" alt="VSB University" className="logo-image" />
           </div>
-        </form>
-      </div>
-
-      <div className="vsb-logo">
-        <img src="/vsb-img.png" alt="VSB University" />
+        </div>
       </div>
     </div>
   );

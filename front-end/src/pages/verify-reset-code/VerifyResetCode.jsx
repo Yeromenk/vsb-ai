@@ -3,6 +3,7 @@ import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, KeyRound, RefreshCw } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
+import AnimatedBackground from '../../components/animated-background/AnimatedBackground';
 
 const VerifyResetCode = () => {
   const [code, setCode] = useState('');
@@ -99,6 +100,7 @@ const VerifyResetCode = () => {
 
   return (
     <div className="forgot-password-page">
+      <AnimatedBackground />
       <div className="forgot-password-container">
         <h1>Verify Code</h1>
         <p className="description-forgot">

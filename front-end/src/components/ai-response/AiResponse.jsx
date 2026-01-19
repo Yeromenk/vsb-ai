@@ -1,4 +1,3 @@
-// front-end/src/components/ai-response/AiResponse.jsx
 import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';

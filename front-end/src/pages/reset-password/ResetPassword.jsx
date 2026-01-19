@@ -3,6 +3,7 @@ import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, Lock, Eye, EyeOff, RefreshCw, Send } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
+import AnimatedBackground from '../../components/animated-background/AnimatedBackground';
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('');
@@ -72,6 +73,7 @@ const ResetPassword = () => {
 
   return (
     <div className="forgot-password-page">
+      <AnimatedBackground />
       <div className="forgot-password-container">
         <h1>Create New Password</h1>
         <p className="description-forgot">Enter your new password below.</p>

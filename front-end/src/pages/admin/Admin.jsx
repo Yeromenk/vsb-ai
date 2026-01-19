@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import './Admin.css';
-import { Shield, Search, ChevronLeft, ChevronRight, Loader } from 'lucide-react';
+import { Shield, Search, ChevronLeft, ChevronRight, Loader, X } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import axios from 'axios';
 import LoadingState from '../../components/loading-state/LoadingState';
@@ -15,6 +15,7 @@ const Admin = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchInput, setSearchInput] = useState('');
   const [searchLoading, setSearchLoading] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -47,11 +48,11 @@ const Admin = () => {
   };
 
   const handleSearchChange = e => {
-    // Show loading indicator when searching
+    const value = e.target.value;
+    setSearchInput(value);
     setSearchLoading(true);
 
     // Debounce search to simulate API search latency
-    const value = e.target.value;
     setTimeout(() => {
       setSearchTerm(value);
       setSearchLoading(false);
@@ -109,6 +110,12 @@ const Admin = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleClearSearch = () => {
+    setSearchInput('');
+    setSearchTerm('');
+    setSearchLoading(false);
   };
 
   const handleEdit = async user => {
@@ -253,9 +260,15 @@ const Admin = () => {
           <input
             type="text"
             placeholder="Search users by name or email"
+            value={searchInput}
             onChange={handleSearchChange}
           />
           {searchLoading && <Loader size={16} className="search-loading" />}
+          {searchInput && !searchLoading && (
+            <button className="clear-search-btn" onClick={handleClearSearch}>
+              <X size={18} />
+            </button>
+          )}
         </div>
 
         {loading ? (

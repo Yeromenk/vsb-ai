@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, SendHorizontal } from 'lucide-react';
+import './FormatControls.css';
 
 const FormatControls = ({
   onSubmit,

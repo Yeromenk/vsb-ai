@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build": "prisma generate",
     "format": "prettier --write \"**/*.{js,jsx,json,css,md}\""
   },
   "author": "Yeromenko Maksym",
@@ -19,6 +21,8 @@
     "@tanstack/react-query": "^5.59.16",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.41.0",
+    "connect-pg-simple": "^9.0.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
@@ -35,6 +39,7 @@
     "mammoth": "^1.9.0",
     "markdown-it": "^14.1.0",
     "multer": "^1.4.5-lts.1",
+    "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^7.0.0",
     "nodemon": "^3.1.7",
     "openai": "^4.104.0",

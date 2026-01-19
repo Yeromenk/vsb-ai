@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { Mail, CheckCircle, RefreshCw, Clock, ArrowRight } from 'lucide-react';
+import AnimatedBackground from '../../components/animated-background/AnimatedBackground';
 import './ConfirmEmail.css';
 
 const ConfirmEmail = () => {
@@ -79,6 +80,7 @@ const ConfirmEmail = () => {
 
   return (
     <div className="confirm-email-container">
+      <AnimatedBackground />
       <div className="confirm-email-card-two-column">
         <div className="left-column">
           <h2>Email Verification</h2>

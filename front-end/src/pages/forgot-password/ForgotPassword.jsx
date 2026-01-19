@@ -4,6 +4,7 @@ import { Mail, ArrowLeft, Send, RefreshCw } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import './ForgotPassword.css';
 import axios from 'axios';
+import AnimatedBackground from '../../components/animated-background/AnimatedBackground';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -48,6 +49,7 @@ const ForgotPassword = () => {
 
   return (
     <div className="forgot-password-page">
+      <AnimatedBackground />
       <div className="forgot-password-container">
         <h1>Reset Password</h1>
         <p className="description-forgot">

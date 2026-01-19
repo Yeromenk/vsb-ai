@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ArrowRightLeft } from 'lucide-react';
 import LanguageSelector from '../language-selector/LanguageSelector';
 import './TextTranslator.css';
 
@@ -13,6 +13,34 @@ const TextTranslator = ({
   const [targetLanguage, setTargetLanguage] = useState(initialTarget);
   const [input, setInput] = useState('');
   const maxChars = 1000;
+
+  const popularLanguages = [
+    'English',
+    'Czech',
+    'German',
+    'French',
+    'Spanish',
+    'Italian',
+    'Russian',
+  ];
+
+  const handleSourceLanguageChange = lang => {
+    setSourceLanguage(lang);
+
+    if (lang === targetLanguage) {
+      const alternativeLanguage = popularLanguages.find(l => l !== lang);
+      setTargetLanguage(alternativeLanguage || 'English');
+    }
+  };
+
+  const handleTargetLanguageChange = lang => {
+    setTargetLanguage(lang);
+
+    if (lang === sourceLanguage) {
+      const alternativeLanguage = popularLanguages.find(l => l !== lang);
+      setSourceLanguage(alternativeLanguage || 'Czech');
+    }
+  };
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -33,18 +61,33 @@ const TextTranslator = ({
     }
   };
 
+  const swapLanguages = () => {
+    const tempSource = sourceLanguage;
+    setSourceLanguage(targetLanguage);
+    setTargetLanguage(tempSource);
+  };
+
   return (
     <div className="translator-container">
       <div className="language-selection">
         <div className="language-controls">
           <LanguageSelector
             selectedLanguage={sourceLanguage}
-            onChange={lang => setSourceLanguage(lang)}
+            onChange={handleSourceLanguageChange}
           />
-          <ArrowRight className="arrow-icon" />
+
+          <div className="language-controls-center">
+            <ArrowRightLeft
+              className="swap-languages-icon"
+              size={30}
+              onClick={swapLanguages}
+              title="Swap languages"
+            />
+          </div>
+
           <LanguageSelector
             selectedLanguage={targetLanguage}
-            onChange={lang => setTargetLanguage(lang)}
+            onChange={handleTargetLanguageChange}
           />
         </div>
 

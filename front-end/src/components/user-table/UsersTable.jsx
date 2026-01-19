@@ -101,7 +101,7 @@ const UsersTable = ({ filteredUsers, handleEdit, confirmDelete, formatDate }) =>
               <td colSpan="7">
                 <div className="no-results">
                   <div className="not-found-message">
-                    <AlertCircle size={18} />
+                    <AlertCircle size={18} style={{ marginRight: '10px' }} />
                     No users found matching your search
                   </div>
                 </div>
